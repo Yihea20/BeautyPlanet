@@ -1,4 +1,5 @@
-﻿using BeautyPlanet.Models;
+﻿using BeautyPlanet.DTOs;
+using BeautyPlanet.Models;
 using BeautyPlanet.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

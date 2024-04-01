@@ -1,4 +1,5 @@
-﻿using BeautyPlanet.Models;
+﻿using BeautyPlanet.DTOs;
+using BeautyPlanet.Models;
 
 namespace BeautyPlanet.Services
 {
