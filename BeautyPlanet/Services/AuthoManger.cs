@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BeautyPlanet.Models;
+using BeautyPlanet.Models.Entity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace BeautyPlanet.Services
 {
@@ -69,9 +72,9 @@ namespace BeautyPlanet.Services
         {
             try
             {
-                await _userManager.RemoveAuthenticationTokenAsync(_user, "BeautyCenterApi", "RefreshToken");
-                var newRefreshToken = await _userManager.GenerateUserTokenAsync(_user, "BeautyCenterApi", "RefreshToken");
-                var result = await _userManager.SetAuthenticationTokenAsync(_user, "BeautyCenterApi", "RefreshToken", newRefreshToken);
+                await _userManager.RemoveAuthenticationTokenAsync(_user, "BeautyPlanetApi", "RefreshToken");
+                var newRefreshToken = await _userManager.GenerateUserTokenAsync(_user, "BeautyPlanetApi", "RefreshToken");
+                var result = await _userManager.SetAuthenticationTokenAsync(_user, "BeautyPlanetApi", "RefreshToken", newRefreshToken);
                 return newRefreshToken;
             }
             catch (Exception ex)
@@ -90,7 +93,7 @@ namespace BeautyPlanet.Services
             _user = await _userManager.FindByNameAsync(username);
             try
             {
-                var isValid = await _userManager.VerifyUserTokenAsync(_user, "BeautyCenterApi", "RefreshToken", request.RefreshToken);
+                var isValid = await _userManager.VerifyUserTokenAsync(_user, "BeautyPlanetApi", "RefreshToken", request.RefreshToken);
                 if (isValid)
                 {
                     return new TokenRequest { Token = await CreatToken(), RefreshToken = await CreateRefreshToken(), rand = request.rand };

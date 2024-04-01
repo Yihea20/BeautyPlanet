@@ -1,6 +1,7 @@
 ﻿namespace BeautyPlanet.IRepository
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork:IDisposable
     {
+        Task Save();
     }
 }

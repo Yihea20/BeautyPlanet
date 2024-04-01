@@ -1,4 +1,6 @@
-﻿namespace BeautyPlanet.Services
+﻿using BeautyPlanet.Models;
+
+namespace BeautyPlanet.Services
 {
     public interface IAuthoManger
     {

@@ -1,15 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BeautyPlanet.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BeautyPlanet.Models
+namespace BeautyPlanet.DTOs
 {
-    public class Center
+    public class CenterDTO
     {
-        [Key]
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public int Phone { get; set; }
+        public string Description { get; set; }
+    }
+    public class GetCenterDTO:CenterDTO {
+        
         public string? WebSiteUrl { get; set; }
         [ForeignKey(nameof(Admin))]
         public int? AdminId { get; set; }
@@ -19,12 +21,14 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Galary))]
         public int? GalaryId { get; set; }
         public Gallery? Galary { get; set; }
-        public string? Description { get; set; }
         [ForeignKey(nameof(Platform))]
         public int? PlatformId { get; set; }
         public Platform? Platform { get; set; }
         public DateTime? OpenTime { get; set; }
         public DateTime? CloseTime { get; set; }
-
+    }
+    public class GetCenterwithIdDTO:GetCenterDTO
+    {
+       public int  Id { get; set; }
     }
 }
