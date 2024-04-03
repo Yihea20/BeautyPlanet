@@ -12,7 +12,7 @@ namespace BeautyPlanet.Models
         public int Phone { get; set; }
         public string? WebSiteUrl { get; set; }
         [ForeignKey(nameof(Admin))]
-        public int? AdminId { get; set; }
+        public string? AdminId { get; set; }
         public Admin? Admin { get; set; }
         public int? Rate { get; set; }
         public string? ImageUrl { get; set; }

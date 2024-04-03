@@ -5,7 +5,7 @@ namespace BeautyPlanet.Models
 {
     public class Person:IdentityUser
     {
-        public int Id { get; set; }
+        
         public string FirstName { get; set; }
         public string LastName { get; set; }
 

@@ -11,5 +11,6 @@ namespace BeautyPlanet.Models
         public int Phone { get; set; }
         public string FacebookUrl { get; set; }
         public string InstagramUrl { get; set; }
+        public ICollection<Center> Centers { get; set; }
     }
 }
