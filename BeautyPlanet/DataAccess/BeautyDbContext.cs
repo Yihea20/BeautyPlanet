@@ -12,7 +12,13 @@ namespace BeautyPlanet.DataAccess
         { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<Person>().UseTpcMappingStrategy();
+            modelBuilder.Entity<Service>().HasMany(c => c.Centers).WithMany(s => s.Services).UsingEntity<ServiceCenter>
+                (sc => sc.HasOne(prop => prop.Center).WithMany().HasForeignKey(prop => prop.CenterId),
+                sc => sc.HasOne(prop => prop.Service).WithMany().HasForeignKey(prop => prop.ServiceId),
+                sc => sc.HasIndex(prop => new { prop.ServiceId, prop.CenterId }));
+
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             base.OnModelCreating(modelBuilder);
         }
@@ -24,6 +30,8 @@ namespace BeautyPlanet.DataAccess
         public DbSet<Platform> Platforms { get; set; }
         public DbSet<Person> Persons{get;set;}
         public DbSet<Specialist> Specialists { get; set; }
-        
+        public DbSet<Service> Services { get; set; }
+        public DbSet<ServiceCenter> ServiceCenters { get; set; }
+
     }
 }

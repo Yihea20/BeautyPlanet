@@ -12,6 +12,8 @@ namespace BeautyPlanet.Models
      
         public int Rate { get; set; }
         public string Exparences { get; set; }
-        
+        [ForeignKey(nameof(Service))]
+        public int ServiceId { get; set; }
+        public Service Service { get; set; }
     }
 }

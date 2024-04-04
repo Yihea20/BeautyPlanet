@@ -25,6 +25,7 @@ namespace BeautyPlanet.Models
         public Platform? Platform { get; set; }
         public DateTime? OpenTime { get; set; }
         public DateTime? CloseTime { get; set; }
-
+        public ICollection<Service> Services { get; set; }
+        public ICollection<Specialist> Specialists { get; set; }
     }
 }
