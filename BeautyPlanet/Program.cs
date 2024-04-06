@@ -1,5 +1,8 @@
 using BeautyPlanet.DataAccess;
+using BeautyPlanet.IRepository;
 using BeautyPlanet.Models.Entity;
+using BeautyPlanet.Repository;
+using BeautyPlanet.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -16,6 +19,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MapperInitilizer));
 builder.Host.UseSerilog((ctx, cl) => cl.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
+builder.Services.AddScoped<IAuthoManger,AuthoManger>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddCors(options => { options.AddPolicy("AllowAll", b => b.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()); });
 builder.Services.AddSwaggerGen(c =>
 {

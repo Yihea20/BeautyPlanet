@@ -9,7 +9,7 @@ using System.Text;
 
 namespace BeautyPlanet.Services
 {
-    public class AuthoManger
+    public class AuthoManger:IAuthoManger
     {
         private readonly UserManager<Person> _userManager;
         private readonly IConfiguration _configuration;

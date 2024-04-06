@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240406161412_Code")]
+    partial class Code
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,6 +131,7 @@ namespace BeautyPlanet.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Code")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -179,6 +183,7 @@ namespace BeautyPlanet.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfileImageURL")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -332,19 +337,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "880bfd2e-9ee7-455d-9b49-473b85c9f2f5",
+                            Id = "cbdc9dbc-49b1-4467-aaa0-51872d68e72d",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "aec0f5ff-1e7f-44c0-aefb-8630e0cf4d58",
+                            Id = "62964777-f123-46bb-967e-c7e90ca595e9",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "73373710-6a27-4dba-8e58-f5f9de047cfd",
+                            Id = "60de904c-7433-418f-89a4-77d0c5397f29",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
