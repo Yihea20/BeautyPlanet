@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BeautyPlanet.DTOs;
+using BeautyPlanet.IRepository;
 using BeautyPlanet.Models;
 using BeautyPlanet.Services;
 using Microsoft.AspNetCore.Http;
@@ -17,13 +18,15 @@ namespace BeautyPlanet.Controllers
         private readonly ILogger<AccountsManagerController> _logger;
         private readonly IAuthoManger _authoManger;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountsManagerController(UserManager<Person> userManager, ILogger<AccountsManagerController> logger, IAuthoManger authoManger, IMapper mapper)
+        public AccountsManagerController(IUnitOfWork unitOfWork,UserManager<Person> userManager, ILogger<AccountsManagerController> logger, IAuthoManger authoManger, IMapper mapper)
         {
             _userManager = userManager;
             _logger = logger;
             _authoManger = authoManger;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
         [HttpPost]
         [Route("Regis")]
@@ -127,11 +130,20 @@ namespace BeautyPlanet.Controllers
 
             return Ok(tokenRequest);
         }
-        [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUser()
+        [HttpGet("GetUser")]
+        public async Task<IActionResult> GetAllUser(string id)
         {
-            var user = _userManager.Users;
-                return Ok(user);
+            var user = await _unitOfWork.User.GetAll(q=>q.Id.Equals(id));
+            var result = _mapper.Map<GetUserDTO>(user);
+            return Ok(result);
+
+        }
+        [HttpGet("GetSpecialist")]
+        public async Task<IActionResult> GetSpecialist(string id)
+        {
+            var specialist = await _unitOfWork.Specialist.GetAll(q => q.Id.Equals(id));
+            var result = _mapper.Map<GetSpecialistDTO>(specialist);
+            return Ok(result);
 
         }
     }
