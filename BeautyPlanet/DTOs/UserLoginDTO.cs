@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BeautyPlanet.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BeautyPlanet.DTOs
 {
@@ -18,4 +20,19 @@ namespace BeautyPlanet.DTOs
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
     }
+    public class GetUserDTO:UserRegistDTO
+    {
+        public string Id { get; set; }
+        public int Age { get; set; }
+        public int Point { get;set; }
+        
+    }
+    public class GetSpecialistDTO:UserRegistDTO
+    {
+        
+        public int CenterId { get; set; }
+        public int Rate { get; set; }
+        public string Exparences { get; set; }
+        public int ServiceId { get; set; }
+     }
 }

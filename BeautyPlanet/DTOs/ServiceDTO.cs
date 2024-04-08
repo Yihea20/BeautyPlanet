@@ -1,4 +1,5 @@
 ﻿using BeautyPlanet.Models;
+using System.Text.Json.Serialization;
 
 namespace BeautyPlanet.DTOs
 {
@@ -8,14 +9,15 @@ namespace BeautyPlanet.DTOs
         public string Description { get; set; }
         public string Type { get; set; }
         public string ImageURL { get; set; }
-        public string Category { get; set; }
+        public int CategoryId { get; set; }
         public string Duration { get; set; }
         public int Price { get; set; }
     }
     public class GetServiceDTO:ServiceDTO
     {
-        
+        [JsonIgnore]
         public ICollection<Center> Centers { get; set; }
+        [JsonIgnore]
         public ICollection<Specialist> Specialists { get; set; }
         
     }

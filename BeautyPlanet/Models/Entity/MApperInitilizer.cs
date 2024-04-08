@@ -14,6 +14,13 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Service,GetServiceWithIdDTO>().ReverseMap();
             CreateMap<User, UserLoginDTO>().ReverseMap();
             CreateMap<User, UserRegistDTO>().ReverseMap();
+            CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<Category, GetCategoryDTO>().ReverseMap();
+            CreateMap<Category, GetCategoryWithIdDTO>().ReverseMap();
+            CreateMap<Specialist, UserRegistDTO>().ReverseMap();
+            CreateMap<Specialist, UserLoginDTO>().ReverseMap();
+            CreateMap<User, GetUserDTO>().ReverseMap();
+            CreateMap<Specialist, GetSpecialistDTO>().ReverseMap();
         }
     }
 }

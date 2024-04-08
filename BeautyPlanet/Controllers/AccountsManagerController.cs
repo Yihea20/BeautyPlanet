@@ -39,21 +39,45 @@ namespace BeautyPlanet.Controllers
             }
             try
             {
-                var user = _mapper.Map<User>(personDTO);
-                user.UserName = personDTO.FirstName + personDTO.LastName;
-                user.Email = personDTO.Email;
-                var result = await _userManager.CreateAsync(user, personDTO.Password);
-                //result = await _userManager.AddPasswordAsync(user,);
-                if (!result.Succeeded)
+                
+                if (personDTO.RoleName.Contains("USER"))
                 {
-                    foreach (var Error in result.Errors)
+                  var  user = _mapper.Map<User>(personDTO);
+                    user.UserName = personDTO.FirstName + personDTO.LastName;
+                    user.Email = personDTO.Email;
+                    var result = await _userManager.CreateAsync(user, personDTO.Password);
+                    if (!result.Succeeded)
                     {
-                        ModelState.AddModelError(Error.Code, Error.Description);
+                        foreach (var Error in result.Errors)
+                        {
+                            ModelState.AddModelError(Error.Code, Error.Description);
 
+                        }
+                        return BadRequest(ModelState);
                     }
-                    return BadRequest(ModelState);
+                    await _userManager.AddToRolesAsync(user, personDTO.RoleName);
+
                 }
-                await _userManager.AddToRolesAsync(user, personDTO.RoleName);
+                else if(personDTO.RoleName.Contains("EMPLOYEE"))
+                {
+
+                    var user = _mapper.Map<Specialist>(personDTO);
+                    user.UserName = personDTO.FirstName + personDTO.LastName;
+                    user.Email = personDTO.Email;
+                    var result = await _userManager.CreateAsync(user, personDTO.Password);
+                    if (!result.Succeeded)
+                    {
+                        foreach (var Error in result.Errors)
+                        {
+                            ModelState.AddModelError(Error.Code, Error.Description);
+
+                        }
+                        return BadRequest(ModelState);
+                    }
+                    await _userManager.AddToRolesAsync(user, personDTO.RoleName);
+
+                }
+                //result = await _userManager.AddPasswordAsync(user,);
 
                 return Ok($"StatusCode:{StatusCodes.Status202Accepted}");
             }
@@ -102,6 +126,13 @@ namespace BeautyPlanet.Controllers
             }
 
             return Ok(tokenRequest);
+        }
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var user = _userManager.Users;
+                return Ok(user);
+
         }
     }
 }
