@@ -131,10 +131,10 @@ namespace BeautyPlanet.Controllers
             return Ok(tokenRequest);
         }
         [HttpGet("GetUser")]
-        public async Task<IActionResult> GetAllUser(string id)
+        public async Task<IActionResult> GetAllUser()
         {
-            var user = await _unitOfWork.User.GetAll(q=>q.Id.Equals(id));
-            var result = _mapper.Map<GetUserDTO>(user);
+            var user = await _unitOfWork.User.GetAll();
+            var result = _mapper.Map<IList<GetUserDTO>>(user);
             return Ok(result);
 
         }

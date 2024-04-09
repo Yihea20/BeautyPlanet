@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240409100140_Offers")]
+    partial class Offers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,9 +146,6 @@ namespace BeautyPlanet.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -305,6 +305,9 @@ namespace BeautyPlanet.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageIcone")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
@@ -381,19 +384,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e654d871-28d4-4eaf-b45c-fa98fa2a26ab",
+                            Id = "ff359e4d-b8a0-4b97-a678-df6a8b654373",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "0f60cf6a-0a3e-47af-be36-eb3c352d5ba5",
+                            Id = "e15d22ba-9b21-4902-a493-94dfbb275de9",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "bac568cc-f840-417e-b2ca-54b146d5f273",
+                            Id = "6ed80048-d960-4f70-8f03-a23e07234dd9",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -593,7 +596,7 @@ namespace BeautyPlanet.Migrations
             modelBuilder.Entity("BeautyPlanet.Models.Offer", b =>
                 {
                     b.HasOne("BeautyPlanet.Models.ServiceCenter", "ServiceCente")
-                        .WithMany("Offers")
+                        .WithMany()
                         .HasForeignKey("ServiceCenterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -744,11 +747,6 @@ namespace BeautyPlanet.Migrations
             modelBuilder.Entity("BeautyPlanet.Models.Service", b =>
                 {
                     b.Navigation("Specialists");
-                });
-
-            modelBuilder.Entity("BeautyPlanet.Models.ServiceCenter", b =>
-                {
-                    b.Navigation("Offers");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.User", b =>

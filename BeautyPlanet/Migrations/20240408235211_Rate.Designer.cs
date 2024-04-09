@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240408235211_Rate")]
+    partial class Rate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,35 +137,6 @@ namespace BeautyPlanet.Migrations
                     b.HasIndex("GalaryId");
 
                     b.ToTable("Images");
-                });
-
-            modelBuilder.Entity("BeautyPlanet.Models.Offer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ServiceCenterId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceCenterId");
-
-                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Person", b =>
@@ -381,19 +355,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e654d871-28d4-4eaf-b45c-fa98fa2a26ab",
+                            Id = "3bde50fa-b9b2-4b83-870e-d5372845655a",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "0f60cf6a-0a3e-47af-be36-eb3c352d5ba5",
+                            Id = "d6dc334e-5660-4f18-abc5-ac88ca0461a2",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "bac568cc-f840-417e-b2ca-54b146d5f273",
+                            Id = "8c4a1588-98c7-402f-803b-c1210584140b",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -590,17 +564,6 @@ namespace BeautyPlanet.Migrations
                     b.Navigation("Galary");
                 });
 
-            modelBuilder.Entity("BeautyPlanet.Models.Offer", b =>
-                {
-                    b.HasOne("BeautyPlanet.Models.ServiceCenter", "ServiceCente")
-                        .WithMany("Offers")
-                        .HasForeignKey("ServiceCenterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ServiceCente");
-                });
-
             modelBuilder.Entity("BeautyPlanet.Models.Person", b =>
                 {
                     b.HasOne("BeautyPlanet.Models.Gallery", "Gallery")
@@ -744,11 +707,6 @@ namespace BeautyPlanet.Migrations
             modelBuilder.Entity("BeautyPlanet.Models.Service", b =>
                 {
                     b.Navigation("Specialists");
-                });
-
-            modelBuilder.Entity("BeautyPlanet.Models.ServiceCenter", b =>
-                {
-                    b.Navigation("Offers");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.User", b =>

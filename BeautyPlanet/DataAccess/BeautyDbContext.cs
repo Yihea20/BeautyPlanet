@@ -33,5 +33,6 @@ namespace BeautyPlanet.DataAccess
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceCenter> ServiceCenters { get; set; }
         public DbSet<Person> People { get; set; }
+        public DbSet<Offer> Offers { get; set; }
     }
 }

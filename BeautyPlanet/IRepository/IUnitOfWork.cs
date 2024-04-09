@@ -9,6 +9,8 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<Service> Service { get; }
         public IGenericRepository<User> User { get; }
         public IGenericRepository<Specialist> Specialist { get; }
+        public IGenericRepository<Offer> Offer { get; }
+        public IGenericRepository<ServiceCenter> ServiceCenter { get; }
         Task Save();
     }
 }

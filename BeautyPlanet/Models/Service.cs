@@ -11,6 +11,7 @@ namespace BeautyPlanet.Models
         public string Description { get; set; }
         public string Type { get; set; }
         public string? ImageURL { get; set; }
+        
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
         public Category  Category{ get; set; }
@@ -18,5 +19,6 @@ namespace BeautyPlanet.Models
         public ICollection<Center> Centers { get; set; }
         public ICollection<Specialist> Specialists { get; set; }
         public int Price { get; set; }
+        public int Rate { get; set; }
     }
 }

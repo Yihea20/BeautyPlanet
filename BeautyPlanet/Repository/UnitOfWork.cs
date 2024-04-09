@@ -12,6 +12,8 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Service> _service;
         private IGenericRepository<User> _user;
         private IGenericRepository<Specialist> _specialist;
+        private IGenericRepository<Offer> _offer;
+        private IGenericRepository<ServiceCenter> _serviceCenter;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -24,6 +26,10 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<User> User =>_user ??=new GenericRepository<User>(_context);
 
         public IGenericRepository<Specialist> Specialist =>_specialist ??=new GenericRepository<Specialist>(_context);
+
+        public IGenericRepository<Offer> Offer => _offer ??=new GenericRepository<Offer>(_context);
+
+        public IGenericRepository<ServiceCenter> ServiceCenter => _serviceCenter ??=new GenericRepository<ServiceCenter>(_context);
 
         public void Dispose()
         {

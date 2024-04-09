@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240409115439_OffersWithDate")]
+    partial class OffersWithDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -381,19 +384,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e654d871-28d4-4eaf-b45c-fa98fa2a26ab",
+                            Id = "42c6e8db-d510-45a6-a0d0-a5f4e96563d4",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "0f60cf6a-0a3e-47af-be36-eb3c352d5ba5",
+                            Id = "37d655b5-92c2-4160-b659-5d8ef416f7da",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "bac568cc-f840-417e-b2ca-54b146d5f273",
+                            Id = "3f8e8c6b-3553-4f62-b366-8a15ca8a47a9",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -593,7 +596,7 @@ namespace BeautyPlanet.Migrations
             modelBuilder.Entity("BeautyPlanet.Models.Offer", b =>
                 {
                     b.HasOne("BeautyPlanet.Models.ServiceCenter", "ServiceCente")
-                        .WithMany("Offers")
+                        .WithMany()
                         .HasForeignKey("ServiceCenterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -744,11 +747,6 @@ namespace BeautyPlanet.Migrations
             modelBuilder.Entity("BeautyPlanet.Models.Service", b =>
                 {
                     b.Navigation("Specialists");
-                });
-
-            modelBuilder.Entity("BeautyPlanet.Models.ServiceCenter", b =>
-                {
-                    b.Navigation("Offers");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.User", b =>

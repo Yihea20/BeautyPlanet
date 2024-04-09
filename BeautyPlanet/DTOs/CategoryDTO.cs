@@ -10,7 +10,7 @@ namespace BeautyPlanet.DTOs
     public class GetCategoryDTO:CategoryDTO
     {
         
-        public ICollection<Service> Services { get; set; }
+        public ICollection<GetServiceDTO> Services { get; set; }
     }
     public class GetCategoryWithIdDTO:GetCategoryDTO
     {

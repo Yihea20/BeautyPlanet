@@ -27,6 +27,10 @@ namespace BeautyPlanet.DTOs
         public int Point { get;set; }
         
     }
+    public class GetUserHome
+    {
+        public int Point { get; set; }
+    }
     public class GetSpecialistDTO:UserRegistDTO
     {
         

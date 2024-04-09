@@ -13,5 +13,7 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Center))]
         public int CenterId { get; set; }
         public Center Center { get; set; }
+        
+        public ICollection<Offer>Offers{get;set;}
     }
 }

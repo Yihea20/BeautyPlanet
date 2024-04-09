@@ -6,6 +6,7 @@ using BeautyPlanet.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BeautyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BeautyPlanet")));
@@ -14,6 +15,7 @@ builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.AddControllers();
+//builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(op => op.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
