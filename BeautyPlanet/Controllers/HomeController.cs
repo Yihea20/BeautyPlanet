@@ -5,6 +5,7 @@ using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.AccessControl;
 
 namespace BeautyPlanet.Controllers
 {
@@ -26,10 +27,10 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult>HomeApi(string userId)
         {
                 var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(userId)));
-            var category = _mapper.Map<IList<GetCategoryDTO>>(await _unitOfWork.Category.GetAll());
-            var service = _mapper.Map<IList<GetServiceDTO>>(await _unitOfWork.Service.GetAll(orderBy:x=>x.OrderByDescending(p=>p.Rate)));
-            
-            return Accepted(new Home { User=user,Categories=category,Services=service});
+            var category = _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
+            var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(orderBy:x=>x.OrderByDescending(p=>p.Rate)));
+            var offers = _mapper.Map<IList<GetOffersIdDTO>>(await _unitOfWork.Offer.GetAll(orderBy:x=>x.OrderByDescending(q=>q.DateTime)));
+            return Accepted(new Home { User=user,Categories=category,Centers=center,Offers=offers});
         }
         [HttpGet("GlopalSearch")]
         public async Task<IActionResult> GlopalSearch(string search)

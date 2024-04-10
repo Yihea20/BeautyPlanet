@@ -8,6 +8,8 @@ namespace BeautyPlanet.DTOs
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int Age { get; set; }
+        public int Point { get; set; }
         public ICollection<string> RoleName { get; set; }
        // public int CenterId { get; set; }
 
@@ -23,20 +25,28 @@ namespace BeautyPlanet.DTOs
     public class GetUserDTO:UserRegistDTO
     {
         public string Id { get; set; }
-        public int Age { get; set; }
-        public int Point { get;set; }
+        
         
     }
     public class GetUserHome
     {
         public int Point { get; set; }
     }
-    public class GetSpecialistDTO:UserRegistDTO
+    public class SpecialisRegistDTO : UserLoginDTO
     {
-        
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public int CenterId { get; set; }
         public int Rate { get; set; }
         public string Exparences { get; set; }
         public int ServiceId { get; set; }
-     }
+        public ICollection<string> RoleName { get; set; }
+        // public int CenterId { get; set; }
+
+    }
+    public class GetSpecialistDTO: SpecialisRegistDTO
+    {
+
+        public string Id { get; set; }
+    }
 }

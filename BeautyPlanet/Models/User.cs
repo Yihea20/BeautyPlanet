@@ -6,9 +6,9 @@ namespace BeautyPlanet.Models
     public class User:Person
     {
        
-       public ICollection<Center>? Centers { get; set; }
+        public ICollection<Center>? Centers { get; set; }
 
-
+        public ICollection<TimeModel>? Times { get; set; }
         public int Point { get; set; } = 0;
         public int Age { get; set; } = 18;
 

@@ -7,13 +7,14 @@ namespace BeautyPlanet.Models
     {
 
         [ForeignKey(nameof(Center))]
-        public int CenterId { get; set; } = 1;
+        public int CenterId { get; set; } 
         public Center Center { get; set; }
 
-        public int Rate { get; set; } = 3;
-        public string Exparences { get; set; } = "good";
+        public int Rate { get; set; } 
+        public string Exparences { get; set; } 
         [ForeignKey(nameof(Service))]
-        public int ServiceId { get; set; } = 1;
+        public int ServiceId { get; set; } 
         public Service Service { get; set; }
+        public ICollection<TimeModel> Times { get; set; }
     }
 }

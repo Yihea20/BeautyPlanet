@@ -15,5 +15,10 @@ namespace BeautyPlanet.DTOs
     public class GetOfferDTO:OfferDTO
     {
         public GetServiceCenter ServiceCente { get; set; }
+        public int Id { get; set; }
+    }
+    public class GetOffersIdDTO:OfferDTO
+    {
+        public int Id { get; set; }
     }
 }

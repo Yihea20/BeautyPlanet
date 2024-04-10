@@ -16,20 +16,50 @@ namespace BeautyPlanet.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<CategoryController> _logger;
-
-        public CategoryController(IUnitOfWork unitOfWork, IMapper mapper, ILogger<CategoryController> logger)
+        private readonly IWebHostEnvironment _environment;
+        public CategoryController(IWebHostEnvironment environment, IUnitOfWork unitOfWork, IMapper mapper, ILogger<CategoryController> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _environment = environment;
+        }
+
+        [NonAction]
+        private string GetFilePath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/CategoryImage/" + name;
         }
         [HttpPost]
-        public async Task<IActionResult> AddCategory([FromBody] CategoryDTO category)
+        public async Task<IActionResult> AddCategory([FromForm] CategoryFile category)
         {
-            var result = _mapper.Map<Category>(category);
-            await _unitOfWork.Category.Insert(result);
-            await _unitOfWork.Save();
-            return Ok();
+            string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            try
+            {
+                string FilePath = GetFilePath(category.Categories.Name);
+                if (!System.IO.Directory.Exists(FilePath))
+                {
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                string url = FilePath + "\\" + category.Categories.Name + ".svg";
+                if (System.IO.File.Exists(url))
+                {
+                    System.IO.File.Delete(url);
+                }
+                using (FileStream stream = System.IO.File.Create(url))
+                {
+                    await category.Files.CopyToAsync(stream);
+                    var result = _mapper.Map<Category>(category.Categories);
+                    result.ImageUrl = hosturl + "/Upload/CategoryImage/" + category.Categories.Name + "/" + category.Categories.Name + ".svg"; 
+                    await _unitOfWork.Category.Insert(result);
+                    await _unitOfWork.Save();
+                    return Ok();
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("NameForAll")]
@@ -43,7 +73,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllCategory()
         {
             var category = await _unitOfWork.Category.GetAll(include: x => x.Include(p => p.Services));
-            var result = _mapper.Map<IList<GetCategoryDTO>>(category);
+            var result = _mapper.Map<IList<GetCategoryWithIdDTO>>(category);
             return Ok(result);
         }
         [HttpGet("Name")]
@@ -67,5 +97,25 @@ namespace BeautyPlanet.Controllers
             var result = _mapper.Map<IList<GetCategoryDTO>>(category);
             return Ok(result);
         }
+        [HttpDelete("Id")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var center = await _unitOfWork.Category.Get(q => q.Id == id);
+
+
+            if (center == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                await _unitOfWork.Category.Delete(id);
+                await _unitOfWork.Save();
+
+
+                return Ok();
+            }
+        }
+
     }
 }

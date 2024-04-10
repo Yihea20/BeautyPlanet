@@ -42,9 +42,7 @@ namespace BeautyPlanet.Controllers
             }
             try
             {
-                
-                if (personDTO.RoleName.Contains("USER"))
-                {
+             
                   var  user = _mapper.Map<User>(personDTO);
                     user.UserName = personDTO.FirstName + personDTO.LastName;
                     user.Email = personDTO.Email;
@@ -60,26 +58,49 @@ namespace BeautyPlanet.Controllers
                     }
                     await _userManager.AddToRolesAsync(user, personDTO.RoleName);
 
-                }
-                else if(personDTO.RoleName.Contains("EMPLOYEE"))
+                
+                //result = await _userManager.AddPasswordAsync(user,);
+
+                return Ok($"StatusCode:{StatusCodes.Status202Accepted}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"somthging went wrong in the {nameof(Register)}");
+                return Problem($"somthging went wrong in the {nameof(Register)}");
+            }
+        }
+
+        [HttpPost]
+        [Route("RegisSpecialist")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RegisSpecialist([FromBody] SpecialisRegistDTO personDTO)
+        {
+            _logger.LogInformation($"Registerstion Attempt for {personDTO.Email}");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+
+                var user = _mapper.Map<Specialist>(personDTO);
+                user.UserName = personDTO.FirstName + personDTO.LastName;
+                user.Email = personDTO.Email;
+                var result = await _userManager.CreateAsync(user, personDTO.Password);
+                if (!result.Succeeded)
                 {
-
-                    var user = _mapper.Map<Specialist>(personDTO);
-                    user.UserName = personDTO.FirstName + personDTO.LastName;
-                    user.Email = personDTO.Email;
-                    var result = await _userManager.CreateAsync(user, personDTO.Password);
-                    if (!result.Succeeded)
+                    foreach (var Error in result.Errors)
                     {
-                        foreach (var Error in result.Errors)
-                        {
-                            ModelState.AddModelError(Error.Code, Error.Description);
+                        ModelState.AddModelError(Error.Code, Error.Description);
 
-                        }
-                        return BadRequest(ModelState);
                     }
-                    await _userManager.AddToRolesAsync(user, personDTO.RoleName);
-
+                    return BadRequest(ModelState);
                 }
+                await _userManager.AddToRolesAsync(user, personDTO.RoleName);
+
+
                 //result = await _userManager.AddPasswordAsync(user,);
 
                 return Ok($"StatusCode:{StatusCodes.Status202Accepted}");

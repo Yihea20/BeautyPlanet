@@ -9,6 +9,7 @@ namespace BeautyPlanet.DTOs
         public string Address { get; set; }
         public int Phone { get; set; }
         public string Description { get; set; }
+        public int? Rate { get; set; }
     }
     public class GetCenterDTO:CenterDTO {
         
@@ -30,5 +31,11 @@ namespace BeautyPlanet.DTOs
     public class GetCenterwithIdDTO:GetCenterDTO
     {
        public int  Id { get; set; }
+    }
+    public class CenterFile
+    {
+
+        public CenterDTO Centers { get; set; }
+        public IFormFile Files { get; set; }
     }
 }

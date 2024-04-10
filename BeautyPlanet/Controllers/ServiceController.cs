@@ -96,5 +96,15 @@ namespace BeautyPlanet.Controllers
             var result = _mapper.Map<IList<GetServiceDTO>>(service);
             return Ok(result);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCenter(int id, [FromBody] ServiceDTO centerDto)
+        {
+            var old = await _unitOfWork.Service.Get(q => q.Id == id);
+            _mapper.Map(centerDto, old);
+            _unitOfWork.Service.Update(old);
+            await _unitOfWork.Save();
+            return Ok();
+        }
+
     }
 }
