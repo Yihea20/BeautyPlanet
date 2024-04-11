@@ -62,12 +62,18 @@ namespace BeautyPlanet.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllOffer()
+        public async Task<IActionResult> GetAllOffer(int id)
         {
-
-            var center = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x=>x.Center).Include(x=>x.ServiceCente).ThenInclude(x=>x.Service));
-            var result = _mapper.Map<IList<GetOfferDTO>>(center);
-            return Ok(result);
+            IList<OfferHome> hf = new List<OfferHome>();
+            var offer = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x=>x.Center).Include(x=>x.ServiceCente).ThenInclude(x=>x.Service));
+           foreach(Offer f in offer)
+            { 
+            var service =_mapper.Map<GetServiceBesic>( await _unitOfWork.Service.Get(q => q.Id == f.ServiceCente.ServiceId));
+            var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == f.ServiceCente.CenterId));
+            var result = _mapper.Map<GetOffersIdDTO>(f);
+                hf.Add(new OfferHome { Offer = result, Service = service, Center = center });
+            }
+                return Ok(hf);
         }
         [HttpGet("TopOffer")]
         public async Task<IActionResult> GetTopOffer()

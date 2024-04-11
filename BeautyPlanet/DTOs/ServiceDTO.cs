@@ -32,6 +32,7 @@ namespace BeautyPlanet.DTOs
     public class GetServiceBesic:ServiceDTO
     {
         public string ImageURL { get; set; }
+        public int Id { get; set; }
     }
     public class GetServiceWithIdDTO:GetServiceDTO
     {

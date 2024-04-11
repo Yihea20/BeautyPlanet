@@ -29,8 +29,16 @@ namespace BeautyPlanet.Controllers
                 var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(userId)));
             var category = _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
             var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(include:x=>x.Include(p=>p.Specialists) ,orderBy:x=>x.OrderByDescending(p=>p.Rate)));
-            var offers = _mapper.Map<IList<GetOffersIdDTO>>(await _unitOfWork.Offer.GetAll(include:x=>x.Include(p=>p.ServiceCente).ThenInclude(q=>q.Center),orderBy:x=>x.OrderByDescending(q=>q.DateTime)));
-            return Accepted(new Home { User=user,Categories=category,Centers=center,Offers=offers});
+            IList<OfferHome> hf = new List<OfferHome>();
+            var offer = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x => x.Center).Include(x => x.ServiceCente).ThenInclude(x => x.Service));
+            foreach (Offer f in offer)
+            {
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == f.ServiceCente.ServiceId));
+                var cente = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == f.ServiceCente.CenterId));
+                var result = _mapper.Map<GetOffersIdDTO>(f);
+                hf.Add(new OfferHome { Offer = result, Service = service, Center = cente });
+            }
+            return Accepted(new Home { User=user,Categories=category,Centers=center,Offers=hf});
         }
         [HttpGet("GlopalSearch")]
         public async Task<IActionResult> GlopalSearch(string search)

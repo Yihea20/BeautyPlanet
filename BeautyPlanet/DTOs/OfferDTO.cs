@@ -18,9 +18,12 @@ namespace BeautyPlanet.DTOs
         public string ImageUrl { get; set; }
         public int Id { get; set; }
     }
-    public class GetOffersIdDTO:GetOfferDTO
+    public class GetOffersIdDTO
     {
         public int Id { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+        public string Description { get; set; }
     }
     public class OfferFile
     {
