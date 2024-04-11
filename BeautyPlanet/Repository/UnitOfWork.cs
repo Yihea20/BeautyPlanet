@@ -1,4 +1,5 @@
-﻿using BeautyPlanet.DataAccess;
+﻿using BeautyPlanet.Controllers;
+using BeautyPlanet.DataAccess;
 using BeautyPlanet.IRepository;
 using BeautyPlanet.Models;
 
@@ -14,6 +15,8 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Specialist> _specialist;
         private IGenericRepository<Offer> _offer;
         private IGenericRepository<ServiceCenter> _serviceCenter;
+        private IGenericRepository<Image> _image;
+        private IGenericRepository<Gallery> _gallery;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -30,6 +33,10 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<Offer> Offer => _offer ??=new GenericRepository<Offer>(_context);
 
         public IGenericRepository<ServiceCenter> ServiceCenter => _serviceCenter ??=new GenericRepository<ServiceCenter>(_context);
+
+        public IGenericRepository<Image> Image => _image ??=new GenericRepository<Image>(_context);
+
+        public IGenericRepository<Gallery> Gallery => _gallery ??=new GenericRepository<Gallery>(_context);
 
         public void Dispose()
         {

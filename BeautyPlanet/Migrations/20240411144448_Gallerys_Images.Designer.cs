@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240411144448_Gallerys_Images")]
+    partial class Gallerys_Images
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,7 +133,7 @@ namespace BeautyPlanet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("GalleryId")
+                    b.Property<int>("GalaryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
@@ -139,7 +142,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GalleryId");
+                    b.HasIndex("GalaryId");
 
                     b.ToTable("Images");
                 });
@@ -156,10 +159,6 @@ namespace BeautyPlanet.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -409,19 +408,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e3edadde-4349-4c29-9510-23c5eecbb3ef",
+                            Id = "079b1631-d72c-4a25-907c-a4cf3a3d02ac",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "18d43b35-5226-4582-bb2d-e59cb4163f56",
+                            Id = "235902b5-ec7c-4ab9-b6f7-d67dcf2c2b70",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "f80d2786-0677-4cfd-af1d-e5f6ce25c687",
+                            Id = "a9863912-d67d-48d4-a115-70420775cd28",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -639,13 +638,13 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.Image", b =>
                 {
-                    b.HasOne("BeautyPlanet.Models.Gallery", "Galler")
+                    b.HasOne("BeautyPlanet.Models.Gallery", "Galary")
                         .WithMany("Images")
-                        .HasForeignKey("GalleryId")
+                        .HasForeignKey("GalaryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Galler");
+                    b.Navigation("Galary");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Offer", b =>

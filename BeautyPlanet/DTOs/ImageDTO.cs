@@ -3,19 +3,19 @@
     public class CreateImage
     {
 
-        public string Name { get; set; }
+       // public string Name { get; set; }
         public int GalleryId { get; set; }
 
     }
-    public class ImageDTO : CreateImage
+    public class ImageDTO 
     {
-        public int Id { get; set; }
-        public string? URL { get; set; }
+ 
+        public string ImageUrl { get; set; }
     }
     public class ImageFile
     {
         public CreateImage Create { get; set; }
-        public IFormFile file { get; set; }
+        public IFormFile Files { get; set; }
 
     }
 }

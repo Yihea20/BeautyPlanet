@@ -162,7 +162,7 @@ namespace BeautyPlanet.Controllers
         [HttpGet("GetSpecialist")]
         public async Task<IActionResult> GetSpecialist(string id)
         {
-            var specialist = await _unitOfWork.Specialist.GetAll(q => q.Id.Equals(id));
+            var specialist = await _unitOfWork.Specialist.GetAll();
             var result = _mapper.Map<GetSpecialistDTO>(specialist);
             return Ok(result);
 

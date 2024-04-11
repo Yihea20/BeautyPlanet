@@ -15,22 +15,52 @@ namespace BeautyPlanet.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<OfferController> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public OfferController(IUnitOfWork unitOfWork, IMapper mapper, ILogger<OfferController> logger)
+        public OfferController(IUnitOfWork unitOfWork, IMapper mapper, ILogger<OfferController> logger, IWebHostEnvironment environment)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
-        }
-        [HttpPost]
-        public async Task<IActionResult> AddOffer([FromBody] OfferDTO center)
-        {
-            var result = _mapper.Map<Offer>(center);
-            await _unitOfWork.Offer.Insert(result);
-            await _unitOfWork.Save();
-            return Ok();
+            _environment = environment;
         }
 
+        [NonAction]
+        private string GetFilePath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/OfferImage/" + name;
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddOffer([FromForm] OfferFile offer)
+        {
+            string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            try
+            {
+                string FilePath = GetFilePath(offer.Offers.Name);
+                if (!System.IO.Directory.Exists(FilePath))
+                {
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                string url = FilePath + "\\" + offer.Offers.Name + ".png";
+                if (System.IO.File.Exists(url))
+                {
+                    System.IO.File.Delete(url);
+                }
+                using (FileStream stream = System.IO.File.Create(url))
+                {
+                    await offer.Files.CopyToAsync(stream);
+                    var result = _mapper.Map<Offer>(offer.Offers);
+                    result.ImageUrl = hosturl + "/Upload/OfferImage/" + offer.Offers.Name + "/" + offer.Offers.Name + ".png";
+                    await _unitOfWork.Offer.Insert(result);
+                    await _unitOfWork.Save();
+                    return Ok();
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllOffer()
         {

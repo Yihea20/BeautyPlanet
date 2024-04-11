@@ -14,19 +14,20 @@ namespace BeautyPlanet.DTOs
     public class GetCenterDTO:CenterDTO {
         
         public string? WebSiteUrl { get; set; }
-        [ForeignKey(nameof(Admin))]
-        public int? AdminId { get; set; }
-        public Admin? Admin { get; set; }
+        //[ForeignKey(nameof(Admin))]
+        //public int? AdminId { get; set; }
+        //public Admin? Admin { get; set; }
         public int? Rate { get; set; }
         public string? ImageUrl { get; set; }
-        [ForeignKey(nameof(Galary))]
-        public int? GalaryId { get; set; }
-        public Gallery? Galary { get; set; }
-        [ForeignKey(nameof(Platform))]
-        public int? PlatformId { get; set; }
-        public Platform? Platform { get; set; }
+        //[ForeignKey(nameof(Galary))]
+      //  public int? GalaryId { get; set; }
+       // public Gallery? Galary { get; set; }
+      //  [ForeignKey(nameof(Platform))]
+       // public int? PlatformId { get; set; }
+        //public Platform? Platform { get; set; }
         public DateTime? OpenTime { get; set; }
         public DateTime? CloseTime { get; set; }
+        public ICollection<GetSpecialistDTO> Specialists { get; set; }
     }
     public class GetCenterwithIdDTO:GetCenterDTO
     {

@@ -69,7 +69,7 @@ namespace BeautyPlanet.Controllers
             return Ok(result);
         }
         [HttpGet("All")]
-        public async Task<IActionResult> GetAllServices()
+        public async Task<IActionResult> GetAllServices(int id)
         {
             var service = await _unitOfWork.Service.GetAll(include: q => q.Include(x => x.Centers));
             var result = _mapper.Map<IList<GetServiceDTO>>(service);

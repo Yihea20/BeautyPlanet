@@ -6,6 +6,7 @@ namespace BeautyPlanet.Models
     {
         [Key]
         public int Id { get; set; }
+        public string GallaryName { get; set; }
         public ICollection<Image> Images { get; set; }
     }
 }

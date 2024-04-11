@@ -4,6 +4,7 @@ using BeautyPlanet.IRepository;
 using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeautyPlanet.Controllers
 {
@@ -64,7 +65,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllCenter()
         {
 
-            var center = await _unitOfWork.Center.GetAll();
+            var center = await _unitOfWork.Center.GetAll(include:x=>x.Include(p=>p.Specialists));
             var result = _mapper.Map<IList<GetCenterDTO>>(center);
             return Ok(result);
         }

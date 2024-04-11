@@ -28,8 +28,8 @@ namespace BeautyPlanet.Controllers
         {
                 var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(userId)));
             var category = _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
-            var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(orderBy:x=>x.OrderByDescending(p=>p.Rate)));
-            var offers = _mapper.Map<IList<GetOffersIdDTO>>(await _unitOfWork.Offer.GetAll(orderBy:x=>x.OrderByDescending(q=>q.DateTime)));
+            var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(include:x=>x.Include(p=>p.Specialists) ,orderBy:x=>x.OrderByDescending(p=>p.Rate)));
+            var offers = _mapper.Map<IList<GetOffersIdDTO>>(await _unitOfWork.Offer.GetAll(include:x=>x.Include(p=>p.ServiceCente).ThenInclude(q=>q.Center),orderBy:x=>x.OrderByDescending(q=>q.DateTime)));
             return Accepted(new Home { User=user,Categories=category,Centers=center,Offers=offers});
         }
         [HttpGet("GlopalSearch")]

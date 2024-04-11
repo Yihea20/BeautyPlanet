@@ -15,10 +15,16 @@ namespace BeautyPlanet.DTOs
     public class GetOfferDTO:OfferDTO
     {
         public GetServiceCenter ServiceCente { get; set; }
+        public string ImageUrl { get; set; }
         public int Id { get; set; }
     }
-    public class GetOffersIdDTO:OfferDTO
+    public class GetOffersIdDTO:GetOfferDTO
     {
         public int Id { get; set; }
+    }
+    public class OfferFile
+    {
+        public OfferDTO Offers { get; set; }
+        public IFormFile Files { get; set; }
     }
 }

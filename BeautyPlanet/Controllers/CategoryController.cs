@@ -116,6 +116,12 @@ namespace BeautyPlanet.Controllers
                 return Ok();
             }
         }
-
+        [HttpGet("AllById")]
+        public async Task<IActionResult> GetAllCategoriesById(int id)
+        {
+            var service = await _unitOfWork.Service.GetAll(q => q.CategoryId == id, include: q => q.Include(x => x.Centers));
+            var result = _mapper.Map<IList<GetServiceDTO>>(service);
+            return Ok(result);
+        }
     }
 }

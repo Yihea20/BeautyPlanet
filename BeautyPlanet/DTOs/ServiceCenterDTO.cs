@@ -14,7 +14,7 @@ namespace BeautyPlanet.DTOs
     {
         public int Id { get; set; }
         public GetServiceBesic Service{get;set;}
-        public GetCenterDTO Center { get; set; }
+        public GetCenterwithIdDTO Center { get; set; }
     }
     public class GetSearch
     {
