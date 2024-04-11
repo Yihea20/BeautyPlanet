@@ -31,6 +31,10 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Category, CategoryIdDTO>().ReverseMap();
             CreateMap<Offer, GetOffersIdDTO>().ReverseMap();
             CreateMap<Specialist, SpecialisRegistDTO>().ReverseMap();
+            CreateMap<Gallery,GalleryDTO>().ReverseMap();
+            CreateMap<Gallery, GetGallery>().ReverseMap();
+            CreateMap<Image, ImageDTO>().ReverseMap();
+            CreateMap<Image, CreateImage>().ReverseMap();
         }
     }
 }
