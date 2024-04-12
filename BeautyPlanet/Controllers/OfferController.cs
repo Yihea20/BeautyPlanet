@@ -33,7 +33,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOffer([FromForm] OfferFile offer)
         {
-            string hosturl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
                 string FilePath = GetFilePath(offer.Offers.Name);

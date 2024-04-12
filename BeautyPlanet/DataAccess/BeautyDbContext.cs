@@ -18,7 +18,10 @@ namespace BeautyPlanet.DataAccess
                 (sc => sc.HasOne(prop => prop.Center).WithMany().HasForeignKey(prop => prop.CenterId),
                 sc => sc.HasOne(prop => prop.Service).WithMany().HasForeignKey(prop => prop.ServiceId),
                 sc => sc.HasIndex(prop => new { prop.ServiceId, prop.CenterId }));
-
+            modelBuilder.Entity<Service>().HasMany(sp => sp.Specialists).WithMany(s => s.Services).UsingEntity<ServiceSpecialist>
+                (ss => ss.HasOne(prop => prop.Specialistt).WithMany().HasForeignKey(prop => prop.SpecialistId),
+                ss => ss.HasOne(prop => prop.Servicee).WithMany().HasForeignKey(prop => prop.ServiceId),
+                ss => ss.HasIndex(prop => new { prop.ServiceId, prop.SpecialistId }));
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             base.OnModelCreating(modelBuilder);
         }
@@ -35,5 +38,9 @@ namespace BeautyPlanet.DataAccess
         public DbSet<Person> People { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<ServiceSpecialist> ServiceSpecialists { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+
     }
 }

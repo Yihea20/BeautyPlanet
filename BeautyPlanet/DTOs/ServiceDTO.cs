@@ -22,8 +22,9 @@ namespace BeautyPlanet.DTOs
     } 
     public class GetServiceDTO:ServiceDTO
     {
+        public int Id { get; set; }
         public string ImageURL { get; set; }
-       
+        
         public ICollection<CenterDTO> Centers { get; set; }
       
        // public ICollection<GetSpecialistDTO> Specialists { get; set; }
