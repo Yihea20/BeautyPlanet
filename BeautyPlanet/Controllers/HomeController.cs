@@ -23,10 +23,10 @@ namespace BeautyPlanet.Controllers
             _mapper = mapper;
             _logger = logger;
         }
-        [HttpGet]
-        public async Task<IActionResult>HomeApi(string userId)
+        [HttpGet("{Id}")]
+        public async Task<IActionResult>HomeApi(String Id)
         {
-                var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(userId)));
+                var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(Id)));
             var category = _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
             var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(include:x=>x.Include(p=>p.Specialists) ,orderBy:x=>x.OrderByDescending(p=>p.Rate)));
             IList<OfferHome> hf = new List<OfferHome>();
