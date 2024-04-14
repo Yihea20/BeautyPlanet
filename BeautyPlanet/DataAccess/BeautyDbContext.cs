@@ -22,14 +22,6 @@ namespace BeautyPlanet.DataAccess
                 (ss => ss.HasOne(prop => prop.Specialistt).WithMany().HasForeignKey(prop => prop.SpecialistId),
                 ss => ss.HasOne(prop => prop.Servicee).WithMany().HasForeignKey(prop => prop.ServiceId),
                 ss => ss.HasIndex(prop => new { prop.ServiceId, prop.SpecialistId }));
-                modelBuilder.Entity<TimeModel>().HasMany(u => u.Users).WithMany(t => t.Times).UsingEntity<UserTimeModel>
-                    (ut => ut.HasOne(prop => prop.Userr).WithMany().HasForeignKey(prop => prop.UserId),
-                    ut => ut.HasOne(prop => prop.TimeModell).WithMany().HasForeignKey(prop => prop.TimeModelId),
-                    ut => ut.HasIndex(prop => new { prop.TimeModelId, prop.UserId }));
-                modelBuilder.Entity<TimeModel>().HasMany(u => u.Specialists).WithMany(t => t.Times).UsingEntity<SpecialistTimeModel>
-                    (ut => ut.HasOne(prop => prop.Specialistt).WithMany().HasForeignKey(prop => prop.SpecialistId),
-                    ut => ut.HasOne(prop => prop.TimeModell).WithMany().HasForeignKey(prop => prop.TimeModelId),
-                    ut => ut.HasIndex(prop => new { prop.TimeModelId, prop.SpecialistId }));
             modelBuilder.Entity<Status>().HasData(new Status { Id = 1, Name = "UpComing" }, new Status { Id = 2, Name = "Completed" }, new Status { Id = 3, Name = "Cancelled" });
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             base.OnModelCreating(modelBuilder);

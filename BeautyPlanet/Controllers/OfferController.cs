@@ -65,7 +65,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllOffer(int id)
         {
             IList<OfferHome> hf = new List<OfferHome>();
-            var offer = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x=>x.Center).Include(x=>x.ServiceCente).ThenInclude(x=>x.Service));
+            var offer = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x=>x.Center).Include(x=>x.ServiceCente).ThenInclude(x=>x.Service),orderBy:x=>x.OrderByDescending(q=>q.DateTime));
            foreach(Offer f in offer)
             { 
             var service =_mapper.Map<GetServiceBesic>( await _unitOfWork.Service.Get(q => q.Id == f.ServiceCente.ServiceId));

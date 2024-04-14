@@ -29,5 +29,9 @@ namespace BeautyPlanet.DTOs
         public CategoryDTO Categories { get; set; }
         public IFormFile Files { get; set; }
     }
-
+    public class AppCategory
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
 }

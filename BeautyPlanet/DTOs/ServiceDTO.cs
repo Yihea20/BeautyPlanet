@@ -39,4 +39,10 @@ namespace BeautyPlanet.DTOs
     {
         public int Id { get; set; }
     }
+    public class AppService
+    {
+        public int Id { get; set; }
+        public string Duration { get; set; }
+        public int Price { get; set; }
+    }
 }

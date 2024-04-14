@@ -49,4 +49,9 @@ namespace BeautyPlanet.DTOs
 
         public string Id { get; set; }
     }
+    public class AppSpecialist
+    {
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+    }
 }

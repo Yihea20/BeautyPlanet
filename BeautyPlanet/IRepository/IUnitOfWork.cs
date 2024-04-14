@@ -13,6 +13,8 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<ServiceCenter> ServiceCenter { get; }
         public IGenericRepository<Image> Image { get; }
         public IGenericRepository<Gallery> Gallery { get; }
+        public IGenericRepository<Appointment>Appointment { get; }
+        public IGenericRepository<ServiceSpecialist> ServiceSpecialist { get; }
         Task Save();
     }
 }

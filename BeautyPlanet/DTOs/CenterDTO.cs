@@ -39,4 +39,12 @@ namespace BeautyPlanet.DTOs
         public CenterDTO Centers { get; set; }
         public IFormFile Files { get; set; }
     }
+    public class AppCenter
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public int Rate { get; set; }
+        public string ImageUrl { get; set; }
+    }
 }
