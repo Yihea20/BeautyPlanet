@@ -27,7 +27,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAppointment([FromBody]AppointmentDTO appointment)
         {
-            var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.Id == appointment.ServiceSpecialistId);
+            var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.Id == appointment.ServiceSpecialistId,include:x=>x.Include(q=>q.Specialistt));
             if (!sp.Specialistt.Times.Contains(appointment.DateTime))
             {
                 var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.UserId));
@@ -40,7 +40,7 @@ namespace BeautyPlanet.Controllers
                 var app = _mapper.Map<Appointment>(appointment);
                 app.StatusId = 1;
                 await _unitOfWork.Appointment.Insert(app);
-
+                await _unitOfWork.Save();
                 return Ok();
             }
             else
@@ -49,18 +49,28 @@ namespace BeautyPlanet.Controllers
         [HttpGet("AppointmentByStatus")]
         public async Task<IActionResult> GetAllAppointment(int status)
         {
+
             IList<GetAppointment> app = new List<GetAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll(q=>q.StatusId==status, include:q=>q.Include(x=>x.ServiceSpecialistt).ThenInclude(x=>x.Servicee));
+            var appointment = await _unitOfWork.Appointment.GetAll(q=>q.StatusId==status, include:q=>q.Include(x=>x.ServiceSpecialistt).ThenInclude(x=>x.Servicee).Include(q=>q.ServiceSpecialistt).ThenInclude(p=>p.Specialistt));
             foreach (Appointment a in appointment)
             {
                 var center = _mapper.Map<AppCenter>(await _unitOfWork.Center.Get(q=>q.Id==a.ServiceSpecialistt.Specialistt.CenterId));
                 var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialistt.SpecialistId)));
                 var category = _mapper.Map<AppCategory>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialistt.Servicee.CategoryId));
                 var service = _mapper.Map<AppService>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialistt.ServiceId));
-                app.Add(new GetAppointment { Center = center, Specialist = specialist, Category = category, Service = service });
+                app.Add(new GetAppointment {Id=a.Id,DateTime=a.DateTime, Center = center, Specialist = specialist, Category = category, Service = service });
             }
 
             return Ok(app);
+        }
+        [HttpPut("ChangeStatus")]
+        public async Task<IActionResult> ChangeStatus(int id,int status)
+        {
+            var app = await _unitOfWork.Appointment.Get(q => q.Id == id);
+            app.StatusId = status;
+            _unitOfWork.Appointment.Update(app);
+            await _unitOfWork.Save();
+            return Ok();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace BeautyPlanet.DTOs
         public int? Rate { get; set; }
     }
     public class GetCenterDTO:CenterDTO {
-        
+        public int Id { get; set; }
         public string? WebSiteUrl { get; set; }
         //[ForeignKey(nameof(Admin))]
         //public int? AdminId { get; set; }

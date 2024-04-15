@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240414171415_List")]
+    partial class List
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +33,7 @@ namespace BeautyPlanet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ServiceSpecialistId")
@@ -483,19 +486,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "17c413c5-e824-4581-aa3f-3102c3a94d27",
+                            Id = "64563776-7312-4276-ab91-304247c05f07",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "d39e094f-85ca-47d0-a63f-23bb6fc2db73",
+                            Id = "b327e9a0-42bc-4520-9fb5-ed950e6538aa",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "b6db462b-d683-4a61-9f16-1ce43737a5a9",
+                            Id = "b8b9a81e-d0fa-4da2-83ce-18da61a396db",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });

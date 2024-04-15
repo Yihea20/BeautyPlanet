@@ -16,7 +16,7 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Status))]
         public int StatusId { get; set; }
         public Status Statuss { get; set; }
-        public DateTime? DateTime { get; set; }
+        public DateTime DateTime { get; set; }
 
     }
 }

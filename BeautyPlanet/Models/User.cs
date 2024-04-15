@@ -8,7 +8,7 @@ namespace BeautyPlanet.Models
        
         public ICollection<Center>? Centers { get; set; }
 
-        public ICollection<DateTime>? Times { get; set; }
+        public IList<DateTime>? Times { get; set; } = new List<DateTime>();
         public int Point { get; set; } = 0;
         public int Age { get; set; } = 18;
 

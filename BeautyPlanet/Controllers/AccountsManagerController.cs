@@ -160,10 +160,10 @@ namespace BeautyPlanet.Controllers
 
         }
         [HttpGet("GetSpecialist")]
-        public async Task<IActionResult> GetSpecialist(string id)
+        public async Task<IActionResult> GetAllSpecialist()
         {
             var specialist = await _unitOfWork.Specialist.GetAll();
-            var result = _mapper.Map<GetSpecialistDTO>(specialist);
+            var result = _mapper.Map<IList<GetSpecialistDTO>>(specialist);
             return Ok(result);
 
         }

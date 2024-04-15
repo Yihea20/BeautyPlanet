@@ -39,7 +39,7 @@ namespace BeautyPlanet.DTOs
         public int CenterId { get; set; }
         public int Rate { get; set; }
         public string Exparences { get; set; }
-        public int ServiceId { get; set; }
+       
         public ICollection<string> RoleName { get; set; }
         // public int CenterId { get; set; }
 

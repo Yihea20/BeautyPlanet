@@ -14,6 +14,6 @@ namespace BeautyPlanet.Models
         public string Exparences { get; set; } 
        
         public ICollection<Service> Services { get; set; }
-        public IList<DateTime>?Times { get; set; }
+        public IList<DateTime>? Times { get; set; } = new List<DateTime>();
     }
 }
