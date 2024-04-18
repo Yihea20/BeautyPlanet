@@ -45,6 +45,8 @@ namespace BeautyPlanet.DataAccess
         public DbSet<Sizes> Sizes { get; set; }
         public DbSet<Colors> Colors { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductCenter> ProductCenters { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
 
 
     }
