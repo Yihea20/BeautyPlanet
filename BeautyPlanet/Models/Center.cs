@@ -27,5 +27,6 @@ namespace BeautyPlanet.Models
         public DateTime? CloseTime { get; set; }
         public ICollection<Service> Services { get; set; }
         public ICollection<Specialist> Specialists { get; set; }
+        public ICollection<Product> Products { get; set; }
     }
 }

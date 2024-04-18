@@ -42,6 +42,10 @@ namespace BeautyPlanet.DataAccess
         public DbSet<ServiceSpecialist> ServiceSpecialists { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Sizes> Sizes { get; set; }
+        public DbSet<Colors> Colors { get; set; }
+        public DbSet<Product> Products { get; set; }
+
 
     }
 }
