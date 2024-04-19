@@ -19,4 +19,10 @@
         public GetServiceBesic Service { get; set; }
         public GetCenterwithIdDTO Center {get;set;}
     }
+    public  class ShopHome
+    {
+        public IList <GetShoppingCategory> GetShoppingCategory { get; set; }
+        public IList<GetProduct> GetProduct { get; set; }
+        public IList<GetProduct> NewProduct { get; set; }
+    }
 }

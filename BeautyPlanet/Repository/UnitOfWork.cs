@@ -19,6 +19,10 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Gallery> _gallery;
         private IGenericRepository<Appointment> _appointement;
         private IGenericRepository<ServiceSpecialist> _serviceSpecialist;
+        private IGenericRepository<ProductCenter> _productCenter;
+        private IGenericRepository<Product> _product;
+        private IGenericRepository<ShoppingCategory> _shoppingCategory;
+        private IGenericRepository<ShoppingCart> _shoppingCart;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -43,6 +47,14 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<Appointment> Appointment =>_appointement ??= new GenericRepository<Appointment>(_context);
 
         public IGenericRepository<ServiceSpecialist> ServiceSpecialist => _serviceSpecialist ??=new GenericRepository<ServiceSpecialist>(_context);
+
+        public IGenericRepository<Product> Product => _product ??=new GenericRepository<Product>(_context);
+
+        public IGenericRepository<ProductCenter> ProductCenter => _productCenter ??=new GenericRepository<ProductCenter>(_context);
+
+        public IGenericRepository<ShoppingCategory> ShoppingCategory => _shoppingCategory ??=new GenericRepository<ShoppingCategory>(_context);
+
+        public IGenericRepository<ShoppingCart> ShoppingCart => _shoppingCart ??=new GenericRepository<ShoppingCart>(_context);
 
         public void Dispose()
         {

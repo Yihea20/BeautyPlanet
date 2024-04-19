@@ -15,6 +15,10 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<Gallery> Gallery { get; }
         public IGenericRepository<Appointment>Appointment { get; }
         public IGenericRepository<ServiceSpecialist> ServiceSpecialist { get; }
+        public IGenericRepository<Product> Product { get; }
+        public IGenericRepository<ProductCenter> ProductCenter { get; }
+        public IGenericRepository<ShoppingCategory> ShoppingCategory { get; }
+        public IGenericRepository<ShoppingCart> ShoppingCart { get; }
         Task Save();
     }
 }

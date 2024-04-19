@@ -23,6 +23,9 @@ namespace BeautyPlanet.DataAccess
                 ss => ss.HasOne(prop => prop.Servicee).WithMany().HasForeignKey(prop => prop.ServiceId),
                 ss => ss.HasIndex(prop => new { prop.ServiceId, prop.SpecialistId }));
             modelBuilder.Entity<Status>().HasData(new Status { Id = 1, Name = "UpComing" }, new Status { Id = 2, Name = "Completed" }, new Status { Id = 3, Name = "Cancelled" });
+            modelBuilder.Entity<Colors>().HasData(new Colors { Id = 1, Name = "Black" }, new Colors { Id = 2, Name = "Red" }, new Colors { Id = 3, Name = "Green" });
+            modelBuilder.Entity<Sizes>().HasData(new Sizes { Id = 1, Name = "S" }, new Sizes { Id = 2, Name = "M" }, new Sizes { Id = 3, Name = "L" });
+
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             base.OnModelCreating(modelBuilder);
         }

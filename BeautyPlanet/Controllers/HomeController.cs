@@ -50,5 +50,14 @@ namespace BeautyPlanet.Controllers
             return Accepted(new HomeSearch { Centers=center,Specialist=specialist,Services=service});
 
         }
+        [HttpGet("ShopHome")]
+        public async Task<IActionResult> ShopHome()
+        {
+
+            var category = _mapper.Map<IList<GetShoppingCategory>>(await _unitOfWork.ShoppingCategory.GetAll());
+            var product = _mapper.Map<IList<GetProduct>>(await _unitOfWork.Product.GetAll(orderBy:x=>x.OrderByDescending(p=>p.Conter)));
+            var newproduct = _mapper.Map<IList<GetProduct>>(await _unitOfWork.Product.GetAll(orderBy: x => x.OrderBy(p => p.DateTime)));
+            return Accepted(new ShopHome {GetShoppingCategory=category, GetProduct=product,NewProduct=newproduct} );
+        }
     }
 }

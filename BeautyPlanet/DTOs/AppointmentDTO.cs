@@ -25,4 +25,10 @@ namespace BeautyPlanet.DTOs
         public AppCategory Category { get; set; }
         public AppService Service { get; set; }
     }
+    public class GetCart
+    {
+        public int Id { get; set; }
+        public AppProduct AppProduct{get;set;}
+        public int Count { get; set; }
+    }
 }
