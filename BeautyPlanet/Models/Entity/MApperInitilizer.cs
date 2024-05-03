@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BeautyPlanet.DTOs;
+using BeautyPlanet.Migrations;
 
 namespace BeautyPlanet.Models.Entity
 {
@@ -42,7 +43,20 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ServiceSpecialist, ServiceSpecialistDTO>().ReverseMap();
             CreateMap<ServiceSpecialist, GetServiceSpecialist>().ReverseMap();
             CreateMap<Appointment, AppointmentDTO>().ReverseMap();
-           
+            CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<Product, GetProduct>().ReverseMap();
+            CreateMap<Product, AppProduct>().ReverseMap();
+            CreateMap<ProductCenter, ProductCenterDTO>().ReverseMap();
+            CreateMap<ProductCenter, GetProductCenter>().ReverseMap();
+            CreateMap<ShoppingCart, ShoppingCartDTO>().ReverseMap();
+            CreateMap<ShoppingCart, GetShoppingCart>().ReverseMap();
+            CreateMap<ShoppingCategory, ShoppingCategoryDTO>().ReverseMap();
+            CreateMap<ShoppingCategory, GetShoppingCategory>().ReverseMap();
+            CreateMap<ShoppingCategory, GetShoppingCategoryDTO>().ReverseMap();
+            CreateMap<Company, CompanyDTO>().ReverseMap();
+            CreateMap<Company, GetCompanyDTO>().ReverseMap();
+            CreateMap<Company, GetProductCompanyDTO>().ReverseMap();
+            CreateMap<GetSearch, GetServiceDTO>().ReverseMap();
         }
     }
 }
