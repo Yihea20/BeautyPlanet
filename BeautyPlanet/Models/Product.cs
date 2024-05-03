@@ -18,8 +18,8 @@ namespace BeautyPlanet.Models
         public string Description { get; set; }
 
         [ForeignKey(nameof(ShoppingCategory))]
-        public int CategoryId { get; set; }
-        public ShoppingCategory Categoryy { get; set; }
+        public int ShoppingCategoryId { get; set; }
+        public ShoppingCategory ShoppingCategoryy { get; set; }
         [ForeignKey(nameof(Colors))]
         public int? ColorId { get; set; }
         public Colors? Color { get; set; }

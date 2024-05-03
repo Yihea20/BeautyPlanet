@@ -11,7 +11,7 @@
     {
         public IList<GetCenterDTO> Centers { get; set; }
         public IList<GetSpecialistDTO> Specialist { get; set; }
-        public IList<GetSearch> Services { get; set; }
+        public IList<GetServiceDTO> Services { get; set; }
     }
     public class OfferHome
     {

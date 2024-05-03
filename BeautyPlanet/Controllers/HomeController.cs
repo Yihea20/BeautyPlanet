@@ -46,8 +46,12 @@ namespace BeautyPlanet.Controllers
             var center = _mapper.Map<IList<GetCenterDTO>>(await _unitOfWork.Center.GetAll(q => q.Name.Contains(search),orderBy:x=>x.OrderByDescending(p=>p.Rate)));
             var specialist = _mapper.Map<IList<GetSpecialistDTO>>(await _unitOfWork.Specialist.GetAll(q => q.UserName.Contains(search), orderBy: x => x.OrderByDescending(p => p.Rate)));
             var service = _mapper.Map<IList<GetSearch>>(await _unitOfWork.ServiceCenter.GetAll(q=>q.Center.Name.Contains(search),orderBy: x => x.OrderByDescending(p => p.Service.Rate),include:x=>x.Include(q=>q.Service)));
-
-            return Accepted(new HomeSearch { Centers=center,Specialist=specialist,Services=service});
+            IList<GetServiceDTO> ser = new List<GetServiceDTO>();
+            foreach(GetSearch s in service)
+            {
+                ser.Add(s.Service);
+            }
+            return Accepted(new HomeSearch { Centers=center,Specialist=specialist,Services=ser});
 
         }
         [HttpGet("ShopHome")]

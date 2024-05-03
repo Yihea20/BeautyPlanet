@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240428193759_AddProductCenterr")]
+    partial class AddProductCenterr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -469,14 +472,17 @@ namespace BeautyPlanet.Migrations
                     b.Property<int>("CenterId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProducId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProducttId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CenterId");
 
-                    b.HasIndex("ProductId", "CenterId");
+                    b.HasIndex("ProducttId");
 
                     b.ToTable("ProductCenters");
                 });
@@ -687,6 +693,21 @@ namespace BeautyPlanet.Migrations
                         });
                 });
 
+            modelBuilder.Entity("CenterProduct", b =>
+                {
+                    b.Property<int>("CentersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CentersId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("CenterProduct");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -716,19 +737,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a79f5786-7867-4ee3-a514-a718252bc9e9",
+                            Id = "c521ebda-6e0d-4c40-8c6e-79de30043839",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "999af68a-2c1e-485a-a868-c5e18f94e859",
+                            Id = "181c9372-326a-46d1-bff6-8fca455d30d9",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "c9f4bcff-9a3d-4b56-93d8-f9dbd2510c00",
+                            Id = "5965c315-794d-49ee-a465-e3d3214a218f",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1014,7 +1035,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasOne("BeautyPlanet.Models.Product", "Productt")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProducttId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1089,6 +1110,21 @@ namespace BeautyPlanet.Migrations
                     b.Navigation("ProductCenterr");
 
                     b.Navigation("Userr");
+                });
+
+            modelBuilder.Entity("CenterProduct", b =>
+                {
+                    b.HasOne("BeautyPlanet.Models.Center", null)
+                        .WithMany()
+                        .HasForeignKey("CentersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeautyPlanet.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

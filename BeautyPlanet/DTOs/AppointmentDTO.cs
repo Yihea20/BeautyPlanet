@@ -20,10 +20,11 @@ namespace BeautyPlanet.DTOs
     {
         public int Id { get; set; }
         public DateTime DateTime { get; set; }
-        public AppCenter Center { get; set; }
+        public string Status { get; set; }
+        public GetCenterwithIdDTO Center { get; set; }
         public AppSpecialist Specialist { get; set; }
-        public AppCategory Category { get; set; }
-        public AppService Service { get; set; }
+        public CategoryIdDTO Category { get; set; }
+        public GetServiceBesic Service { get; set; }
     }
     public class GetCart
     {

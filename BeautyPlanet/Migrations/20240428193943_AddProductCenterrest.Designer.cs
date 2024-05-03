@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240428193943_AddProductCenterrest")]
+    partial class AddProductCenterrest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -476,7 +479,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("CenterId");
 
-                    b.HasIndex("ProductId", "CenterId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductCenters");
                 });
@@ -687,6 +690,21 @@ namespace BeautyPlanet.Migrations
                         });
                 });
 
+            modelBuilder.Entity("CenterProduct", b =>
+                {
+                    b.Property<int>("CentersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CentersId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("CenterProduct");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -716,19 +734,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a79f5786-7867-4ee3-a514-a718252bc9e9",
+                            Id = "2f1afa7f-013e-4207-a6f7-5b520a8a33fa",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "999af68a-2c1e-485a-a868-c5e18f94e859",
+                            Id = "be0f7a7b-b28f-4ab1-b906-060e254a9c5f",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "c9f4bcff-9a3d-4b56-93d8-f9dbd2510c00",
+                            Id = "2433ca33-65b5-422c-99ce-f9e473ec9073",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1089,6 +1107,21 @@ namespace BeautyPlanet.Migrations
                     b.Navigation("ProductCenterr");
 
                     b.Navigation("Userr");
+                });
+
+            modelBuilder.Entity("CenterProduct", b =>
+                {
+                    b.HasOne("BeautyPlanet.Models.Center", null)
+                        .WithMany()
+                        .HasForeignKey("CentersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeautyPlanet.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
