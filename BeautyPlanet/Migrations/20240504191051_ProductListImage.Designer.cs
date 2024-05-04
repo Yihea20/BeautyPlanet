@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240504191051_ProductListImage")]
+    partial class ProductListImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Category", b =>
@@ -72,7 +75,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Center", b =>
@@ -134,7 +137,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Centers", (string)null);
+                    b.ToTable("Centers");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Colors", b =>
@@ -151,7 +154,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors", (string)null);
+                    b.ToTable("Colors");
 
                     b.HasData(
                         new
@@ -196,7 +199,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Gallery", b =>
@@ -213,7 +216,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Galleries", (string)null);
+                    b.ToTable("Galleries");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Image", b =>
@@ -235,7 +238,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("GalleryId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ListImage", b =>
@@ -252,7 +255,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ListImages", (string)null);
+                    b.ToTable("ListImages");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Offer", b =>
@@ -285,7 +288,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("ServiceCenterId");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Person", b =>
@@ -406,7 +409,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Platforms", (string)null);
+                    b.ToTable("Platforms");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Product", b =>
@@ -459,7 +462,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("ShoppingCategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ProductCenter", b =>
@@ -482,7 +485,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("ProductId", "CenterId");
 
-                    b.ToTable("ProductCenters", (string)null);
+                    b.ToTable("ProductCenters");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ProductColor", b =>
@@ -505,7 +508,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("ProductId", "ColorId");
 
-                    b.ToTable("ProductColors", (string)null);
+                    b.ToTable("ProductColors");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ProductSize", b =>
@@ -528,7 +531,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("ProductId", "SizeId");
 
-                    b.ToTable("ProductSizes", (string)null);
+                    b.ToTable("ProductSizes");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Review", b =>
@@ -562,7 +565,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Service", b =>
@@ -605,7 +608,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Services", (string)null);
+                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ServiceCenter", b =>
@@ -628,7 +631,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("ServiceId", "CenterId");
 
-                    b.ToTable("ServiceCenters", (string)null);
+                    b.ToTable("ServiceCenters");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ServiceSpecialist", b =>
@@ -652,7 +655,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("ServiceId", "SpecialistId");
 
-                    b.ToTable("ServiceSpecialists", (string)null);
+                    b.ToTable("ServiceSpecialists");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ShoppingCart", b =>
@@ -679,7 +682,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ShoppingCarts", (string)null);
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.ShoppingCategory", b =>
@@ -700,7 +703,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingCategories", (string)null);
+                    b.ToTable("ShoppingCategories");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Sizes", b =>
@@ -717,7 +720,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sizes", (string)null);
+                    b.ToTable("Sizes");
 
                     b.HasData(
                         new
@@ -751,7 +754,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statuses", (string)null);
+                    b.ToTable("Statuses");
 
                     b.HasData(
                         new
@@ -800,19 +803,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d0c4cd8a-223c-4ffb-b71a-7193392a9080",
+                            Id = "8292e75f-f396-437e-9042-2ef1c9bbc742",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "9901efce-c318-4dfe-a95c-8a58f14ccec6",
+                            Id = "3b63d87e-8618-480d-8d63-f9e905baa9e7",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "798b40d0-b2e5-4be6-8671-0711708855b6",
+                            Id = "35e29199-2da9-45dd-97c6-0793c58fb624",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -933,7 +936,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("CenterId");
 
-                    b.ToTable("Admins", (string)null);
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Specialist", b =>
@@ -955,7 +958,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasIndex("CenterId");
 
-                    b.ToTable("Specialists", (string)null);
+                    b.ToTable("Specialists");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.User", b =>
@@ -971,7 +974,7 @@ namespace BeautyPlanet.Migrations
                     b.Property<string>("Times")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Appointment", b =>

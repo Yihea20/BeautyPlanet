@@ -12,6 +12,7 @@ namespace BeautyPlanet.Models
         public IList<DateTime>? Times { get; set; } = new List<DateTime>();
         public int Point { get; set; } 
         public int Age { get; set; } 
+        
 
     }
 }

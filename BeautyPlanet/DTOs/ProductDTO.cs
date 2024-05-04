@@ -25,7 +25,7 @@ namespace BeautyPlanet.DTOs
         public int Rate { get; set; }
         public int EarnPoint { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
+        public List<string> ImageUrl { get; set; }
         public ICollection<ColorDTO> Colors { get; set; }
        public ICollection<SizeDTO> Sizes { get; set; }
         public ICollection<GetCenterDTO> Centers { get; set; }
@@ -37,7 +37,7 @@ namespace BeautyPlanet.DTOs
         
 
         public ProductDTO Products { get; set; }
-        public IFormFile Files { get; set; }
+        public IList<IFormFile> Files { get; set; }
     }
     public class AppProduct
     {

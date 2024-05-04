@@ -67,6 +67,7 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ProductSize, ProductSizeDTO>().ReverseMap();
             CreateMap<ProductSize, GetProductSizeDTO>().ReverseMap();
             CreateMap<User, UserReviews>().ReverseMap();
+            CreateMap<ListImage, ListImageDTO>().ReverseMap();
         }
     }
 }

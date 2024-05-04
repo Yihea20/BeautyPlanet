@@ -3,6 +3,7 @@ using BeautyPlanet.DTOs;
 using BeautyPlanet.IRepository;
 using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,27 +34,34 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> AddProduct([FromForm] ProductFile product)
         {
             string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            var result = _mapper.Map<Product>(product.Products);
             try
             {
-                string FilePath = GetFilePath(product.Products.Name);
-                if (!System.IO.Directory.Exists(FilePath))
+                foreach (var f in product.Files)
                 {
-                    System.IO.Directory.CreateDirectory(FilePath);
+
+
+                    string FilePath = GetFilePath(f.FileName);
+                    if (!System.IO.Directory.Exists(FilePath))
+                    {
+                        System.IO.Directory.CreateDirectory(FilePath);
+                    }
+                    string url = FilePath + "\\" + f.FileName;
+                    if (System.IO.File.Exists(url))
+                    {
+                        System.IO.File.Delete(url);
+                    }
+                    using (FileStream stream = System.IO.File.Create(url))
+                    {
+                        await f.CopyToAsync(stream);
+                        
+                        result.ImageUrl.Add( hosturl + "/Upload/ProductImage/" + f.FileName + "/" + f.FileName);
+                        
+                    }
                 }
-                string url = FilePath + "\\" + product.Products.Name + ".png";
-                if (System.IO.File.Exists(url))
-                {
-                    System.IO.File.Delete(url);
-                }
-                using (FileStream stream = System.IO.File.Create(url))
-                {
-                    await product.Files.CopyToAsync(stream);
-                    var result = _mapper.Map<Product>(product.Products);
-                    result.ImageUrl = hosturl + "/Upload/ProductImage/" + product.Products.Name + "/" + product.Products.Name + ".png";
-                    await _unitOfWork.Product.Insert(result);
-                    await _unitOfWork.Save();
-                    return Ok();
-                }
+                await _unitOfWork.Product.Insert(result);
+                await _unitOfWork.Save();
+                return Ok();
             }
             catch (Exception e)
             {
@@ -70,16 +78,16 @@ namespace BeautyPlanet.Controllers
         [HttpGet("id")]
         public async Task<IActionResult> GetProduct(int id)
         {
-            var product = await _unitOfWork.Product.Get(q=>q.Id==id, include: x => x.Include(p => p.Colors).Include(x => x.Sizes).Include(p => p.Centers).Include(r=>r.Reviews));
+            var product = await _unitOfWork.Product.Get(q=>q.Id==id, include: x => x.Include(p => p.Colors).Include(x => x.Sizes).Include(p => p.Centers).Include(r=>r.Reviews).ThenInclude(u=>u.Userr));
             var map = _mapper.Map<GetProduct>(product);
             return Ok(map);
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductDTO centerDto)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            var old = await _unitOfWork.Product.Get(q => q.Id == id);
+           // var old = await _unitOfWork.Product.Get(q => q.Id == id);
             //old.Sizes = centerDto.Sizes;
-            _unitOfWork.Product.Update(old);
+           await _unitOfWork.Product.Delete(id);
             await _unitOfWork.Save();
             return Ok();
         }

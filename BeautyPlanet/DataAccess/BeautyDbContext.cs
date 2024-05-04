@@ -68,5 +68,6 @@ namespace BeautyPlanet.DataAccess
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<ListImage> ListImages { get; set; }
     }
 }

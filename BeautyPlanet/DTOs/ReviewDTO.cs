@@ -14,7 +14,7 @@ namespace BeautyPlanet.DTOs
     public class GetReviewDTO
     {
         public int Id { get; set; }
-        public string UserId { get; set; }
+
         public UserReviews Userr { get; set; }
         public int rate { get; set; }
         public string Desc { get; set; }

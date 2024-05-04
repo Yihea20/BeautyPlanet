@@ -23,6 +23,7 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<ProductSize> ProductSize { get; }
         public IGenericRepository<ProductColor> ProductColor { get; }
         public IGenericRepository<Review> Review { get; }
+        public IGenericRepository<ListImage> ListImage { get; }
         Task Save();
     }
 }
