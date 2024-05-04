@@ -29,11 +29,41 @@ namespace BeautyPlanet.Controllers
             await _unitOfWork.Save();
             return Ok();
         }
+        [HttpPost("AddProductSize")]
+        public async Task<IActionResult> AddProductSize([FromBody] ProductSizeDTO productCenter)
+        {
+            var m = _mapper.Map<ProductSize>(productCenter);
+            await _unitOfWork.ProductSize.Insert(m);
+            await _unitOfWork.Save();
+            return Ok();
+        }
+        [HttpPost("AddProductColor")]
+        public async Task<IActionResult> AddProductColor([FromBody] ProductColorDTO productCenter)
+        {
+            var m = _mapper.Map<ProductColor>(productCenter);
+            await _unitOfWork.ProductColor.Insert(m);
+            await _unitOfWork.Save();
+            return Ok();
+        }
         [HttpGet]
         public async Task<IActionResult> GetAllProductCenter()
         {
             var service = await _unitOfWork.ProductCenter.GetAll();
             var result = _mapper.Map<IList<GetProductCenter>>(service);
+            return Ok(result);
+        }
+        [HttpGet("ProductSize")]
+        public async Task<IActionResult> GetAllProductSize()
+        {
+            var service = await _unitOfWork.ProductSize.GetAll();
+            var result = _mapper.Map<IList<GetProductSizeDTO>>(service);
+            return Ok(result);
+        }
+        [HttpGet("GetProdoctColor")]
+        public async Task<IActionResult> GetAllProductColor()
+        {
+            var service = await _unitOfWork.ProductColor.GetAll();
+            var result = _mapper.Map<IList<GetProductColorDTO>>(service);
             return Ok(result);
         }
     }

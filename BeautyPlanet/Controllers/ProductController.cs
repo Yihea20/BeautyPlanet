@@ -63,17 +63,25 @@ namespace BeautyPlanet.Controllers
         [HttpGet("GetAllPRoduct")]
         public async Task<IActionResult> GetAllProduct()
         {
-            var product = await _unitOfWork.Product.GetAll(include:x=>x.Include(p=>p.Color).Include(p=>p.Sizess).Include(p=>p.Companyy));
+            var product = await _unitOfWork.Product.GetAll(include:x=>x.Include(p=>p.Colors).Include(x=>x.Sizes).Include(p=>p.Centers).Include(r => r.Reviews));
             var map =_mapper.Map<IList<GetProduct>>(product);
             return Ok(map);
         }
         [HttpGet("id")]
         public async Task<IActionResult> GetProduct(int id)
         {
-            var product = await _unitOfWork.Product.Get(q=>q.Id==id, include: x => x.Include(p => p.Color).Include(p => p.Sizess).Include(p => p.Companyy));
+            var product = await _unitOfWork.Product.Get(q=>q.Id==id, include: x => x.Include(p => p.Colors).Include(x => x.Sizes).Include(p => p.Centers).Include(r=>r.Reviews));
             var map = _mapper.Map<GetProduct>(product);
             return Ok(map);
         }
-
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductDTO centerDto)
+        {
+            var old = await _unitOfWork.Product.Get(q => q.Id == id);
+            //old.Sizes = centerDto.Sizes;
+            _unitOfWork.Product.Update(old);
+            await _unitOfWork.Save();
+            return Ok();
+        }
     }
 }

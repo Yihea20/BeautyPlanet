@@ -20,17 +20,10 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(ShoppingCategory))]
         public int ShoppingCategoryId { get; set; }
         public ShoppingCategory ShoppingCategoryy { get; set; }
-        [ForeignKey(nameof(Colors))]
-        public int? ColorId { get; set; }
-        public Colors? Color { get; set; }
-        [ForeignKey(nameof(Sizes))]
-        public int? SizeId { get; set; }
-        public Sizes? Sizess { get; set; }
-        public DateTime DateTime { get; set; } = DateTime.Now;
-        [ForeignKey(nameof(Company))]
-        public int CompanyId { get; set; }
-        public Company Companyy { get; set; }
+        public ICollection<Colors> Colors { get; set; }
+       public ICollection<Sizes> Sizes { get; set; }
         public ICollection<Center> Centers { get; set; }
-        
+        public ICollection<Review> Reviews { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.Now;
     }
 }

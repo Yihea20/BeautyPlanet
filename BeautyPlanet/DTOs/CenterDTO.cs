@@ -47,4 +47,11 @@ namespace BeautyPlanet.DTOs
         public int Rate { get; set; }
         public string ImageUrl { get; set; }
     }
+    public class ProductCenterPDTO
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+
+    }
 }

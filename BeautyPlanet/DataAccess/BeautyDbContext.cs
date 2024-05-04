@@ -3,6 +3,7 @@ using BeautyPlanet.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace BeautyPlanet.DataAccess
 {
@@ -26,9 +27,17 @@ namespace BeautyPlanet.DataAccess
                 (pc => pc.HasOne(prop => prop.Centerr).WithMany().HasForeignKey(Prop => Prop.CenterId),
                 pc => pc.HasOne(prop => prop.Productt).WithMany().HasForeignKey(prop => prop.ProductId),
                 pc => pc.HasIndex(prop => new { prop.ProductId, prop.CenterId }));
+            modelBuilder.Entity<Product>().HasMany(s => s.Sizes).WithMany(p => p.Products).UsingEntity<ProductSize>(
+                pc => pc.HasOne(prop => prop.Size).WithMany().HasForeignKey(prop => prop.SizeId),
+                pc => pc.HasOne(prop => prop.Productt).WithMany().HasForeignKey(prop => prop.ProductId),
+                pc => pc.HasIndex(prop => new { prop.ProductId, prop.SizeId }));
+            modelBuilder.Entity<Product>().HasMany(c => c.Colors).WithMany(p => p.Products).UsingEntity<ProductColor>(
+                pc => pc.HasOne(c => c.Color).WithMany().HasForeignKey(prop => prop.ColorId),
+                pc => pc.HasOne(prop => prop.Productt).WithMany().HasForeignKey(prop => prop.ProductId),
+                pc => pc.HasIndex(prop => new { prop.ProductId, prop.ColorId }));
             modelBuilder.Entity<Status>().HasData(new Status { Id = 1, Name = "UpComing" }, new Status { Id = 2, Name = "Completed" }, new Status { Id = 3, Name = "Cancelled" });
             modelBuilder.Entity<Colors>().HasData(new Colors { Id = 1, Name = "Black" }, new Colors { Id = 2, Name = "Red" }, new Colors { Id = 3, Name = "Green" });
-            modelBuilder.Entity<Sizes>().HasData(new Sizes { Id = 1, Name = "S" }, new Sizes { Id = 2, Name = "M" }, new Sizes { Id = 3, Name = "L" });
+           modelBuilder.Entity<Sizes>().HasData(new Sizes { Id = 1, Name = "S" }, new Sizes { Id = 2, Name = "M" }, new Sizes { Id = 3, Name = "L" });
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             base.OnModelCreating(modelBuilder);
@@ -49,13 +58,15 @@ namespace BeautyPlanet.DataAccess
         public DbSet<ServiceSpecialist> ServiceSpecialists { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Sizes> Sizes { get; set; }
         public DbSet<Colors> Colors { get; set; }
+        public DbSet<Sizes> Sizes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCenter> ProductCenters { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<ShoppingCategory> ShoppingCategories { get; set; }
         public DbSet<Company> Companies { get; set; }
-
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
     }
 }
