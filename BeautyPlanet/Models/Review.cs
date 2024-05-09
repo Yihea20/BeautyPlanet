@@ -15,6 +15,6 @@ namespace BeautyPlanet.Models
         public int ProductId { get; set; }
         public Product Productt { get; set; }
         public string Desc { get; set; }
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        public DateTime ReviewAddTime { get; set; } = DateTime.Now;
     }
 }

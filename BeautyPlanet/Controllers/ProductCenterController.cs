@@ -4,6 +4,7 @@ using BeautyPlanet.IRepository;
 using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeautyPlanet.Controllers
 {
@@ -48,9 +49,29 @@ namespace BeautyPlanet.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProductCenter()
         {
-            var service = await _unitOfWork.ProductCenter.GetAll();
-            var result = _mapper.Map<IList<GetProductCenter>>(service);
-            return Ok(result);
+            IList<HomeProduct> home = new List<HomeProduct>();
+            HomeProduct h = new HomeProduct();
+            var service = await _unitOfWork.ProductCenter.GetAll(include:x=>x.Include(c=>c.Centerr).ThenInclude(s=>s.Specialists).Include(p=>p.Productt).ThenInclude(p=>p.Sizes).Include(p=>p.Productt).ThenInclude(p=>p.Colors)
+            .Include(p=>p.Productt).ThenInclude(p=>p.Reviews).ThenInclude(u=>u.Userr));
+            var result = _mapper.Map<IList<ProductDetels>>(service);
+            foreach(var p in result)
+            {
+                h.Id = p.Productt.Id;
+                h.ImageUrl = p.Productt.ImageUrl;
+                h.Name = p.Productt.Name;
+                h.OfferPercent = p.Productt.OfferPercent;
+                h.Price = p.Productt.Price;
+                h.ProductAddTime = p.Productt.ProductAddTime;
+                h.Rate = p.Productt.Rate;
+                h.Reviews = p.Productt.Reviews;
+                h.Sizes = p.Productt.Sizes;
+                h.Description = p.Productt.Description;
+                h.Colors = p.Productt.Colors;
+                h.EarnPoint = p.Productt.EarnPoint;
+                h.Centers = p.Centerr;
+                home.Add(h);
+            }
+            return Ok(home);
         }
         [HttpGet("ProductSize")]
         public async Task<IActionResult> GetAllProductSize()

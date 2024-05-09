@@ -18,7 +18,7 @@ namespace BeautyPlanet.DTOs
         public UserReviews Userr { get; set; }
         public int rate { get; set; }
         public string Desc { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime ReviewAddTime { get; set; }
 
     }
 }

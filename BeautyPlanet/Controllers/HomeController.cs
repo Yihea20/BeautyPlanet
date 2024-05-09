@@ -59,9 +59,52 @@ namespace BeautyPlanet.Controllers
         {
 
             var category = _mapper.Map<IList<GetShoppingCategory>>(await _unitOfWork.ShoppingCategory.GetAll());
-            var product = _mapper.Map<IList<GetProduct>>(await _unitOfWork.Product.GetAll(orderBy:x=>x.OrderByDescending(p=>p.Conter)));
-            var newproduct = _mapper.Map<IList<GetProduct>>(await _unitOfWork.Product.GetAll(orderBy: x => x.OrderBy(p => p.DateTime)));
-            return Accepted(new ShopHome {GetShoppingCategory=category, GetProduct=product,NewProduct=newproduct} );
+            IList<HomeProduct> home1 = new List<HomeProduct>();
+            HomeProduct h1=new HomeProduct();
+            var service1 = await _unitOfWork.ProductCenter.GetAll(include: x => x.Include(c => c.Centerr).ThenInclude(s => s.Specialists).Include(p => p.Productt).ThenInclude(p => p.Sizes).Include(p => p.Productt).ThenInclude(p => p.Colors)
+            .Include(p => p.Productt).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr), orderBy: x => x.OrderByDescending(p => p.Productt.Conter));
+            var result1 = _mapper.Map<IList<ProductDetels>>(service1);
+            foreach (var p in result1)
+            {
+                h1.Id = p.Productt.Id;
+                h1.ImageUrl = p.Productt.ImageUrl;
+                h1.Name = p.Productt.Name;
+                h1.OfferPercent = p.Productt.OfferPercent;
+                h1.Price = p.Productt.Price;
+                h1.ProductAddTime = p.Productt.ProductAddTime;
+                h1.Rate = p.Productt.Rate;
+                h1.Reviews = p.Productt.Reviews;
+                h1.Sizes = p.Productt.Sizes;
+                h1.Description = p.Productt.Description;
+                h1.Colors = p.Productt.Colors;
+                h1.EarnPoint = p.Productt.EarnPoint;
+                h1.Centers = p.Centerr;
+                home1.Add(h1);
+            }
+
+            IList<HomeProduct> home = new List<HomeProduct>();
+            HomeProduct h = new HomeProduct();
+            var service = await _unitOfWork.ProductCenter.GetAll(include: x => x.Include(c => c.Centerr).ThenInclude(s => s.Specialists).Include(p => p.Productt).ThenInclude(p => p.Sizes).Include(p => p.Productt).ThenInclude(p => p.Colors)
+            .Include(p => p.Productt).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr),orderBy:x=>x.OrderByDescending(p=>p.Productt.ProductAddTime));
+            var result = _mapper.Map<IList<ProductDetels>>(service);
+            foreach (var p in result)
+            {
+                h.Id = p.Productt.Id;
+                h.ImageUrl = p.Productt.ImageUrl;
+                h.Name = p.Productt.Name;
+                h.OfferPercent = p.Productt.OfferPercent;
+                h.Price = p.Productt.Price;
+                h.ProductAddTime = p.Productt.ProductAddTime;
+                h.Rate = p.Productt.Rate;
+                h.Reviews = p.Productt.Reviews;
+                h.Sizes = p.Productt.Sizes;
+                h.Description = p.Productt.Description;
+                h.Colors = p.Productt.Colors;
+                h.EarnPoint = p.Productt.EarnPoint;
+                h.Centers = p.Centerr;
+                home.Add(h);
+            }
+            return Accepted(new ShopHome {GetShoppingCategory=category, GetProduct=home1,NewProduct=home} );
         }
     }
 }

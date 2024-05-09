@@ -20,4 +20,9 @@ namespace BeautyPlanet.DTOs
         public ICollection<ShoppingCartDTO> ShoppingCarts { get; set; }
 
     }
+    public class ProductDetels
+    {
+        public GetProduct Productt { get; set; }
+        public GetCenterDTO Centerr { get; set; }
+}
 }

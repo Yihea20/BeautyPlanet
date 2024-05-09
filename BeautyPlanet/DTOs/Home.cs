@@ -22,7 +22,7 @@
     public  class ShopHome
     {
         public IList <GetShoppingCategory> GetShoppingCategory { get; set; }
-        public IList<GetProduct> GetProduct { get; set; }
-        public IList<GetProduct> NewProduct { get; set; }
+        public IList<HomeProduct> GetProduct { get; set; }
+        public IList<HomeProduct> NewProduct { get; set; }
     }
 }

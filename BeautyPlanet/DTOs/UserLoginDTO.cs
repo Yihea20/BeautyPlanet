@@ -36,6 +36,8 @@ namespace BeautyPlanet.DTOs
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public string Specialization { get; set; }
         public int CenterId { get; set; }
         public int Rate { get; set; }
         public string Exparences { get; set; }
@@ -44,10 +46,18 @@ namespace BeautyPlanet.DTOs
         // public int CenterId { get; set; }
 
     }
-    public class GetSpecialistDTO: SpecialisRegistDTO
+    public class GetSpecialistDTO
     {
 
         public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int CenterId { get; set; }
+        public int Rate { get; set; }
+        public string Exparences { get; set; }
+        public string Email { get; set; }
+        public string Specialization { get; set; }
+        public string PhoneNumber { get; set; }
     }
     public class AppSpecialist
     {

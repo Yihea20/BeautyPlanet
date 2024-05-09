@@ -24,6 +24,6 @@ namespace BeautyPlanet.Models
        public ICollection<Sizes> Sizes { get; set; }
         public ICollection<Center> Centers { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        public DateTime ProductAddTime { get; set; } = DateTime.Now;
     }
 }

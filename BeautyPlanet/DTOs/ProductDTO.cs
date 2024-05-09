@@ -25,12 +25,30 @@ namespace BeautyPlanet.DTOs
         public int Rate { get; set; }
         public int EarnPoint { get; set; }
         public string Description { get; set; }
+        public DateTime ProductAddTime { get; set; } = DateTime.Now;
         public List<string> ImageUrl { get; set; }
         public ICollection<ColorDTO> Colors { get; set; }
        public ICollection<SizeDTO> Sizes { get; set; }
-        public ICollection<GetCenterDTO> Centers { get; set; }
         public ICollection<GetReviewDTO> Reviews { get; set; }
-        public DateTime DateTime { get; set; } = DateTime.Now;
+       
+
+    }
+    public class HomeProduct
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Price { get; set; }
+        public int? OfferPercent { get; set; }
+        public int Rate { get; set; }
+        public int EarnPoint { get; set; }
+        public string Description { get; set; }
+        public DateTime ProductAddTime { get; set; } = DateTime.Now;
+        public List<string> ImageUrl { get; set; }
+        public ICollection<ColorDTO> Colors { get; set; }
+        public ICollection<SizeDTO> Sizes { get; set; }
+        public ICollection<GetReviewDTO> Reviews { get; set; }
+        public GetCenterDTO Centers { get; set; }
+
     }
     public class ProductFile
     {
