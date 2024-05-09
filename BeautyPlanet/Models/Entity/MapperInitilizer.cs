@@ -68,6 +68,9 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ProductSize, GetProductSizeDTO>().ReverseMap();
             CreateMap<User, UserReviews>().ReverseMap();
             CreateMap<ListImage, ListImageDTO>().ReverseMap();
+            CreateMap<ProductCenter, ProductDetels>().ReverseMap();
+            CreateMap<HomeProduct,Product >().ReverseMap();
+            CreateMap<GetCenterDTO, ICollection<Center>>().ReverseMap().ForAllMembers(x=>x.UseDestinationValue());
         }
     }
 }
