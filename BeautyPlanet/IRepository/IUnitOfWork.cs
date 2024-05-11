@@ -20,8 +20,8 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<ShoppingCategory> ShoppingCategory { get; }
         public IGenericRepository<ShoppingCart> ShoppingCart { get; }
         public IGenericRepository<Company> Company { get; }
-        public IGenericRepository<ProductSize> ProductSize { get; }
-        public IGenericRepository<ProductColor> ProductColor { get; }
+        public IGenericRepository<ProductColorSize> ProductColorSize { get; }
+     //   public IGenericRepository<> ProductColor { get; }
         public IGenericRepository<Review> Review { get; }
         public IGenericRepository<ListImage> ListImage { get; }
         Task Save();

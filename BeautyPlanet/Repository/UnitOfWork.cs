@@ -24,8 +24,8 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<ShoppingCategory> _shoppingCategory;
         private IGenericRepository<ShoppingCart> _shoppingCart;
         private IGenericRepository<Company> _company;
-        private IGenericRepository<ProductColor> _productColor;
-        private IGenericRepository<ProductSize> _productSize;
+       // private IGenericRepository<ProductColor> _productColor;
+        private IGenericRepository<ProductColorSize> _productColorSize;
         private IGenericRepository<Review> _review;
         private IGenericRepository<ListImage> _listImage;
         public UnitOfWork(BeautyDbContext context)
@@ -63,14 +63,12 @@ namespace BeautyPlanet.Repository
 
         public IGenericRepository<Company> Company => _company ??=new GenericRepository<Company>(_context);
 
-        public IGenericRepository<ProductSize> ProductSize => _productSize ??=new GenericRepository<ProductSize>(_context);
-
-        public IGenericRepository<ProductColor> ProductColor => _productColor ??=new GenericRepository<ProductColor>(_context);
-
+        
         public IGenericRepository<Review> Review => _review ??=new GenericRepository<Review>(_context);
 
         public IGenericRepository<ListImage> ListImage => _listImage ??=new GenericRepository<ListImage>(_context);
 
+        public IGenericRepository<ProductColorSize> ProductColorSize => _productColorSize ??=new GenericRepository<ProductColorSize>(_context);
 
         public void Dispose()
         {

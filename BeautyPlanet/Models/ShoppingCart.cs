@@ -7,12 +7,13 @@ namespace BeautyPlanet.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey(nameof(ProductCenter))]
-        public int ProductCenterId { get; set; }
-        public ProductCenter ProductCenterr { get; set; }
+        [ForeignKey(nameof(Center))]
+        public int CenterId { get; set; }
+        public Center Center { get; set; } 
+        public ICollection<ProductColorSize> Products { get; set; }
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
-        public User Userr { get; set; }
+        public User User { get; set; }
         public int Count { get; set; }
     }
 }
