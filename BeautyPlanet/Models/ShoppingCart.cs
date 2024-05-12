@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BeautyPlanet.Controllers;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BeautyPlanet.Models
@@ -7,9 +8,10 @@ namespace BeautyPlanet.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey(nameof(ProductCenter))]
-        public int ProductCenterId { get; set; }
-        public ProductCenter ProductCenterr { get; set; }
+        [Forig]
+        public int CenterId { get; set; }
+        public Center Centerr { get; set; }
+        public ICollection<Product>Products{get;set;}
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
         public User Userr { get; set; }
