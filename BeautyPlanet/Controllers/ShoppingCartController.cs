@@ -5,6 +5,7 @@ using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace BeautyPlanet.Controllers
 {
@@ -23,29 +24,25 @@ namespace BeautyPlanet.Controllers
             _logger = logger;
         }
         [HttpPost]
-        public async Task<IActionResult> AddShoppingCart([FromBody] ShopCart shop)
+        public async Task<IActionResult> UpSertShoppingCart([FromBody] ShopCart shop)
         {
             var prc = await _unitOfWork.ProductCenter.Get(q => q.ProductId == shop.ProductId && q.CenterId == shop.CenterId);
-            ShoppingCartDTO shp = new ShoppingCartDTO();
-            shp.ProductCenterId = prc.Id;
-            shp.UserId = shop.UserId;
-            shp.Count = shop.Count;
-            var sh = _mapper.Map<ShoppingCart>(shp);
-             await _unitOfWork.ShoppingCart.Insert(sh);
-            await _unitOfWork.Save();
+            //var prs = await _unitOfWork.ProductSize.Get(q => q.ProductId == shop.ProductId && q.SizeId == shop.SizeId);
+            //var pc = await _unitOfWork.ProductColor.Get(q => q.ProductId == shop.ProductId && q.ColorId == shop.ColorId);
+            
             return Ok();
         }
         [HttpGet]
         public async Task<IActionResult> GetAllShoppingCart()
         {
-            IList<GetCart> shopCarts = new List<GetCart>();
-            var sh = await _unitOfWork.ShoppingCart.GetAll(include:x=>x.Include(p=>p.ProductCenterr).ThenInclude(q=>q.Productt));
-            foreach(ShoppingCart s in sh)
-            {
-                var prod = _mapper.Map<AppProduct>(s.ProductCenterr.Productt);
-                shopCarts.Add(new GetCart { Id=s.Id,AppProduct=prod,Count=s.Count});
-            }
-            return Ok(shopCarts);
+            //IList<GetCart> shopCarts = new List<GetCart>();
+            //var sh = await _unitOfWork.ShoppingCart.GetAll(include:x=>x.Include(p=>p.ProductCenterr).ThenInclude(q=>q.Productt));
+            //foreach(ShoppingCart s in sh)
+            //{
+            //    var prod = _mapper.Map<AppProduct>(s.ProductCenterr.Productt);
+            //    shopCarts.Add(new GetCart { Id=s.Id,AppProduct=prod,Count=s.Count});
+            //}
+            return Ok();
         }
     }
 }

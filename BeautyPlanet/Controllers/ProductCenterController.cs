@@ -33,18 +33,42 @@ namespace BeautyPlanet.Controllers
         [HttpPost("AddProductSize")]
         public async Task<IActionResult> AddProductSize([FromBody] ProductSizeDTO productCenter)
         {
-            var m = _mapper.Map<ProductSize>(productCenter);
-            await _unitOfWork.ProductSize.Insert(m);
+            var prod = await _unitOfWork.ProductColorSize.Get(q => q.ProductId == productCenter.ProductId);
+            if (prod != null)
+            {
+                prod.SizeId = productCenter.SizeId;
+                _unitOfWork.ProductColorSize.Update(prod);
+                await _unitOfWork.Save();
+                return Ok();
+
+            }
+            else 
+            { 
+            var m = _mapper.Map<ProductColorSize>(productCenter);
+            await _unitOfWork.ProductColorSize.Insert(m);
             await _unitOfWork.Save();
             return Ok();
+            }
         }
         [HttpPost("AddProductColor")]
         public async Task<IActionResult> AddProductColor([FromBody] ProductColorDTO productCenter)
         {
-            var m = _mapper.Map<ProductColor>(productCenter);
-            await _unitOfWork.ProductColor.Insert(m);
-            await _unitOfWork.Save();
-            return Ok();
+            var prod = await _unitOfWork.ProductColorSize.Get(q => q.ProductId == productCenter.ProductId);
+            if (prod != null)
+            {
+                prod.ColorId = productCenter.ColorId;
+                _unitOfWork.ProductColorSize.Update(prod);
+                await _unitOfWork.Save();
+                return Ok();
+
+            }
+            else
+            {
+                var m = _mapper.Map<ProductColorSize>(productCenter);
+                await _unitOfWork.ProductColorSize.Insert(m);
+                await _unitOfWork.Save();
+                return Ok();
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProductCenter()
@@ -76,14 +100,14 @@ namespace BeautyPlanet.Controllers
         [HttpGet("ProductSize")]
         public async Task<IActionResult> GetAllProductSize()
         {
-            var service = await _unitOfWork.ProductSize.GetAll();
+            var service = await _unitOfWork.ProductColorSize.GetAll(include:x=>x.Include(q=>q.Size));
             var result = _mapper.Map<IList<GetProductSizeDTO>>(service);
             return Ok(result);
         }
         [HttpGet("GetProdoctColor")]
         public async Task<IActionResult> GetAllProductColor()
         {
-            var service = await _unitOfWork.ProductColor.GetAll();
+            var service = await _unitOfWork.ProductColorSize.GetAll(include: x => x.Include(q => q.Color));
             var result = _mapper.Map<IList<GetProductColorDTO>>(service);
             return Ok(result);
         }

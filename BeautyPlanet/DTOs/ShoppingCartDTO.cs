@@ -26,6 +26,7 @@ namespace BeautyPlanet.DTOs
         public int ProductId { get; set; }
         public int CenterId { get; set; }
         public string UserId { get; set; }
-        public int Count { get; set; }
+        public int SizeId { get; set; } 
+        public int ColorId { get; set; }
     }
 }

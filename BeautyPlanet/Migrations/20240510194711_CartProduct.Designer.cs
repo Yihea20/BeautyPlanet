@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240510194711_CartProduct")]
+    partial class CartProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -450,12 +453,17 @@ namespace BeautyPlanet.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ShoppingCartId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ShoppingCategoryId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("ShoppingCartId");
 
                     b.HasIndex("ShoppingCategoryId");
 
@@ -485,7 +493,7 @@ namespace BeautyPlanet.Migrations
                     b.ToTable("ProductCenters");
                 });
 
-            modelBuilder.Entity("BeautyPlanet.Models.ProductColorSize", b =>
+            modelBuilder.Entity("BeautyPlanet.Models.ProductColor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -493,31 +501,42 @@ namespace BeautyPlanet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ColorId")
+                    b.Property<int>("ColorId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ShoppingCartId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SizeId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ColorId");
 
-                    b.HasIndex("ShoppingCartId");
+                    b.HasIndex("ProductId", "ColorId");
+
+                    b.ToTable("ProductColors");
+                });
+
+            modelBuilder.Entity("BeautyPlanet.Models.ProductSize", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("SizeId");
 
-                    b.HasIndex("ProductId", "ColorId");
-
                     b.HasIndex("ProductId", "SizeId");
 
-                    b.ToTable("ProductColorSizes");
+                    b.ToTable("ProductSizes");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Review", b =>
@@ -794,19 +813,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9328874d-9479-4cab-8a87-d687526af4e0",
+                            Id = "475c24e5-b989-4c01-a4ac-42ad3bb3ceef",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "802fa45a-ef25-41c8-af1e-07dc42911f74",
+                            Id = "2539ffa3-af8f-43fa-b7af-e6329944feda",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "1ad78a1f-3ba5-4633-897d-cbd192b49ac9",
+                            Id = "f025d77f-fb1d-488a-b849-98106f0543b6",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1061,6 +1080,10 @@ namespace BeautyPlanet.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CompanyId");
 
+                    b.HasOne("BeautyPlanet.Models.ShoppingCart", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ShoppingCartId");
+
                     b.HasOne("BeautyPlanet.Models.ShoppingCategory", "ShoppingCategoryy")
                         .WithMany("Products")
                         .HasForeignKey("ShoppingCategoryId")
@@ -1089,11 +1112,13 @@ namespace BeautyPlanet.Migrations
                     b.Navigation("Productt");
                 });
 
-            modelBuilder.Entity("BeautyPlanet.Models.ProductColorSize", b =>
+            modelBuilder.Entity("BeautyPlanet.Models.ProductColor", b =>
                 {
                     b.HasOne("BeautyPlanet.Models.Colors", "Color")
                         .WithMany()
-                        .HasForeignKey("ColorId");
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeautyPlanet.Models.Product", "Productt")
                         .WithMany()
@@ -1101,15 +1126,24 @@ namespace BeautyPlanet.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BeautyPlanet.Models.ShoppingCart", null)
-                        .WithMany("Products")
-                        .HasForeignKey("ShoppingCartId");
+                    b.Navigation("Color");
+
+                    b.Navigation("Productt");
+                });
+
+            modelBuilder.Entity("BeautyPlanet.Models.ProductSize", b =>
+                {
+                    b.HasOne("BeautyPlanet.Models.Product", "Productt")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeautyPlanet.Models.Sizes", "Size")
                         .WithMany()
-                        .HasForeignKey("SizeId");
-
-                    b.Navigation("Color");
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Productt");
 
@@ -1186,7 +1220,7 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.ShoppingCart", b =>
                 {
-                    b.HasOne("BeautyPlanet.Models.Center", "Center")
+                    b.HasOne("BeautyPlanet.Models.Center", "Centerr")
                         .WithMany()
                         .HasForeignKey("CenterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1196,15 +1230,15 @@ namespace BeautyPlanet.Migrations
                         .WithMany("ShoppingCarts")
                         .HasForeignKey("ProductCenterId");
 
-                    b.HasOne("BeautyPlanet.Models.User", "User")
+                    b.HasOne("BeautyPlanet.Models.User", "Userr")
                         .WithMany("ShoppingCarts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Center");
+                    b.Navigation("Centerr");
 
-                    b.Navigation("User");
+                    b.Navigation("Userr");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -62,10 +62,10 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Colors, ColorDTO>().ReverseMap();
             CreateMap<Review, ReviewDTO>().ReverseMap();
             CreateMap<Review, GetReviewDTO>().ReverseMap();
-            CreateMap<ProductColor, GetProductColorDTO>().ReverseMap();
-            CreateMap<ProductColor, ProductColorDTO>().ReverseMap();
-            CreateMap<ProductSize, ProductSizeDTO>().ReverseMap();
-            CreateMap<ProductSize, GetProductSizeDTO>().ReverseMap();
+            CreateMap<ProductColorSize, GetProductColorDTO>().ReverseMap();
+            CreateMap<ProductColorSize, ProductColorDTO>().ReverseMap();
+            CreateMap<ProductColorSize, ProductSizeDTO>().ReverseMap();
+            CreateMap<ProductColorSize, GetProductSizeDTO>().ReverseMap();
             CreateMap<User, UserReviews>().ReverseMap();
             CreateMap<ListImage, ListImageDTO>().ReverseMap();
             CreateMap<ProductCenter, ProductDetels>().ReverseMap();

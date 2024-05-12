@@ -74,7 +74,7 @@ namespace BeautyPlanet.DTOs
     public class GetProductColorDTO
     {
         public int ColorId { get; set; }
-        public Colors Color { get; set; }
+        public ColorDTO Color { get; set; }
           }
     public class ProductSizeDTO
     {
@@ -84,6 +84,6 @@ namespace BeautyPlanet.DTOs
     public class GetProductSizeDTO
     {
         public int SizeId { get; set; }
-        public Sizes Size { get; set; }
+        public SizeDTO Size { get; set; }
            }
 }
