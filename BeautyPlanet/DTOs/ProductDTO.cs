@@ -66,24 +66,22 @@ namespace BeautyPlanet.DTOs
         public ICollection<Sizes> Sizes { get; set; }
         public string ImageUrl { get; set; }
     }
-    public class ProductColorDTO
+    public class ProductSizeColorDTO
     {
-        public int ColorId { get; set; }
+        public int? ColorId { get; set; }
+        public int? SizeId { get; set; }
         public int ProductId { get; set; }
+        public int CenterId { get; set; }
       }
     public class GetProductColorDTO
     {
-        public int ColorId { get; set; }
+        
         public ColorDTO Color { get; set; }
-          }
-    public class ProductSizeDTO
-    {
-        public int SizeId { get; set; }
-        public int ProductId { get; set; }
-    }
+     }
+    
     public class GetProductSizeDTO
     {
-        public int SizeId { get; set; }
+        
         public SizeDTO Size { get; set; }
-           }
+     }
 }

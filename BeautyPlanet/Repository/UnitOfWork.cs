@@ -19,15 +19,16 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Gallery> _gallery;
         private IGenericRepository<Appointment> _appointement;
         private IGenericRepository<ServiceSpecialist> _serviceSpecialist;
-        private IGenericRepository<ProductCenter> _productCenter;
+       // private IGenericRepository<ProductCenter> _productCenter;
         private IGenericRepository<Product> _product;
         private IGenericRepository<ShoppingCategory> _shoppingCategory;
         private IGenericRepository<ShoppingCart> _shoppingCart;
         private IGenericRepository<Company> _company;
        // private IGenericRepository<ProductColor> _productColor;
-        private IGenericRepository<ProductColorSize> _productColorSize;
+        private IGenericRepository<ProductCenterColorSize> _productCenterColorSize;
         private IGenericRepository<Review> _review;
         private IGenericRepository<ListImage> _listImage;
+        private IGenericRepository<ProductShopCart> _prodShopCart;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -55,7 +56,7 @@ namespace BeautyPlanet.Repository
 
         public IGenericRepository<Product> Product => _product ??=new GenericRepository<Product>(_context);
 
-        public IGenericRepository<ProductCenter> ProductCenter => _productCenter ??=new GenericRepository<ProductCenter>(_context);
+       // public IGenericRepository<ProductCenter> ProductCenter => _productCenter ??=new GenericRepository<ProductCenter>(_context);
 
         public IGenericRepository<ShoppingCategory> ShoppingCategory => _shoppingCategory ??=new GenericRepository<ShoppingCategory>(_context);
 
@@ -68,7 +69,9 @@ namespace BeautyPlanet.Repository
 
         public IGenericRepository<ListImage> ListImage => _listImage ??=new GenericRepository<ListImage>(_context);
 
-        public IGenericRepository<ProductColorSize> ProductColorSize => _productColorSize ??=new GenericRepository<ProductColorSize>(_context);
+        public IGenericRepository<ProductCenterColorSize> ProductCenterColorSize => _productCenterColorSize ??=new GenericRepository<ProductCenterColorSize>(_context);
+
+        public IGenericRepository<ProductShopCart> ProductShopCart => _prodShopCart ??=new GenericRepository<ProductShopCart>(_context);
 
         public void Dispose()
         {

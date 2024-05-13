@@ -16,13 +16,14 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<Appointment>Appointment { get; }
         public IGenericRepository<ServiceSpecialist> ServiceSpecialist { get; }
         public IGenericRepository<Product> Product { get; }
-        public IGenericRepository<ProductCenter> ProductCenter { get; }
+       // public IGenericRepository<ProductCenter> ProductCenter { get; }
         public IGenericRepository<ShoppingCategory> ShoppingCategory { get; }
         public IGenericRepository<ShoppingCart> ShoppingCart { get; }
         public IGenericRepository<Company> Company { get; }
-        public IGenericRepository<ProductColorSize> ProductColorSize { get; }
+        public IGenericRepository<ProductCenterColorSize> ProductCenterColorSize { get; }
      //   public IGenericRepository<> ProductColor { get; }
         public IGenericRepository<Review> Review { get; }
+        public IGenericRepository<ProductShopCart> ProductShopCart { get; }
         public IGenericRepository<ListImage> ListImage { get; }
         Task Save();
     }

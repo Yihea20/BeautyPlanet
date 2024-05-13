@@ -15,14 +15,19 @@ namespace BeautyPlanet.DTOs
     {
 
         public int Id { get; set; }
-        public GetCenterDTO Centerr { get; set; }
-        public GetProduct Productt { get; set; }
+        public GetCenterDTO Center { get; set; }
+        public GetProduct Product { get; set; }
         public ICollection<ShoppingCartDTO> ShoppingCarts { get; set; }
 
     }
     public class ProductDetels
     {
-        public GetProduct Productt { get; set; }
-        public GetCenterDTO Centerr { get; set; }
+        public GetProduct Product{ get; set; }
+        public GetCenterDTO Center { get; set; }
 }
+    public class ProductCenterColorSizeDTO
+    {
+        public int Id { get; set; }
+        public GetProduct Product { get; set; }
+    }
 }

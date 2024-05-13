@@ -72,26 +72,26 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllProduct()
         {
             IList<HomeProduct> home = new List<HomeProduct>();
-            HomeProduct h = new HomeProduct();
-            var service = await _unitOfWork.ProductCenter.GetAll(include: x => x.Include(c=>c.Centerr).Include(p => p.Productt).ThenInclude(p => p.Sizes).Include(p => p.Productt).ThenInclude(p => p.Colors)
-            .Include(p => p.Productt).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
+            HomeProduct h1 = new HomeProduct();
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c=>c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
             var result = _mapper.Map<IList<ProductDetels>>(service);
             foreach (var p in result)
             {
-                h.Id = p.Productt.Id;
-                h.ImageUrl = p.Productt.ImageUrl;
-                h.Name = p.Productt.Name;
-                h.OfferPercent = p.Productt.OfferPercent;
-                h.Price = p.Productt.Price;
-                h.ProductAddTime = p.Productt.ProductAddTime;
-                h.Rate = p.Productt.Rate;
-                h.Reviews = p.Productt.Reviews;
-                h.Sizes = p.Productt.Sizes;
-                h.Description = p.Productt.Description;
-                h.Colors = p.Productt.Colors;
-                h.EarnPoint = p.Productt.EarnPoint;
-                h.Centers = p.Centerr;
-                home.Add(h);
+                h1.Id = p.Product.Id;
+                h1.ImageUrl = p.Product.ImageUrl;
+                h1.Name = p.Product.Name;
+                h1.OfferPercent = p.Product.OfferPercent;
+                h1.Price = p.Product.Price;
+                h1.ProductAddTime = p.Product.ProductAddTime;
+                h1.Rate = p.Product.Rate;
+                h1.Reviews = p.Product.Reviews;
+                h1.Sizes = p.Product.Sizes;
+                h1.Description = p.Product.Description;
+                h1.Colors = p.Product.Colors;
+                h1.EarnPoint = p.Product.EarnPoint;
+                h1.Centers = p.Center;
+                home.Add(h1);
             }
             return Ok(home);
         }
@@ -99,23 +99,23 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetProduct(int id,int centerid)
         {
             HomeProduct h = new HomeProduct();
-            var service = await _unitOfWork.ProductCenter.Get(q=>q.CenterId==centerid&&q.ProductId==id,include: x => x.Include(c => c.Centerr).Include(p => p.Productt).ThenInclude(p => p.Sizes).Include(p => p.Productt).ThenInclude(p => p.Colors)
-            .Include(p => p.Productt).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
+            var service = await _unitOfWork.ProductCenterColorSize.Get(q=>q.CenterId==centerid&&q.ProductId==id,include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
             var result = _mapper.Map<ProductDetels>(service);
            
-                h.Id = result.Productt.Id;
-                h.ImageUrl = result.Productt.ImageUrl;
-                h.Name = result.Productt.Name;
-                h.OfferPercent = result.Productt.OfferPercent;
-                h.Price = result.Productt.Price;
-                h.ProductAddTime = result.Productt.ProductAddTime;
-                h.Rate = result.Productt.Rate;
-                h.Reviews = result.Productt.Reviews;
-                h.Sizes = result.Productt.Sizes;
-                h.Description = result.Productt.Description;
-                h.Colors = result.Productt.Colors;
-                h.EarnPoint = result.Productt.EarnPoint;
-                h.Centers = result.Centerr;
+                h.Id = result.Product.Id;
+                h.ImageUrl = result.Product.ImageUrl;
+                h.Name = result.Product.Name;
+                h.OfferPercent = result.Product.OfferPercent;
+                h.Price = result.Product.Price;
+                h.ProductAddTime = result.Product.ProductAddTime;
+                h.Rate = result.Product.Rate;
+                h.Reviews = result.Product.Reviews;
+                h.Sizes = result.Product.Sizes;
+                h.Description = result.Product.Description;
+                h.Colors = result.Product.Colors;
+                h.EarnPoint = result.Product.EarnPoint;
+                h.Centers = result.Center;
                 
             
             return Ok(h);

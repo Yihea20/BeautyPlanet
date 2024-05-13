@@ -22,92 +22,124 @@ namespace BeautyPlanet.Controllers
             _mapper = mapper;
             _logger = logger;
         }
-        [HttpPost]
-        public async Task<IActionResult> AddProductCenter([FromBody] ProductCenterDTO productCenter)
+        
+        [HttpPost("AddProductColorOrSize")]
+        public async Task<IActionResult> AddProductSize([FromBody] ProductSizeColorDTO productCenter)
         {
-            var m = _mapper.Map<ProductCenter>(productCenter);
-            await _unitOfWork.ProductCenter.Insert(m);
-            await _unitOfWork.Save();
-            return Ok();
-        }
-        [HttpPost("AddProductSize")]
-        public async Task<IActionResult> AddProductSize([FromBody] ProductSizeDTO productCenter)
-        {
-            var prod = await _unitOfWork.ProductColorSize.Get(q => q.ProductId == productCenter.ProductId);
-            if (prod != null)
+            if (productCenter.ProductId != 0&&productCenter.CenterId!=0)
             {
-                prod.SizeId = productCenter.SizeId;
-                _unitOfWork.ProductColorSize.Update(prod);
-                await _unitOfWork.Save();
-                return Ok();
+                if (productCenter.ColorId != 0 && productCenter.SizeId != 0)
+                {
 
-            }
-            else 
-            { 
-            var m = _mapper.Map<ProductColorSize>(productCenter);
-            await _unitOfWork.ProductColorSize.Insert(m);
-            await _unitOfWork.Save();
-            return Ok();
-            }
-        }
-        [HttpPost("AddProductColor")]
-        public async Task<IActionResult> AddProductColor([FromBody] ProductColorDTO productCenter)
-        {
-            var prod = await _unitOfWork.ProductColorSize.Get(q => q.ProductId == productCenter.ProductId);
-            if (prod != null)
-            {
-                prod.ColorId = productCenter.ColorId;
-                _unitOfWork.ProductColorSize.Update(prod);
-                await _unitOfWork.Save();
-                return Ok();
+                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId &&q.CenterId==productCenter.CenterId &&q.SizeId == productCenter.SizeId&&q.ColorId==productCenter.ColorId);
+                    if (prod != null)
+                    {
+                        return Ok("color and size exist before");
+                    }
+                    else {
+                      var  prod1 = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.SizeId == productCenter.SizeId && q.ColorId == 10000);
+                        var prod2= await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.ColorId == productCenter.ColorId && q.SizeId == 10000);
+                        if (prod1!=null)
+                            {
+                            prod1.ColorId = productCenter.ColorId;
+                            _unitOfWork.ProductCenterColorSize.Update(prod1);
+                            await _unitOfWork.Save();
+                            return Ok();
+                            }
+                        if(prod2!=null)
+                        {
+                            prod2.SizeId = productCenter.SizeId;
+                            _unitOfWork.ProductCenterColorSize.Update(prod2);
+                            await _unitOfWork.Save();
+                            return Ok();
 
+                        }
+                        var m = _mapper.Map<ProductCenterColorSize>(productCenter);
+                        await _unitOfWork.ProductCenterColorSize.Insert(m);
+                        await _unitOfWork.Save();
+                        return Ok();
+                    }
+                }
+                else if (productCenter.ColorId == 0 && productCenter.SizeId != 0) 
+                {
+                    productCenter.ColorId = 10000;
+                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.SizeId == productCenter.SizeId);
+                    if(prod!=null)
+                    {
+                        return Ok("size exist before");
+                    }
+                    else
+                    {
+
+                        var m = _mapper.Map<ProductCenterColorSize>(productCenter);
+                        await _unitOfWork.ProductCenterColorSize.Insert(m);
+                        await _unitOfWork.Save();
+                        return Ok();
+                    }
+
+                }
+
+                else if (productCenter.SizeId == 0 && productCenter.ColorId != 0)
+                {
+                    productCenter.SizeId = 10000;
+                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.ColorId == productCenter.ColorId);
+                    if (prod != null)
+                    {
+                        return Ok("color exist before");
+                    }
+                    else
+                    {
+
+                        var m = _mapper.Map<ProductCenterColorSize>(productCenter);
+                        await _unitOfWork.ProductCenterColorSize.Insert(m);
+                        await _unitOfWork.Save();
+                        return Ok();
+                    }
+
+                }
+                else { return NotFound(); }
             }
-            else
-            {
-                var m = _mapper.Map<ProductColorSize>(productCenter);
-                await _unitOfWork.ProductColorSize.Insert(m);
-                await _unitOfWork.Save();
-                return Ok();
-            }
+            
+            else return NotFound();
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProductCenter()
         {
             IList<HomeProduct> home = new List<HomeProduct>();
-            HomeProduct h = new HomeProduct();
-            var service = await _unitOfWork.ProductCenter.GetAll(include:x=>x.Include(c=>c.Centerr).ThenInclude(s=>s.Specialists).Include(p=>p.Productt).ThenInclude(p=>p.Sizes).Include(p=>p.Productt).ThenInclude(p=>p.Colors)
-            .Include(p=>p.Productt).ThenInclude(p=>p.Reviews).ThenInclude(u=>u.Userr));
+            HomeProduct h1 = new HomeProduct();
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include:x=>x.Include(c=>c.Center).ThenInclude(s=>s.Specialists).Include(p=>p.Product).ThenInclude(p=>p.Sizes).Include(p=>p.Product).ThenInclude(p=>p.Colors)
+            .Include(p=>p.Product).ThenInclude(p=>p.Reviews).ThenInclude(u=>u.Userr));
             var result = _mapper.Map<IList<ProductDetels>>(service);
             foreach(var p in result)
             {
-                h.Id = p.Productt.Id;
-                h.ImageUrl = p.Productt.ImageUrl;
-                h.Name = p.Productt.Name;
-                h.OfferPercent = p.Productt.OfferPercent;
-                h.Price = p.Productt.Price;
-                h.ProductAddTime = p.Productt.ProductAddTime;
-                h.Rate = p.Productt.Rate;
-                h.Reviews = p.Productt.Reviews;
-                h.Sizes = p.Productt.Sizes;
-                h.Description = p.Productt.Description;
-                h.Colors = p.Productt.Colors;
-                h.EarnPoint = p.Productt.EarnPoint;
-                h.Centers = p.Centerr;
-                home.Add(h);
+                h1.Id = p.Product.Id;
+                h1.ImageUrl = p.Product.ImageUrl;
+                h1.Name = p.Product.Name;
+                h1.OfferPercent = p.Product.OfferPercent;
+                h1.Price = p.Product.Price;
+                h1.ProductAddTime = p.Product.ProductAddTime;
+                h1.Rate = p.Product.Rate;
+                h1.Reviews = p.Product.Reviews;
+                h1.Sizes = p.Product.Sizes;
+                h1.Description = p.Product.Description;
+                h1.Colors = p.Product.Colors;
+                h1.EarnPoint = p.Product.EarnPoint;
+                h1.Centers = p.Center;
+                home.Add(h1);
             }
             return Ok(home);
         }
         [HttpGet("ProductSize")]
         public async Task<IActionResult> GetAllProductSize()
         {
-            var service = await _unitOfWork.ProductColorSize.GetAll(include:x=>x.Include(q=>q.Size));
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include:x=>x.Include(q=>q.Size));
             var result = _mapper.Map<IList<GetProductSizeDTO>>(service);
             return Ok(result);
         }
         [HttpGet("GetProdoctColor")]
         public async Task<IActionResult> GetAllProductColor()
         {
-            var service = await _unitOfWork.ProductColorSize.GetAll(include: x => x.Include(q => q.Color));
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(q => q.Color));
             var result = _mapper.Map<IList<GetProductColorDTO>>(service);
             return Ok(result);
         }

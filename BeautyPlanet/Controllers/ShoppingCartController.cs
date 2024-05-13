@@ -26,23 +26,56 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> UpSertShoppingCart([FromBody] ShopCart shop)
         {
-            var prc = await _unitOfWork.ProductCenter.Get(q => q.ProductId == shop.ProductId && q.CenterId == shop.CenterId);
-            //var prs = await _unitOfWork.ProductSize.Get(q => q.ProductId == shop.ProductId && q.SizeId == shop.SizeId);
-            //var pc = await _unitOfWork.ProductColor.Get(q => q.ProductId == shop.ProductId && q.ColorId == shop.ColorId);
-            
-            return Ok();
+            var cart = await _unitOfWork.ShoppingCart.Get(q=>q.UserId.Equals(shop.UserId)&&q.CenterId==shop.CenterId);
+            var prc = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == shop.ProductId && q.CenterId == shop.CenterId&&q.ColorId==shop.ColorId&&q.SizeId==shop.SizeId,include:q=>q.Include(x=>x.Product));
+
+            if (cart != null&&prc!=null)
+            {
+                ProductShopDTO product = new ProductShopDTO();
+                product.ShoppingCartId = cart.Id;
+                product.ProductCenterColorSizeId = prc.Id;
+                product.count = shop.Count;
+                var map = _mapper.Map<ProductShopCart>(product);
+                
+                await _unitOfWork.ProductShopCart.Insert(map);
+                await _unitOfWork.Save();
+                cart.TotalPrice += shop.Count*prc.Product.Price;
+                _unitOfWork.ShoppingCart.Update(cart);
+                await _unitOfWork.Save();
+                return Ok();
+            }
+            else if(prc!=null&&cart==null)
+            {
+                ShoppingCartDTO shopping = new ShoppingCartDTO();
+                shopping.UserId = shop.UserId;
+                shopping.CenterId= shop.CenterId;
+                var map = _mapper.Map<ShoppingCart>(shopping);
+                await _unitOfWork.ShoppingCart.Insert(map);
+                await _unitOfWork.Save();
+                var newcart= await _unitOfWork.ShoppingCart.Get(q=>q.CenterId==shop.CenterId&&q.UserId==shop.UserId);
+                ProductShopDTO product = new ProductShopDTO();
+                product.ShoppingCartId = newcart.Id;
+                product.ProductCenterColorSizeId = prc.Id;
+                product.count = shop.Count;
+                var map1 = _mapper.Map<ProductShopCart>(product);
+                await _unitOfWork.ProductShopCart.Insert(map1);
+                await _unitOfWork.Save();
+                newcart.TotalPrice += shop.Count * prc.Product.Price;
+                _unitOfWork.ShoppingCart.Update(newcart);
+                await _unitOfWork.Save();
+
+                return Ok();
+            }
+            else 
+            return NotFound();
         }
         [HttpGet]
         public async Task<IActionResult> GetAllShoppingCart()
         {
-            //IList<GetCart> shopCarts = new List<GetCart>();
-            //var sh = await _unitOfWork.ShoppingCart.GetAll(include:x=>x.Include(p=>p.ProductCenterr).ThenInclude(q=>q.Productt));
-            //foreach(ShoppingCart s in sh)
-            //{
-            //    var prod = _mapper.Map<AppProduct>(s.ProductCenterr.Productt);
-            //    shopCarts.Add(new GetCart { Id=s.Id,AppProduct=prod,Count=s.Count});
-            //}
-            return Ok();
+            var shop = await _unitOfWork.ShoppingCart.GetAll(include:q=>q.Include(c=>c.Center).Include(u=>u.User).Include(p=>p.ProductCenterColorSize).ThenInclude(p=>p.Product).ThenInclude(x=>x.Colors).Include(p => p.ProductCenterColorSize).ThenInclude(p => p.Product).ThenInclude(x => x.Sizes).Include(p => p.ProductCenterColorSize).ThenInclude(p => p.Product).ThenInclude(x => x.Reviews));
+            var map = _mapper.Map<IList<GetShoppingCart>>(shop);
+  
+            return Ok(map);
         }
     }
 }

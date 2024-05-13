@@ -28,5 +28,6 @@ namespace BeautyPlanet.Models
         public ICollection<Service> Services { get; set; }
         public ICollection<Specialist> Specialists { get; set; }
         public ICollection<Product> Products { get; set; }
+        //public ICollection<ShoppingCart> ShoppingCarts { get; set; }
     }
 }

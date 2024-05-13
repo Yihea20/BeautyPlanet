@@ -47,8 +47,8 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<Product, GetProduct>().ReverseMap();
             CreateMap<Product, AppProduct>().ReverseMap();
-            CreateMap<ProductCenter, ProductCenterDTO>().ReverseMap();
-            CreateMap<ProductCenter, GetProductCenter>().ReverseMap();
+            CreateMap<ProductCenterColorSize, ProductCenterDTO>().ReverseMap();
+            CreateMap<ProductCenterColorSize, GetProductCenter>().ReverseMap();
             CreateMap<ShoppingCart, ShoppingCartDTO>().ReverseMap();
             CreateMap<ShoppingCart, GetShoppingCart>().ReverseMap();
             CreateMap<ShoppingCategory, ShoppingCategoryDTO>().ReverseMap();
@@ -62,15 +62,17 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Colors, ColorDTO>().ReverseMap();
             CreateMap<Review, ReviewDTO>().ReverseMap();
             CreateMap<Review, GetReviewDTO>().ReverseMap();
-            CreateMap<ProductColorSize, GetProductColorDTO>().ReverseMap();
-            CreateMap<ProductColorSize, ProductColorDTO>().ReverseMap();
-            CreateMap<ProductColorSize, ProductSizeDTO>().ReverseMap();
-            CreateMap<ProductColorSize, GetProductSizeDTO>().ReverseMap();
+            CreateMap<ProductCenterColorSize, GetProductColorDTO>().ReverseMap();
+            CreateMap<ProductCenterColorSize, GetProductSizeDTO>().ReverseMap();
+            CreateMap<ProductCenterColorSize, ProductSizeColorDTO>().ReverseMap();
             CreateMap<User, UserReviews>().ReverseMap();
             CreateMap<ListImage, ListImageDTO>().ReverseMap();
-            CreateMap<ProductCenter, ProductDetels>().ReverseMap();
+            CreateMap<ProductCenterColorSize, ProductDetels>().ReverseMap();
             CreateMap<HomeProduct,Product >().ReverseMap();
-            CreateMap<GetCenterDTO, ICollection<Center>>().ReverseMap().ForAllMembers(x=>x.UseDestinationValue());
+            CreateMap<ProductShopCart, ProductShopDTO>().ReverseMap();
+            CreateMap<ShoppingCart, ShoppingCartDTO>().ReverseMap();
+            CreateMap<ShoppingCart, GetShoppingCart>().ReverseMap();
+            CreateMap<ProductCenterColorSize, ProductCenterColorSizeDTO>().ReverseMap();
         }
     }
 }

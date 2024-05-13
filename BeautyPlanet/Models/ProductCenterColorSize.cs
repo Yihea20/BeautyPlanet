@@ -2,7 +2,7 @@
 
 namespace BeautyPlanet.Models
 {
-    public class ProductColorSize
+    public class ProductCenterColorSize
     {
         public int Id { get; set; }
         [ForeignKey(nameof(Colors))]
@@ -11,8 +11,12 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Sizes))]
         public int? SizeId { get; set; }
         public Sizes? Size { get; set; }
+        [ForeignKey(nameof(Center))]
+        public int CenterId { get; set; }
+        public Center Center { get; set; } 
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
-        public Product Productt { get; set; }
+        public Product Product { get; set; }
+        public ICollection<ShoppingCart> ShoppingCarts { get; set; }
     }
 }
