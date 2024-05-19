@@ -52,7 +52,7 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetAppointment> app = new List<GetAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll( include: q => q.Include(x => x.ServiceSpecialistt).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialistt).ThenInclude(p => p.Specialistt).Include(s => s.Statuss));
+            var appointment = await _unitOfWork.Appointment.GetAll(include: q => q.Include(x => x.ServiceSpecialistt).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialistt).ThenInclude(p => p.Specialistt).Include(s => s.Statuss));
             foreach (Appointment a in appointment)
             {
                 var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialistt.Specialistt.CenterId));
@@ -64,12 +64,66 @@ namespace BeautyPlanet.Controllers
 
             return Ok(app);
         }
-        [HttpGet("AppointmentByStatus")]
-        public async Task<IActionResult> GetAllAppointment(int status)
+        [HttpGet("{UserId}")]
+        public async Task<IActionResult> GetAllUserAppointment(String UserId)
         {
 
             IList<GetAppointment> app = new List<GetAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll(q=>q.StatusId==status, include:q=>q.Include(x=>x.ServiceSpecialistt).ThenInclude(x=>x.Servicee).Include(q=>q.ServiceSpecialistt).ThenInclude(p=>p.Specialistt).Include(s=>s.Statuss));
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(UserId), include: q => q.Include(x => x.ServiceSpecialistt).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialistt).ThenInclude(p => p.Specialistt).Include(s => s.Statuss));
+            foreach (Appointment a in appointment)
+            {
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialistt.Specialistt.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialistt.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialistt.Servicee.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialistt.ServiceId));
+                app.Add(new GetAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Statuss.Name, Center = center, Specialist = specialist, Category = category, Service = service });
+            }
+
+            return Ok(app);
+        }
+        [HttpGet("DashUserId/{DashUserId}")]
+        public async Task<IActionResult> GetAllDashUserAppointment(String DashUserId)
+        {
+
+            IList<GetDashAppointment> app = new List<GetDashAppointment>();
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(DashUserId), include: q => q.Include(x => x.ServiceSpecialistt).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialistt).ThenInclude(p => p.Specialistt).Include(s => s.Statuss));
+            foreach (Appointment a in appointment)
+            {
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialistt.Specialistt.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialistt.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialistt.Servicee.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialistt.ServiceId));
+                var user = _mapper.Map<GetUserDTO>(await _unitOfWork.User.Get(q => q.Id.Equals(a.UserId)));
+                app.Add(new GetDashAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Statuss.Name, Center = center, Specialist = specialist, Category = category, Service = service ,User=user});
+            }
+
+            return Ok(app);
+        }
+        [HttpGet("DashAppointmentByStatus")]
+        public async Task<IActionResult> GetAllDashAppointment(int status, string userId)
+        {
+
+            IList<GetDashAppointment> app = new List<GetDashAppointment>();
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.StatusId == status && q.UserId.Equals(userId), include: q => q.Include(x => x.ServiceSpecialistt).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialistt).ThenInclude(p => p.Specialistt).Include(s => s.Statuss));
+            foreach (Appointment a in appointment)
+            {
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialistt.Specialistt.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialistt.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialistt.Servicee.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialistt.ServiceId));
+                var user = _mapper.Map<GetUserDTO>(await _unitOfWork.User.Get(q => q.Id.Equals(a.UserId)));
+                app.Add(new GetDashAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Statuss.Name, Center = center, Specialist = specialist, Category = category, Service = service, User = user });
+            }
+
+            return Ok(app);
+        }
+
+        [HttpGet("AppointmentByStatus")]
+        public async Task<IActionResult> GetAllAppointment(int status,string userId)
+        {
+
+            IList<GetAppointment> app = new List<GetAppointment>();
+            var appointment = await _unitOfWork.Appointment.GetAll(q=>q.StatusId==status&&q.UserId.Equals(userId), include:q=>q.Include(x=>x.ServiceSpecialistt).ThenInclude(x=>x.Servicee).Include(q=>q.ServiceSpecialistt).ThenInclude(p=>p.Specialistt).Include(s=>s.Statuss));
             foreach (Appointment a in appointment)
             {
                 var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q=>q.Id==a.ServiceSpecialistt.Specialistt.CenterId));

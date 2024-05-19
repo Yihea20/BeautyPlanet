@@ -26,6 +26,17 @@ namespace BeautyPlanet.DTOs
         public CategoryIdDTO Category { get; set; }
         public GetServiceBesic Service { get; set; }
     }
+    public class GetDashAppointment
+    {
+        public int Id { get; set; }
+        public DateTime DateTime { get; set; }
+        public string Status { get; set; }
+        public GetCenterwithIdDTO Center { get; set; }
+        public AppSpecialist Specialist { get; set; }
+        public CategoryIdDTO Category { get; set; }
+        public GetServiceBesic Service { get; set; }
+        public GetUserDTO User { get; set; }
+    }
     public class GetCart
     {
         public int Id { get; set; }

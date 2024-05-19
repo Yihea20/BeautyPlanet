@@ -33,6 +33,20 @@ namespace BeautyPlanet.DTOs
        
 
     }
+    public class GetProductSizeColor
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Price { get; set; }
+        public int? OfferPercent { get; set; }
+        public int Rate { get; set; }
+        public int EarnPoint { get; set; }
+        public string Description { get; set; }
+        public DateTime ProductAddTime { get; set; } = DateTime.Now;
+        public List<string> ImageUrl { get; set; }
+    
+        //public GetReviewDTO Reviews { get; set; }
+    }
     public class HomeProduct
     {
         public int Id { get; set; }

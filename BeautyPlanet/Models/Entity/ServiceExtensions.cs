@@ -1,4 +1,6 @@
 ﻿using BeautyPlanet.DataAccess;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +10,12 @@ namespace BeautyPlanet.Models.Entity
 {
     public static class ServiceExtensions
     {
+        public static void ConfigureNotification(this IServiceCollection services, IWebHostEnvironment environment)
+        {
+
+            var order = GoogleCredential.FromFile(environment.WebRootPath + "\\FireBase\\FireBase.json");
+            FirebaseApp.Create(new AppOptions { Credential = order, });
+        }
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             var builder = services.AddIdentityCore<Person>(q =>

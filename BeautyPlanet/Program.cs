@@ -14,6 +14,7 @@ builder.Services.AddDbContext<BeautyDbContext>(options => options.UseSqlServer(b
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJwt(builder.Configuration);
+builder.Services.ConfigureNotification(builder.Environment);
 builder.Services.AddControllers();
 //builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(op => op.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
