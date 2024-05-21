@@ -17,6 +17,7 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
         public Product Product { get; set; }
+        public int? Count { get; set; }
         public ICollection<ShoppingCart> ShoppingCarts { get; set; }
     }
 }

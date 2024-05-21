@@ -33,6 +33,24 @@ namespace BeautyPlanet.DTOs
        
 
     }
+    public class GetDashProduct
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Price { get; set; }
+        public int? OfferPercent { get; set; }
+        public int Rate { get; set; }
+        public int EarnPoint { get; set; }
+        public string Description { get; set; }
+        public ShoppingCategoryDTO ShoppingCategoryy { get; set; }
+        public DateTime ProductAddTime { get; set; } = DateTime.Now;
+        public List<string> ImageUrl { get; set; }
+        public ICollection<ColorDTO> Colors { get; set; }
+        public ICollection<SizeDTO> Sizes { get; set; }
+        public ICollection<GetReviewDTO> Reviews { get; set; }
+
+
+    }
     public class GetProductSizeColor
     {
         public int Id { get; set; }
@@ -64,6 +82,24 @@ namespace BeautyPlanet.DTOs
         public GetCenterDTO Centers { get; set; }
 
     }
+    public class HomeDashProduct
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Price { get; set; }
+        public int? OfferPercent { get; set; }
+        public int Rate { get; set; }
+        public int EarnPoint { get; set; }
+        public string Description { get; set; }
+        public ShoppingCategoryDTO ShoppingCategoryy { get; set; }
+        public DateTime ProductAddTime { get; set; } = DateTime.Now;
+        public List<string> ImageUrl { get; set; }
+        public ICollection<ColorDTO> Colors { get; set; }
+        public ICollection<SizeDTO> Sizes { get; set; }
+        public ICollection<GetReviewDTO> Reviews { get; set; }
+        public GetCenterDTO Centers { get; set; }
+        public int? Count { get; set; }
+    }
     public class ProductFile
     {
         
@@ -86,6 +122,7 @@ namespace BeautyPlanet.DTOs
         public int? SizeId { get; set; }
         public int ProductId { get; set; }
         public int CenterId { get; set; }
+        public int Count { get; set; }
       }
     public class GetProductColorDTO
     {

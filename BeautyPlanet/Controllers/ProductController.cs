@@ -68,6 +68,38 @@ namespace BeautyPlanet.Controllers
                 return NotFound();
             }
         }
+
+
+        [HttpGet("GetAllDashPRoduct")]
+        public async Task<IActionResult> GetAllDashProduct()
+        {
+            IList<HomeDashProduct> home = new List<HomeDashProduct>();
+            HomeDashProduct h1 = new HomeDashProduct();
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr).Include(c=>c.Product.ShoppingCategoryy));
+            var result = _mapper.Map<IList<ProductDashDetels>>(service);
+            foreach (var p in result)
+            {
+                h1.Id = p.Product.Id;
+                h1.ImageUrl = p.Product.ImageUrl;
+                h1.Name = p.Product.Name;
+                h1.OfferPercent = p.Product.OfferPercent;
+                h1.Price = p.Product.Price;
+                h1.ProductAddTime = p.Product.ProductAddTime;
+                h1.Rate = p.Product.Rate;
+                h1.Reviews = p.Product.Reviews;
+                h1.Sizes = p.Product.Sizes;
+                h1.Description = p.Product.Description;
+                h1.Colors = p.Product.Colors;
+                h1.EarnPoint = p.Product.EarnPoint;
+                h1.Centers = p.Center;
+                h1.ShoppingCategoryy=p.Product.ShoppingCategoryy;
+                h1.Count=p.Count;
+                home.Add(h1);
+            }
+            return Ok(home);
+        }
+
         [HttpGet("GetAllPRoduct")]
         public async Task<IActionResult> GetAllProduct()
         {
@@ -95,6 +127,35 @@ namespace BeautyPlanet.Controllers
             }
             return Ok(home);
         }
+
+
+        [HttpGet("DashProductById")]
+        public async Task<IActionResult> GetDashProduct(int id, int centerid)
+        {
+            HomeDashProduct h = new HomeDashProduct();
+            var service = await _unitOfWork.ProductCenterColorSize.Get(q => q.CenterId == centerid && q.ProductId == id, include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr).Include(p=>p.Product.ShoppingCategoryy));
+            var result = _mapper.Map<ProductDashDetels>(service);
+
+            h.Id = result.Product.Id;
+            h.ImageUrl = result.Product.ImageUrl;
+            h.Name = result.Product.Name;
+            h.OfferPercent = result.Product.OfferPercent;
+            h.Price = result.Product.Price;
+            h.ProductAddTime = result.Product.ProductAddTime;
+            h.Rate = result.Product.Rate;
+            h.Reviews = result.Product.Reviews;
+            h.Sizes = result.Product.Sizes;
+            h.Description = result.Product.Description;
+            h.Colors = result.Product.Colors;
+            h.EarnPoint = result.Product.EarnPoint;
+            h.Centers = result.Center;
+            h.ShoppingCategoryy=result.Product.ShoppingCategoryy;
+            h.Count = result.Count;
+
+            return Ok(h);
+        }
+
         [HttpGet("id")]
         public async Task<IActionResult> GetProduct(int id,int centerid)
         {

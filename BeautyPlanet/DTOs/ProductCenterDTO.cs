@@ -25,6 +25,12 @@ namespace BeautyPlanet.DTOs
         public GetProduct Product{ get; set; }
         public GetCenterDTO Center { get; set; }
 }
+    public class ProductDashDetels
+    {
+        public GetDashProduct Product { get; set; }
+        public GetCenterDTO Center { get; set; }
+        public int? Count { get; set; }
+    }
     public class ProductCenterColorSizeDTO
     {
         public int Id { get; set; }
