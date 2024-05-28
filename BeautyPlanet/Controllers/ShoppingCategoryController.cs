@@ -68,5 +68,13 @@ namespace BeautyPlanet.Controllers
             var result = _mapper.Map<IList<GetShoppingCategory>>(category);
             return Ok(result);
         }
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetShoppingCategoryById(int id)
+        {
+            var category = await _unitOfWork.ShoppingCategory.Get(q => q.Id == id, include: x => x.Include(p => p.Products));
+            var result=_mapper.Map<GetShoppingCategory>(category);
+            return Ok(result);
+        }
+        
     }
 }

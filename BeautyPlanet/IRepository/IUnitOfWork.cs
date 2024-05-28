@@ -25,6 +25,7 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<Review> Review { get; }
         public IGenericRepository<ProductShopCart> ProductShopCart { get; }
         public IGenericRepository<ListImage> ListImage { get; }
+        public IGenericRepository<Rating> Reting { get; }
         Task Save();
     }
 }

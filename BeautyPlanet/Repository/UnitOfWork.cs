@@ -29,6 +29,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Review> _review;
         private IGenericRepository<ListImage> _listImage;
         private IGenericRepository<ProductShopCart> _prodShopCart;
+        private IGenericRepository<Rating> _rating;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -72,6 +73,8 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<ProductCenterColorSize> ProductCenterColorSize => _productCenterColorSize ??=new GenericRepository<ProductCenterColorSize>(_context);
 
         public IGenericRepository<ProductShopCart> ProductShopCart => _prodShopCart ??=new GenericRepository<ProductShopCart>(_context);
+
+        public IGenericRepository<Rating> Reting => _rating ??=new GenericRepository<Rating>(_context);
 
         public void Dispose()
         {

@@ -29,7 +29,7 @@ namespace BeautyPlanet.Controllers
         {
             var cart = await _unitOfWork.ShoppingCart.Get(q => q.UserId.Equals(shop.UserId) && q.CenterId == shop.CenterId);
             var prc = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == shop.ProductId && q.CenterId == shop.CenterId && q.ColorId == shop.ColorId && q.SizeId == shop.SizeId, include: q => q.Include(x => x.Product));
-
+            Dictionary<int, string> pairs = new Dictionary<int, string>();
             if (cart != null && prc != null)
             {
                 var productCart = await _unitOfWork.ProductShopCart.Get(q => q.ProductCenterColorSizeId == prc.Id && q.ShoppingCartId == cart.Id);
@@ -40,7 +40,8 @@ namespace BeautyPlanet.Controllers
                     _unitOfWork.ShoppingCart.Update(cart);
                     _unitOfWork.ProductShopCart.Update(productCart);
                     await _unitOfWork.Save();
-                    return Ok();
+                    pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                    return Ok(pairs);
                 }
                 else
                 {
@@ -51,11 +52,12 @@ namespace BeautyPlanet.Controllers
                     var map = _mapper.Map<ProductShopCart>(product);
 
                     await _unitOfWork.ProductShopCart.Insert(map);
-                    await _unitOfWork.Save();
+
                     cart.TotalPrice += shop.Count * prc.Product.Price;
                     _unitOfWork.ShoppingCart.Update(cart);
                     await _unitOfWork.Save();
-                    return Ok();
+                    pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                    return Ok(pairs);
                 }
             }
             else if (prc != null && cart == null)
@@ -65,7 +67,7 @@ namespace BeautyPlanet.Controllers
                 shopping.CenterId = shop.CenterId;
                 var map = _mapper.Map<ShoppingCart>(shopping);
                 await _unitOfWork.ShoppingCart.Insert(map);
-                await _unitOfWork.Save();
+
                 var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId == shop.UserId);
                 ProductShopDTO product = new ProductShopDTO();
                 product.ShoppingCartId = newcart.Id;
@@ -73,15 +75,18 @@ namespace BeautyPlanet.Controllers
                 product.count = shop.Count;
                 var map1 = _mapper.Map<ProductShopCart>(product);
                 await _unitOfWork.ProductShopCart.Insert(map1);
-                
+
                 newcart.TotalPrice += shop.Count * prc.Product.Price;
                 _unitOfWork.ShoppingCart.Update(newcart);
                 await _unitOfWork.Save();
-
-                return Ok();
+                pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                return Ok(pairs);
             }
             else
-                return NotFound();
+            {
+                pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart");
+                return NotFound(pairs);
+            }
         }
         [HttpGet]
         public async Task<IActionResult> GetAllShoppingCart()
@@ -109,7 +114,8 @@ namespace BeautyPlanet.Controllers
             }
             //map.Where(x => x.Id == cart.ToList().ForEach(a => a.ShoppingCartId)).ToList().ForEach(x=>x.ProductCenterColorSize.ToList().ForEach(z=>z.Id==cart.))
             //item.ProductCenterColorSize.Where(x => x.Id == item1.ProductCenterColorSizeId).ToList().ForEach(w => w.Count = item1.count);
-
+            //Dictionary<int, IList<GetShoppingCart>> pairs = new Dictionary<int, IList<GetShoppingCart>>();
+            //pairs.Add(StatusCodes.Status200OK,map) ;
 
 
             return Ok(map);
@@ -135,8 +141,8 @@ namespace BeautyPlanet.Controllers
                 map.ProductCenterColorSize.Where(x => x.Id == item.ProductCenterColorSizeId).ToList().ForEach(w => w.Count = item.count);
                 c+= item.count;
             }
-           
-            return Ok(new GetCartDTO { ShoppingCart=map,count=c});
+            map.TotalCount = c;
+            return Ok(new GetCartDTO { ShoppingCart=map});
         }
         [HttpPut("Incress")]
         public async Task<IActionResult>IncressProduct(int Cart,int Product)
@@ -172,6 +178,52 @@ namespace BeautyPlanet.Controllers
             _unitOfWork.ShoppingCart.Update(app);
             await _unitOfWork.Save();
             return Ok();
+        }
+        [HttpDelete("DeleteCartById")]
+        public async Task<IActionResult> DeleteCartById(int id)
+        {
+
+            var center = await _unitOfWork.ShoppingCart.Get(q => q.Id == id);
+
+
+            if (center == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var prodcart = await _unitOfWork.ProductShopCart.GetAll(q=>q.ShoppingCartId==center.Id);
+                _unitOfWork.ProductShopCart.DeleteRange(prodcart);
+               
+                await _unitOfWork.ShoppingCart.Delete(id);
+                await _unitOfWork.Save();
+
+
+                return Ok();
+            }
+        }
+        [HttpDelete("DeleteCarts")]
+        public async Task<IActionResult> DeleteCarts()
+        {
+
+            var center = await _unitOfWork.ShoppingCart.GetAll();
+
+
+            if (center == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                foreach (var item in center)
+                {
+                    var prodcart = await _unitOfWork.ProductShopCart.GetAll(q => q.ShoppingCartId == item.Id);
+                    _unitOfWork.ProductShopCart.DeleteRange(prodcart);   
+                }
+                 _unitOfWork.ShoppingCart.DeleteRange(center);
+                await _unitOfWork.Save();
+                return Ok();
+            }
         }
     }
 }

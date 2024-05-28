@@ -30,7 +30,7 @@ namespace BeautyPlanet.DTOs
     public class GetCartDTO
     {
       public   GetShoppingCart ShoppingCart { get; set; }
-        public int count { get; set; }
+        //public int count { get; set; }
     }
     public class ShopCart
     {

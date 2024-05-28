@@ -40,6 +40,8 @@ namespace BeautyPlanet.DataAccess
                 psh => psh.HasOne(prod => prod.ProductCenterColorSize).WithMany().HasForeignKey(prod => prod.ProductCenterColorSizeId).OnDelete(DeleteBehavior.Restrict),
                 psh => psh.HasOne(prod => prod.ShoppingCart).WithMany().HasForeignKey(prod => prod.ShoppingCartId).OnDelete(DeleteBehavior.Restrict),
                 psh => psh.HasIndex(prod => new { prod.ShoppingCartId, prod.ProductCenterColorSizeId }));
+            modelBuilder.Entity<CenterType>().HasData(new CenterType { Id = 1, Name = "BeautyCenter" }, new CenterType { Id = 2, Name = "Store" });
+
             modelBuilder.Entity<Status>().HasData(new Status { Id = 1, Name = "UpComing" }, new Status { Id = 2, Name = "Completed" }, new Status { Id = 3, Name = "Cancelled" });
             modelBuilder.Entity<Colors>().HasData(new Colors { Id = 10000, Name = "No Color" }, new Colors { Id = 1, Name = "Black" }, new Colors { Id = 2, Name = "Red" }, new Colors { Id = 3, Name = "Green" });
             modelBuilder.Entity<Sizes>().HasData(new Sizes { Id=10000,Name="No Size"},new Sizes { Id = 1, Name = "S" }, new Sizes { Id = 2, Name = "M" }, new Sizes { Id = 3, Name = "L" });
@@ -74,5 +76,7 @@ namespace BeautyPlanet.DataAccess
         public DbSet<ProductCenterColorSize> ProductCenterColorSizes { get; set; }
         public DbSet<ProductShopCart> ProductShopCarts { get; set; }
         public DbSet<ListImage> ListImages { get; set; }
+        public DbSet<CenterType> CenterTypes { get; set; }
+        public DbSet<Rating>Ratings { get; set; }
     }
 }

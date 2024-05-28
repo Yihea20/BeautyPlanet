@@ -76,7 +76,7 @@ namespace BeautyPlanet.Controllers
             IList<HomeDashProduct> home = new List<HomeDashProduct>();
             HomeDashProduct h1 = new HomeDashProduct();
             var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
-            .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr).Include(c=>c.Product.ShoppingCategoryy));
+            .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr).Include(c=>c.Product).ThenInclude(s=>s.ShoppingCategoryy));
             var result = _mapper.Map<IList<ProductDashDetels>>(service);
             foreach (var p in result)
             {
@@ -123,6 +123,7 @@ namespace BeautyPlanet.Controllers
                 h1.Colors = p.Product.Colors;
                 h1.EarnPoint = p.Product.EarnPoint;
                 h1.Centers = p.Center;
+                h1.Count = result.Count;
                 home.Add(h1);
             }
             return Ok(home);
@@ -177,9 +178,35 @@ namespace BeautyPlanet.Controllers
                 h.Colors = result.Product.Colors;
                 h.EarnPoint = result.Product.EarnPoint;
                 h.Centers = result.Center;
-                
-            
+                h.Count = result.Count;
+            h.Counter = result.Product.Conter;
+
             return Ok(h);
+        }
+        [HttpPost("RatingProduct")]
+        public async Task<IActionResult> Rating([FromBody]RatingProdDTO rating)
+        {
+            double rate = 0;
+            var rett = _mapper.Map<Rating>(rating);
+            await _unitOfWork.Reting.Insert(rett);
+            await _unitOfWork.Save();
+            var prod = await _unitOfWork.Product.Get(q=>q.Id==rating.ProductId);
+            var ret = await _unitOfWork.Reting.GetAll(q => q.ProductId == rating.ProductId);
+            var map= _mapper.Map<IList<RatingProdDTO>>(ret);
+           rate= (rating.Rate + map.Sum(x => x.Rate)) / map.Count();
+            prod.Rate =(int) Math.Floor(rate);
+            prod.Conter = map.Count();
+            _unitOfWork.Product.Update(prod);
+            await _unitOfWork.Save();
+            return Ok();
+        }
+        [HttpGet("RatingCount")]
+        public async Task<IActionResult> RatingCount(int prodId)
+        {
+            var ret = await _unitOfWork.Reting.GetAll(q=>q.ProductId==prodId);
+            var map = _mapper.Map<IList<RatingProdDTO>>(ret);
+            
+            return Ok(map.Count());
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)

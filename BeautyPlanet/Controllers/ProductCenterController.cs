@@ -34,6 +34,7 @@ namespace BeautyPlanet.Controllers
                     var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId &&q.CenterId==productCenter.CenterId &&q.SizeId == productCenter.SizeId&&q.ColorId==productCenter.ColorId);
                     if (prod != null)
                     {
+                        prod.Count += productCenter.Count;
                         return Ok("color and size exist before");
                     }
                     else {
@@ -66,6 +67,7 @@ namespace BeautyPlanet.Controllers
                     var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.SizeId == productCenter.SizeId);
                     if(prod!=null)
                     {
+                        prod.Count += productCenter.Count;
                         return Ok("size exist before");
                     }
                     else
@@ -85,6 +87,7 @@ namespace BeautyPlanet.Controllers
                     var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.ColorId == productCenter.ColorId);
                     if (prod != null)
                     {
+                        prod.Count += productCenter.Count;
                         return Ok("color exist before");
                     }
                     else

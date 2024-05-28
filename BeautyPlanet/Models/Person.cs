@@ -8,7 +8,7 @@ namespace BeautyPlanet.Models
         
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
+        //public string DeviceTokken { get; set; }
         public string? ImageURL { get; set; }
         public string? ProfileImageURL { get; set; }
         [ForeignKey(nameof(Gallery))]

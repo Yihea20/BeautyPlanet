@@ -77,6 +77,7 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ProductShopCart, GetCartDTO>().ReverseMap();
             CreateMap<Product, GetDashProduct>().ReverseMap();
             CreateMap<ProductCenterColorSize, ProductDashDetels>().ReverseMap();
+            CreateMap<Rating, RatingProdDTO>().ReverseMap();
         }
     }
 }
