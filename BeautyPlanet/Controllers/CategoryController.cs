@@ -33,15 +33,15 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromForm] CategoryFile category)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
-                string FilePath = GetFilePath(category.Categories.Name);
+                string FilePath = GetFilePath(category.Categories.Name.Replace(" ", "_"));
                 if (!System.IO.Directory.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
-                string url = FilePath + "\\" + category.Categories.Name + ".svg";
+                string url = FilePath + "\\" + category.Categories.Name.Replace(" ","_") + ".svg";
                 if (System.IO.File.Exists(url))
                 {
                     System.IO.File.Delete(url);
@@ -50,7 +50,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await category.Files.CopyToAsync(stream);
                     var result = _mapper.Map<Category>(category.Categories);
-                    result.ImageUrl = hosturl + "/Upload/CategoryImage/" + category.Categories.Name + "/" + category.Categories.Name + ".svg"; 
+                    result.ImageUrl = hosturl + "/Upload/CategoryImage/" + category.Categories.Name.Replace(" ", "_") + "/" + category.Categories.Name.Replace(" ", "_") + ".svg"; 
                     await _unitOfWork.Category.Insert(result);
                     await _unitOfWork.Save();
                     return Ok();

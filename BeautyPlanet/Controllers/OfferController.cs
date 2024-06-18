@@ -33,15 +33,15 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOffer([FromForm] OfferFile offer)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
-                string FilePath = GetFilePath(offer.Offers.Name);
+                string FilePath = GetFilePath(offer.Offers.Name.Replace(" ", "_"));
                 if (!System.IO.Directory.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
-                string url = FilePath + "\\" + offer.Offers.Name + ".png";
+                string url = FilePath + "\\" + offer.Offers.Name.Replace(" ", "_") + ".png";
                 if (System.IO.File.Exists(url))
                 {
                     System.IO.File.Delete(url);
@@ -50,7 +50,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await offer.Files.CopyToAsync(stream);
                     var result = _mapper.Map<Offer>(offer.Offers);
-                    result.ImageUrl = hosturl + "/Upload/OfferImage/" + offer.Offers.Name + "/" + offer.Offers.Name + ".png";
+                    result.ImageUrl = hosturl + "/Upload/OfferImage/" + offer.Offers.Name.Replace(" ", "_") + "/" + offer.Offers.Name.Replace(" ", "_") + ".png";
                     await _unitOfWork.Offer.Insert(result);
                     await _unitOfWork.Save();
                     return Ok();

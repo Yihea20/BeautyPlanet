@@ -32,15 +32,15 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCenter([FromForm] CenterFile center)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
-                string FilePath = GetFilePath(center.Centers.Name);
+                string FilePath = GetFilePath(center.Centers.Name.Replace(" ", "_"));
                 if (!System.IO.Directory.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
-                string url = FilePath + "\\" + center.Centers.Name + ".png";
+                string url = FilePath + "\\" + center.Centers.Name.Replace(" ", "_") + ".png";
                 if (System.IO.File.Exists(url))
                 {
                     System.IO.File.Delete(url);
@@ -49,7 +49,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await center.Files.CopyToAsync(stream);
                     var result = _mapper.Map<Center>(center.Centers);
-                    result.ImageUrl = hosturl + "/Upload/CenterImage/" + center.Centers.Name + "/" + center.Centers.Name + ".png"; ;
+                    result.ImageUrl = hosturl + "/Upload/CenterImage/" + center.Centers.Name.Replace(" ", "_") + "/" + center.Centers.Name.Replace(" ", "_") + ".png"; ;
                     await _unitOfWork.Center.Insert(result);
                     await _unitOfWork.Save();
                     return Ok();

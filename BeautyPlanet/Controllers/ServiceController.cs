@@ -32,15 +32,15 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddService([FromForm] ServiceFile service)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
-                string FilePath = GetFilePath(service.Services.Name);
+                string FilePath = GetFilePath(service.Services.Name.Replace(" ", "_"));
                 if (!System.IO.Directory.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
-                string url = FilePath + "\\" + service.Services.Name + ".png";
+                string url = FilePath + "\\" + service.Services.Name.Replace(" ", "_") + ".png";
                 if (System.IO.File.Exists(url))
                 {
                     System.IO.File.Delete(url);
@@ -49,7 +49,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await service.Files.CopyToAsync(stream);
                     var result = _mapper.Map<Service>(service.Services);
-                    result.ImageURL = hosturl + "/Upload/ServiceImage/" + service.Services.Name + "/" + service.Services.Name + ".png"; ;
+                    result.ImageURL = hosturl + "/Upload/ServiceImage/" + service.Services.Name.Replace(" ", "_") + "/" + service.Services.Name.Replace(" ", "_") + ".png"; ;
                     await _unitOfWork.Service.Insert(result);
                     await _unitOfWork.Save();
                     return Ok();

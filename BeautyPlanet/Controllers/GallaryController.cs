@@ -40,7 +40,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost("AddImage")]
         public async Task<IActionResult> AddImage([FromForm] ImageFile image)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
 

@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240530103751_Notification")]
+    partial class Notification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -886,19 +889,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a38b1e21-c625-4766-b46a-19321c221902",
+                            Id = "4d458a1a-66a0-48df-9859-3ca3c74fdff8",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "1240d703-2454-4529-acfd-0bc262f4480e",
+                            Id = "31067028-a50d-4be7-9cfd-81a1276bf5f1",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "d295ab97-f49d-466d-bd1e-b91f524a4a73",
+                            Id = "4b19d009-24d0-471b-a9db-318dafd87487",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });

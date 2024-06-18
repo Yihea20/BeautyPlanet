@@ -33,15 +33,15 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddShoppingCategory([FromForm] ShoppingCategoryFile category)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
-                string FilePath = GetFilePath(category.Categories.Name);
+                string FilePath = GetFilePath(category.Categories.Name.Replace(" ", "_"));
                 if (!System.IO.Directory.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
-                string url = FilePath + "\\" + category.Categories.Name + ".png";
+                string url = FilePath + "\\" + category.Categories.Name.Replace(" ", "_") + ".png";
                 if (System.IO.File.Exists(url))
                 {
                     System.IO.File.Delete(url);
@@ -50,7 +50,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await category.Files.CopyToAsync(stream);
                     var result = _mapper.Map<ShoppingCategory>(category.Categories);
-                    result.ImageUrl = hosturl + "/Upload/ShoppingCategoryImage/" + category.Categories.Name + "/" + category.Categories.Name + ".png";
+                    result.ImageUrl = hosturl + "/Upload/ShoppingCategoryImage/" + category.Categories.Name.Replace(" ", "_") + "/" + category.Categories.Name.Replace(" ", "_") + ".png";
                     await _unitOfWork.ShoppingCategory.Insert(result);
                     await _unitOfWork.Save();
                     return Ok();

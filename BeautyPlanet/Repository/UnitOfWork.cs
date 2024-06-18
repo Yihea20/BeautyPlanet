@@ -30,6 +30,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<ListImage> _listImage;
         private IGenericRepository<ProductShopCart> _prodShopCart;
         private IGenericRepository<Rating> _rating;
+        private IGenericRepository<Notification> _notification;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -76,10 +77,32 @@ namespace BeautyPlanet.Repository
 
         public IGenericRepository<Rating> Reting => _rating ??=new GenericRepository<Rating>(_context);
 
+        public IGenericRepository<Notification> Notification => _notification ??=new GenericRepository<Notification>(_context);
+
+        public Task BeginTransactionAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CommitTransactionAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> CompleteAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
             _context.Dispose();
             GC.SuppressFinalize(this);
+        }
+
+        public Task RollbackTransactionAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task Save()

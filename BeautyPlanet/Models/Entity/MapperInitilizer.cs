@@ -78,6 +78,8 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Product, GetDashProduct>().ReverseMap();
             CreateMap<ProductCenterColorSize, ProductDashDetels>().ReverseMap();
             CreateMap<Rating, RatingProdDTO>().ReverseMap();
+            CreateMap<Notification,NotificationDTO>().ReverseMap();
+            CreateMap<Notification, GetNotificationDTO>().ReverseMap();
         }
     }
 }

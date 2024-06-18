@@ -33,7 +33,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromForm] ProductFile product)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             var result = _mapper.Map<Product>(product.Products);
             try
             {
@@ -69,7 +69,13 @@ namespace BeautyPlanet.Controllers
             }
         }
 
-
+        [HttpGet ("GetProducts")]
+        public async Task<IActionResult> GetProducts()
+        {
+            var prod = await _unitOfWork.Product.GetAll();
+            var map = _mapper.Map<IList<GetProduct>>(prod);
+            return Ok(map);
+        }
         [HttpGet("GetAllDashPRoduct")]
         public async Task<IActionResult> GetAllDashProduct()
         {

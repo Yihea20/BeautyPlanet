@@ -3,9 +3,11 @@ using BeautyPlanet.DTOs;
 using BeautyPlanet.IRepository;
 using BeautyPlanet.Models;
 using BeautyPlanet.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeautyPlanet.Controllers
 {
@@ -69,7 +71,7 @@ namespace BeautyPlanet.Controllers
                 return Problem($"somthging went wrong in the {nameof(Register)}");
             }
         }
-
+       
         [HttpPost]
         [Route("RegisSpecialist")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
@@ -151,11 +153,15 @@ namespace BeautyPlanet.Controllers
 
             return Ok(tokenRequest);
         }
+        
         [HttpGet("GetUser")]
+
         public async Task<IActionResult> GetAllUser()
         {
-            var user = await _unitOfWork.User.GetAll();
-            var result = _mapper.Map<IList<GetUserDTO>>(user);
+            var specialist = await _unitOfWork.User.GetAll();
+            var result = _mapper.Map<IList<GetUserDTO>>(specialist);
+
+
             return Ok(result);
 
         }

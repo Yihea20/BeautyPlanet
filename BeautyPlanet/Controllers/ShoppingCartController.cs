@@ -24,6 +24,15 @@ namespace BeautyPlanet.Controllers
             _mapper = mapper;
             _logger = logger;
         }
+
+        [HttpPost("AddCart")]
+        public async Task<IActionResult> AddCart([FromBody] ShoppingCart map)
+        {
+            await _unitOfWork.ShoppingCart.Insert(map);
+            await _unitOfWork.Save();
+            await Task.Delay(2000);
+            return Ok();
+        }
         [HttpPost]
         public async Task<IActionResult> UpSertShoppingCart([FromBody] ShopCart shop)
         {
@@ -66,9 +75,8 @@ namespace BeautyPlanet.Controllers
                 shopping.UserId = shop.UserId;
                 shopping.CenterId = shop.CenterId;
                 var map = _mapper.Map<ShoppingCart>(shopping);
-                await _unitOfWork.ShoppingCart.Insert(map);
-
-                var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId == shop.UserId);
+                await AddCart(map);
+                var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId .Equals(shop.UserId));
                 ProductShopDTO product = new ProductShopDTO();
                 product.ShoppingCartId = newcart.Id;
                 product.ProductCenterColorSizeId = prc.Id;
@@ -79,6 +87,7 @@ namespace BeautyPlanet.Controllers
                 newcart.TotalPrice += shop.Count * prc.Product.Price;
                 _unitOfWork.ShoppingCart.Update(newcart);
                 await _unitOfWork.Save();
+               
                 pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
                 return Ok(pairs);
             }

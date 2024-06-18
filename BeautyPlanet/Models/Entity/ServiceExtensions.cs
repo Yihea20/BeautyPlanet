@@ -2,9 +2,12 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BeautyPlanet.Models.Entity
 {
@@ -54,6 +57,28 @@ namespace BeautyPlanet.Models.Entity
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                     };
                 });
+        }
+        public static void ConfigureExceptionHandler(this IApplicationBuilder app)
+        {
+            app.UseExceptionHandler(error =>
+            {
+                error.Run(async context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    context.Response.ContentType = "application/json";
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    if (contextFeature != null)
+                    {
+                        Log.Error($"Something Want Wrong in the {contextFeature.Error}");
+                        await context.Response.WriteAsync(new ErrorHandling
+                        {
+                            StatusCode = context.Response.StatusCode,
+                            Message = contextFeature.Error.Message
+                        }.ToString()
+                        );
+                    }
+                });
+            });
         }
 
     }

@@ -79,7 +79,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
         c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "BeautyPlanetApi");
     });
 }
-
+app.ConfigureExceptionHandler();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthentication();

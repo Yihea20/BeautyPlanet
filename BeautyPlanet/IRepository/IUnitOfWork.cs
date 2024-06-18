@@ -26,6 +26,11 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<ProductShopCart> ProductShopCart { get; }
         public IGenericRepository<ListImage> ListImage { get; }
         public IGenericRepository<Rating> Reting { get; }
+        public IGenericRepository<Notification> Notification { get; }
         Task Save();
+        Task<int> CompleteAsync();
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
     }
 }

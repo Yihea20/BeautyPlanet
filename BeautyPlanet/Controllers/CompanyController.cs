@@ -32,15 +32,15 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCenter([FromForm] CompanyFile company)
         {
-            string hosturl = $"{this.Request.Scheme}://11171443:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
-                string FilePath = GetFilePath(company.Companies.Name);
+                string FilePath = GetFilePath(company.Companies.Name.Replace(" ", "_"));
                 if (!System.IO.Directory.Exists(FilePath))
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
-                string url = FilePath + "\\" + company.Companies.Name + ".png";
+                string url = FilePath + "\\" + company.Companies.Name.Replace(" ", "_") + ".png";
                 if (System.IO.File.Exists(url))
                 {
                     System.IO.File.Delete(url);
@@ -49,7 +49,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await company.Files.CopyToAsync(stream);
                     var result = _mapper.Map<Company>(company.Companies);
-                    result.ImageUrl = hosturl + "/Upload/CompoanyImage/" + company.Companies.Name + "/" + company.Companies.Name + ".png"; ;
+                    result.ImageUrl = hosturl + "/Upload/CompoanyImage/" + company.Companies.Name.Replace(" ", "_") + "/" + company.Companies.Name.Replace(" ", "_") + ".png"; ;
                     await _unitOfWork.Company.Insert(result);
                     await _unitOfWork.Save();
                     return Ok();
