@@ -8,7 +8,14 @@ namespace BeautyPlanet.DTOs
         public string Name { get; set; }
         public string Address { get; set; }
         public int Phone { get; set; }
+        public string? WebSiteUrl { get; set; }
         public string Description { get; set; }
+
+        public DateTime? OpenTime { get; set; }
+        public DateTime? CloseTime { get; set; }
+
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
         public int? Rate { get; set; }
     }
     public class GetCenterDTO:CenterDTO {
@@ -27,6 +34,9 @@ namespace BeautyPlanet.DTOs
         //public Platform? Platform { get; set; }
         public DateTime? OpenTime { get; set; }
         public DateTime? CloseTime { get; set; }
+
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
         public ICollection<GetSpecialistDTO> Specialists { get; set; }
     }
     public class GetCenterwithIdDTO:GetCenterDTO

@@ -9,13 +9,13 @@ namespace BeautyPlanet.Models
         public int Id { get; set; }
         [ForeignKey(nameof(ServiceSpecialist))]
         public int ServiceSpecialistId { get; set; }
-        public ServiceSpecialist ServiceSpecialistt { get; set; }
+        public ServiceSpecialist ServiceSpecialist { get; set; }
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
-        public User Userr { get; set; }
+        public User User { get; set; }
         [ForeignKey(nameof(Status))]
         public int StatusId { get; set; }
-        public Status Statuss { get; set; }
+        public Status Status { get; set; }
         public DateTime DateTime { get; set; }
 
     }

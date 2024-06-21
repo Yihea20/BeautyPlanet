@@ -25,9 +25,14 @@ namespace BeautyPlanet.Models
         public Platform? Platform { get; set; }
         public DateTime? OpenTime { get; set; }
         public DateTime? CloseTime { get; set; }
+
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
         public ICollection<Service> Services { get; set; }
         public ICollection<Specialist> Specialists { get; set; }
         public ICollection<Product> Products { get; set; }
+        public ICollection<User> UserFavorate { get; set; }
+        public ICollection<Category> Categories { get; set; }
         //public ICollection<ShoppingCart> ShoppingCarts { get; set; }
     }
 }

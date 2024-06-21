@@ -12,6 +12,7 @@ namespace BeautyPlanet.Models
         public string Name { get; set; }
         public int Price { get; set; }
         public int? OfferPercent { get; set; }
+        public string? Type { get; set; }
         public int Rate { get; set; }
         public int Conter { get; set; } = 0;
         public int EarnPoint { get; set; }

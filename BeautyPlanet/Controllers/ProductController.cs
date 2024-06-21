@@ -128,7 +128,7 @@ namespace BeautyPlanet.Controllers
                 h1.Description = p.Product.Description;
                 h1.Colors = p.Product.Colors;
                 h1.EarnPoint = p.Product.EarnPoint;
-                h1.Centers = p.Center;
+                h1.Center = p.Center;
                 h1.Count = result.Count;
                 home.Add(h1);
             }
@@ -166,28 +166,51 @@ namespace BeautyPlanet.Controllers
         [HttpGet("id")]
         public async Task<IActionResult> GetProduct(int id,int centerid)
         {
-            HomeProduct h = new HomeProduct();
+            HomeProduct product = new HomeProduct();
+            IList<HomeProduct> related = new List<HomeProduct>();
+            HomeProduct re = new HomeProduct();
             var service = await _unitOfWork.ProductCenterColorSize.Get(q=>q.CenterId==centerid&&q.ProductId==id,include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
+            var prod = await _unitOfWork.ProductCenterColorSize.GetAll(q =>q.Product.Type.Equals(service.Product.Type), include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
+            var lated = _mapper.Map<IList<ProductDetels>>(prod);
             var result = _mapper.Map<ProductDetels>(service);
-           
-                h.Id = result.Product.Id;
-                h.ImageUrl = result.Product.ImageUrl;
-                h.Name = result.Product.Name;
-                h.OfferPercent = result.Product.OfferPercent;
-                h.Price = result.Product.Price;
-                h.ProductAddTime = result.Product.ProductAddTime;
-                h.Rate = result.Product.Rate;
-                h.Reviews = result.Product.Reviews;
-                h.Sizes = result.Product.Sizes;
-                h.Description = result.Product.Description;
-                h.Colors = result.Product.Colors;
-                h.EarnPoint = result.Product.EarnPoint;
-                h.Centers = result.Center;
-                h.Count = result.Count;
-            h.Counter = result.Product.Conter;
+            foreach (ProductDetels r in lated)
+            {
+                re.Id =           r.Product.Id;
+                re.ImageUrl =     r.Product.ImageUrl;
+                re.Name =         r.Product.Name;
+                re.OfferPercent = r.Product.OfferPercent;
+                re.Price =        r.Product.Price;
+                re.ProductAddTime=r.Product.ProductAddTime;
+                re.Rate =         r.Product.Rate;
+                re.Reviews =      r.Product.Reviews;
+                re.Sizes =        r.Product.Sizes;
+                re.Description =  r.Product.Description;
+                re.Colors =       r.Product.Colors;
+                re.EarnPoint =    r.Product.EarnPoint;
+                re.Center =       r.Center;
+                re.Count =        r.Count;
+                re.Counter =      r.Product.Conter;
+                related.Add(re);
+            }
+                product.Id = result.Product.Id;
+                product.ImageUrl = result.Product.ImageUrl;
+                product.Name = result.Product.Name;
+                product.OfferPercent = result.Product.OfferPercent;
+                product.Price = result.Product.Price;
+                product.ProductAddTime = result.Product.ProductAddTime;
+                product.Rate = result.Product.Rate;
+                product.Reviews = result.Product.Reviews;
+                product.Sizes = result.Product.Sizes;
+                product.Description = result.Product.Description;
+                product.Colors = result.Product.Colors;
+                product.EarnPoint = result.Product.EarnPoint;
+                product.Center = result.Center;
+                product.Count = result.Count;
+                product.Counter = result.Product.Conter;
 
-            return Ok(h);
+            return Ok(new { product, related });
         }
         [HttpPost("RatingProduct")]
         public async Task<IActionResult> Rating([FromBody]RatingProdDTO rating)

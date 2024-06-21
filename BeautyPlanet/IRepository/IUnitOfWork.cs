@@ -27,6 +27,7 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<ListImage> ListImage { get; }
         public IGenericRepository<Rating> Reting { get; }
         public IGenericRepository<Notification> Notification { get; }
+        public IGenericRepository<Favorate> Favorate { get; }
         Task Save();
         Task<int> CompleteAsync();
         Task BeginTransactionAsync();

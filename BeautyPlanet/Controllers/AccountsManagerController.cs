@@ -133,7 +133,7 @@ namespace BeautyPlanet.Controllers
                 var person = await _userManager.FindByEmailAsync(personDTO.Email) as Person;
                 person.Code = myRandomNo.ToString();
                 await _userManager.UpdateAsync(person);
-                return Accepted(new TokenRequest { Token = await _authoManger.CreatToken(), RefreshToken = await _authoManger.CreateRefreshToken(), rand = myRandomNo.ToString() });
+                return Accepted(new TokenRequest { Token = await _authoManger.CreatToken(), RefreshToken = await _authoManger.CreateRefreshToken(), rand = myRandomNo.ToString(),Id=await _userManager.GetUserIdAsync(person) });
             }
             catch (Exception ex)
             {
@@ -165,6 +165,7 @@ namespace BeautyPlanet.Controllers
             return Ok(result);
 
         }
+        [Authorize]
         [HttpGet("GetSpecialist")]
         public async Task<IActionResult> GetAllSpecialist()
         {

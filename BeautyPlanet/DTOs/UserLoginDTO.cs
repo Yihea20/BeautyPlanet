@@ -11,6 +11,9 @@ namespace BeautyPlanet.DTOs
         public int Age { get; set; }
         public int Point { get; set; }
         public string DeviceTokken { get; set; }
+
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
         public ICollection<string> RoleName { get; set; }
        // public int CenterId { get; set; }
 
@@ -44,6 +47,9 @@ namespace BeautyPlanet.DTOs
         public int Rate { get; set; }
         public string Exparences { get; set; }
         public string DeviceTokken { get; set; }
+
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
         public ICollection<string> RoleName { get; set; }
         // public int CenterId { get; set; }
 

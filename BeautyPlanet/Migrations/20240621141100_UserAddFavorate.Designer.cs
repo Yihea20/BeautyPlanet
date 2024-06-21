@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240621141100_UserAddFavorate")]
+    partial class UserAddFavorate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,29 +139,6 @@ namespace BeautyPlanet.Migrations
                     b.HasIndex("PlatformId");
 
                     b.ToTable("Centers");
-                });
-
-            modelBuilder.Entity("BeautyPlanet.Models.CenterCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CenterId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("CenterId", "CategoryId");
-
-                    b.ToTable("CenterCategories");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.CenterType", b =>
@@ -943,19 +923,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5b21c8d0-c358-4c0f-a1fa-9e118d0de4ff",
+                            Id = "33b6aec2-8827-4240-be8d-3ea8eb699542",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "3e72ec2a-7807-4ed7-b01f-15ae4869f756",
+                            Id = "e96c7176-31b8-46c3-9701-3e383c33ca4d",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "a650681f-eada-4cf9-9d1a-b25c8e23ad73",
+                            Id = "b7fc7432-2464-4eae-9edc-0d2aff7a25b0",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1167,25 +1147,6 @@ namespace BeautyPlanet.Migrations
                     b.Navigation("Galary");
 
                     b.Navigation("Platform");
-                });
-
-            modelBuilder.Entity("BeautyPlanet.Models.CenterCategory", b =>
-                {
-                    b.HasOne("BeautyPlanet.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BeautyPlanet.Models.Center", "Center")
-                        .WithMany()
-                        .HasForeignKey("CenterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Center");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Favorate", b =>

@@ -31,6 +31,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<ProductShopCart> _prodShopCart;
         private IGenericRepository<Rating> _rating;
         private IGenericRepository<Notification> _notification;
+        private IGenericRepository<Favorate> _favorate;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -78,6 +79,8 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<Rating> Reting => _rating ??=new GenericRepository<Rating>(_context);
 
         public IGenericRepository<Notification> Notification => _notification ??=new GenericRepository<Notification>(_context);
+
+        public IGenericRepository<Favorate> Favorate => _favorate ??=new GenericRepository<Favorate>(_context);
 
         public Task BeginTransactionAsync()
         {

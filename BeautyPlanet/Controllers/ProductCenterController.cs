@@ -127,7 +127,7 @@ namespace BeautyPlanet.Controllers
                 h1.Description = p.Product.Description;
                 h1.Colors = p.Product.Colors;
                 h1.EarnPoint = p.Product.EarnPoint;
-                h1.Centers = p.Center;
+                h1.Center = p.Center;
                 home.Add(h1);
             }
             return Ok(home);

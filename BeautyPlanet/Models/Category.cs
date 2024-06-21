@@ -10,5 +10,6 @@ namespace BeautyPlanet.Models
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public ICollection<Service> Services { get; set; }
+        public ICollection<Center> Centers { get; set; }
     }
 }

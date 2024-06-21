@@ -30,7 +30,7 @@ namespace BeautyPlanet.Controllers
         {
             await _unitOfWork.ShoppingCart.Insert(map);
             await _unitOfWork.Save();
-            await Task.Delay(2000);
+            Task.Delay(2000);
             return Ok();
         }
         [HttpPost]

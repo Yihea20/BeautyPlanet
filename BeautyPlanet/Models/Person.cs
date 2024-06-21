@@ -15,5 +15,7 @@ namespace BeautyPlanet.Models
         public int? GalleryId { get; set; }
         public Gallery? Gallery { get; set; }
         public string? Code { get; set; }
+        public double ? Lat { get; set; }
+        public double?Lng { get; set; }
     }
 }

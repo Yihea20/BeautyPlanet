@@ -78,7 +78,7 @@ namespace BeautyPlanet.Controllers
                 h1.Description = p.Product.Description;
                 h1.Colors = p.Product.Colors;
                 h1.EarnPoint = p.Product.EarnPoint;
-                h1.Centers = p.Center;
+                h1.Center = p.Center;
                 home1.Add(h1);
             }
 
@@ -101,7 +101,7 @@ namespace BeautyPlanet.Controllers
                 h.Description = p.Product.Description;
                 h.Colors = p.Product.Colors;
                 h.EarnPoint = p.Product.EarnPoint;
-                h.Centers = p.Center;
+                h.Center = p.Center;
                 home.Add(h);
             }
             return Accepted(new ShopHome {GetShoppingCategory=category, GetProduct=home1,NewProduct=home} );

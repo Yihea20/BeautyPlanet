@@ -40,10 +40,19 @@ namespace BeautyPlanet.DataAccess
                 psh => psh.HasOne(prod => prod.ProductCenterColorSize).WithMany().HasForeignKey(prod => prod.ProductCenterColorSizeId).OnDelete(DeleteBehavior.Restrict),
                 psh => psh.HasOne(prod => prod.ShoppingCart).WithMany().HasForeignKey(prod => prod.ShoppingCartId).OnDelete(DeleteBehavior.Restrict),
                 psh => psh.HasIndex(prod => new { prod.ShoppingCartId, prod.ProductCenterColorSizeId }));
+            modelBuilder.Entity<Center>().HasMany(u => u.UserFavorate).WithMany(c => c.FavorateCenter).UsingEntity<Favorate>(
+                uc => uc.HasOne(prop => prop.User).WithMany().HasForeignKey(prop => prop.UserId),
+                uc => uc.HasOne(prop => prop.Center).WithMany().HasForeignKey(prop => prop.CenterId),
+                uc => uc.HasIndex(prod => new {prod.CenterId,prod.UserId})
+                );
+            modelBuilder.Entity<Center>().HasMany(ca => ca.Categories).WithMany(c => c.Centers).UsingEntity<CenterCategory>(
+                cc => cc.HasOne(prod => prod.Category).WithMany().HasForeignKey(prod=>prod.CategoryId),
+                cc=>cc.HasOne(prod=>prod.Center).WithMany().HasForeignKey(prod=>prod.CenterId),
+                cc=>cc.HasIndex(prod=>new { prod.CenterId,prod.CategoryId}));
             modelBuilder.Entity<CenterType>().HasData(new CenterType { Id = 1, Name = "BeautyCenter" }, new CenterType { Id = 2, Name = "Store" });
 
             modelBuilder.Entity<Status>().HasData(new Status { Id = 1, Name = "UpComing" }, new Status { Id = 2, Name = "Completed" }, new Status { Id = 3, Name = "Cancelled" });
-            modelBuilder.Entity<Colors>().HasData(new Colors { Id = 10000, Name = "No Color" }, new Colors { Id = 1, Name = "Black" }, new Colors { Id = 2, Name = "Red" }, new Colors { Id = 3, Name = "Green" });
+            modelBuilder.Entity<Colors>().HasData(new Colors { Id = 10000, Name = "No Color" }, new Colors { Id = 1, Name = "#000000" }, new Colors { Id = 2, Name = "#FF0000" }, new Colors { Id = 3, Name = "#00ff00" });
             modelBuilder.Entity<Sizes>().HasData(new Sizes { Id=10000,Name="No Size"},new Sizes { Id = 1, Name = "S" }, new Sizes { Id = 2, Name = "M" }, new Sizes { Id = 3, Name = "L" });
 
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
@@ -78,5 +87,7 @@ namespace BeautyPlanet.DataAccess
         public DbSet<ListImage> ListImages { get; set; }
         public DbSet<CenterType> CenterTypes { get; set; }
         public DbSet<Rating>Ratings { get; set; }
+        public DbSet<Favorate> Favorates { get; set; }
+        public DbSet<CenterCategory> CenterCategories { get; set; }
     }
 }

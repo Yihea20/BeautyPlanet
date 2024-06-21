@@ -41,7 +41,7 @@ namespace BeautyPlanet.Controllers
                 {
                     System.IO.Directory.CreateDirectory(FilePath);
                 }
-                string url = FilePath + "\\" + category.Categories.Name.Replace(" ","_") + ".svg";
+                string url = FilePath + "\\" + category.Files.FileName;
                 if (System.IO.File.Exists(url))
                 {
                     System.IO.File.Delete(url);
@@ -50,7 +50,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await category.Files.CopyToAsync(stream);
                     var result = _mapper.Map<Category>(category.Categories);
-                    result.ImageUrl = hosturl + "/Upload/CategoryImage/" + category.Categories.Name.Replace(" ", "_") + "/" + category.Categories.Name.Replace(" ", "_") + ".svg"; 
+                    result.ImageUrl = hosturl + "/Upload/CategoryImage/" + category.Categories.Name.Replace(" ", "_") + "/" + category.Files.FileName ; 
                     await _unitOfWork.Category.Insert(result);
                     await _unitOfWork.Save();
                     return Ok();

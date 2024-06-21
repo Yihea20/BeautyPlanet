@@ -12,6 +12,7 @@ namespace BeautyPlanet.DTOs
         public int? OfferPercent { get; set; }
         public int Rate { get; set; }
          public int EarnPoint { get; set; }
+        public string Type { get; set; }
         public string Description { get; set; }
         public int ShoppingCategoryId { get; set; }
 
@@ -24,6 +25,7 @@ namespace BeautyPlanet.DTOs
         public int? OfferPercent { get; set; }
         public int Rate { get; set; }
         public int EarnPoint { get; set; }
+        public string Type { get; set; }
         public string Description { get; set; }
         public int Conter { get; set; }
         public DateTime ProductAddTime { get; set; } = DateTime.Now;
@@ -42,6 +44,7 @@ namespace BeautyPlanet.DTOs
         public int? OfferPercent { get; set; }
         public int Rate { get; set; }
         public int EarnPoint { get; set; }
+        public string Type { get; set; }
         public string Description { get; set; }
         public ShoppingCategoryDTO ShoppingCategoryy { get; set; }
         public DateTime ProductAddTime { get; set; } = DateTime.Now;
@@ -60,6 +63,7 @@ namespace BeautyPlanet.DTOs
         public int? OfferPercent { get; set; }
         public int Rate { get; set; }
         public int EarnPoint { get; set; }
+        public string Type { get; set; }
         public string Description { get; set; }
         public DateTime ProductAddTime { get; set; } = DateTime.Now;
         public List<string> ImageUrl { get; set; }
@@ -74,6 +78,7 @@ namespace BeautyPlanet.DTOs
         public int? OfferPercent { get; set; }
         public int Rate { get; set; }
         public int EarnPoint { get; set; }
+       // public string Type { get; set; }
         public string Description { get; set; }
         public int Counter { get; set; } 
         public DateTime ProductAddTime { get; set; } = DateTime.Now;
@@ -81,7 +86,7 @@ namespace BeautyPlanet.DTOs
         public ICollection<ColorDTO> Colors { get; set; }
         public ICollection<SizeDTO> Sizes { get; set; }
         public ICollection<GetReviewDTO> Reviews { get; set; }
-        public GetCenterDTO Centers { get; set; }
+        public GetCenterDTO Center { get; set; }
         public int? Count { get; set; }
 
     }

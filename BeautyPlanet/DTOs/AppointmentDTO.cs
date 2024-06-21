@@ -6,7 +6,13 @@ namespace BeautyPlanet.DTOs
 {
     public class AppointmentDTO
     {
-         public int ServiceSpecialistId { get; set; }
+
+        
+        public string SpecialistId { get; set; }
+       
+        
+        public int ServiceId { get; set; }
+
         public string UserId { get; set; }
         //public int StatusId { get; set; }
         public DateTime DateTime { get; set; }
