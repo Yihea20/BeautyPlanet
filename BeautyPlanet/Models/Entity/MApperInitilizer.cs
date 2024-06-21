@@ -80,6 +80,10 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Rating, RatingProdDTO>().ReverseMap();
             CreateMap<Notification,NotificationDTO>().ReverseMap();
             CreateMap<Notification, GetNotificationDTO>().ReverseMap();
+            CreateMap<Favorate, FavorateDTO>().ReverseMap();
+            CreateMap<Favorate, GetFavorate>().ReverseMap();
+            CreateMap<CenterCategory, CenterCategoryDTO>().ReverseMap();
+            CreateMap<CenterCategory,GetCenterCategory>().ReverseMap();
         }
     }
 }
