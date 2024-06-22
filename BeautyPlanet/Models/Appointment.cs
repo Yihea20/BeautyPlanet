@@ -10,6 +10,7 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(ServiceSpecialist))]
         public int ServiceSpecialistId { get; set; }
         public ServiceSpecialist ServiceSpecialist { get; set; }
+
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }
         public User User { get; set; }

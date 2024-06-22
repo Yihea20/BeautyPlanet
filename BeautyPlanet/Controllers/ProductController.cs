@@ -80,28 +80,29 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllDashProduct()
         {
             IList<HomeDashProduct> home = new List<HomeDashProduct>();
-            HomeDashProduct h1 = new HomeDashProduct();
+            //HomeDashProduct h1 = new HomeDashProduct();
             var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr).Include(c=>c.Product).ThenInclude(s=>s.ShoppingCategoryy));
             var result = _mapper.Map<IList<ProductDashDetels>>(service);
             foreach (var p in result)
             {
-                h1.Id = p.Product.Id;
-                h1.ImageUrl = p.Product.ImageUrl;
-                h1.Name = p.Product.Name;
-                h1.OfferPercent = p.Product.OfferPercent;
-                h1.Price = p.Product.Price;
-                h1.ProductAddTime = p.Product.ProductAddTime;
-                h1.Rate = p.Product.Rate;
-                h1.Reviews = p.Product.Reviews;
-                h1.Sizes = p.Product.Sizes;
-                h1.Description = p.Product.Description;
-                h1.Colors = p.Product.Colors;
-                h1.EarnPoint = p.Product.EarnPoint;
-                h1.Centers = p.Center;
-                h1.ShoppingCategoryy=p.Product.ShoppingCategoryy;
-                h1.Count=p.Count;
-                home.Add(h1);
+                home.Add(new HomeDashProduct {
+                    Id = p.Product.Id,
+                ImageUrl = p.Product.ImageUrl,
+                Name = p.Product.Name,
+                OfferPercent = p.Product.OfferPercent,
+                Price = p.Product.Price,
+                ProductAddTime = p.Product.ProductAddTime,
+                Rate = p.Product.Rate,
+                Reviews = p.Product.Reviews,
+                Sizes = p.Product.Sizes,
+                Description = p.Product.Description,
+                Colors = p.Product.Colors,
+                EarnPoint = p.Product.EarnPoint,
+                Centers = p.Center,
+                ShoppingCategoryy = p.Product.ShoppingCategoryy,
+                Count = p.Count,
+            });
             }
             return Ok(home);
         }
@@ -110,27 +111,27 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllProduct()
         {
             IList<HomeProduct> home = new List<HomeProduct>();
-            HomeProduct h1 = new HomeProduct();
+          //  HomeProduct h1 = new HomeProduct();
             var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c=>c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
             var result = _mapper.Map<IList<ProductDetels>>(service);
             foreach (var p in result)
             {
-                h1.Id = p.Product.Id;
-                h1.ImageUrl = p.Product.ImageUrl;
-                h1.Name = p.Product.Name;
-                h1.OfferPercent = p.Product.OfferPercent;
-                h1.Price = p.Product.Price;
-                h1.ProductAddTime = p.Product.ProductAddTime;
-                h1.Rate = p.Product.Rate;
-                h1.Reviews = p.Product.Reviews;
-                h1.Sizes = p.Product.Sizes;
-                h1.Description = p.Product.Description;
-                h1.Colors = p.Product.Colors;
-                h1.EarnPoint = p.Product.EarnPoint;
-                h1.Center = p.Center;
-                h1.Count = result.Count;
-                home.Add(h1);
+                home.Add(new HomeProduct { Id = p.Product.Id,
+                ImageUrl = p.Product.ImageUrl,
+                Name = p.Product.Name,
+                OfferPercent = p.Product.OfferPercent,
+                Price = p.Product.Price,
+                ProductAddTime = p.Product.ProductAddTime,
+                Rate = p.Product.Rate,
+                Reviews = p.Product.Reviews,
+                Sizes = p.Product.Sizes,
+                Description = p.Product.Description,
+                Colors = p.Product.Colors,
+                EarnPoint = p.Product.EarnPoint,
+                Center = p.Center,
+                Count = result.Count, });
+                
             }
             return Ok(home);
         }
@@ -168,7 +169,7 @@ namespace BeautyPlanet.Controllers
         {
             HomeProduct product = new HomeProduct();
             IList<HomeProduct> related = new List<HomeProduct>();
-            HomeProduct re = new HomeProduct();
+            //HomeProduct re = new HomeProduct();
             var service = await _unitOfWork.ProductCenterColorSize.Get(q=>q.CenterId==centerid&&q.ProductId==id,include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
             var prod = await _unitOfWork.ProductCenterColorSize.GetAll(q =>q.Product.Type.Equals(service.Product.Type), include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
@@ -177,22 +178,22 @@ namespace BeautyPlanet.Controllers
             var result = _mapper.Map<ProductDetels>(service);
             foreach (ProductDetels r in lated)
             {
-                re.Id =           r.Product.Id;
-                re.ImageUrl =     r.Product.ImageUrl;
-                re.Name =         r.Product.Name;
-                re.OfferPercent = r.Product.OfferPercent;
-                re.Price =        r.Product.Price;
-                re.ProductAddTime=r.Product.ProductAddTime;
-                re.Rate =         r.Product.Rate;
-                re.Reviews =      r.Product.Reviews;
-                re.Sizes =        r.Product.Sizes;
-                re.Description =  r.Product.Description;
-                re.Colors =       r.Product.Colors;
-                re.EarnPoint =    r.Product.EarnPoint;
-                re.Center =       r.Center;
-                re.Count =        r.Count;
-                re.Counter =      r.Product.Conter;
-                related.Add(re);
+                related.Add(new HomeProduct { Id = r.Product.Id,
+                ImageUrl = r.Product.ImageUrl,
+                Name = r.Product.Name,
+                OfferPercent = r.Product.OfferPercent,
+                Price = r.Product.Price,
+                ProductAddTime = r.Product.ProductAddTime,
+                Rate = r.Product.Rate,
+                Reviews = r.Product.Reviews,
+                Sizes = r.Product.Sizes,
+                Description = r.Product.Description,
+                Colors = r.Product.Colors,
+                EarnPoint = r.Product.EarnPoint,
+                Center = r.Center,
+                Count = r.Count,
+                Counter = r.Product.Conter,
+            });
             }
                 product.Id = result.Product.Id;
                 product.ImageUrl = result.Product.ImageUrl;
