@@ -14,9 +14,21 @@ namespace BeautyPlanet.DTOs
 
         public double? Lat { get; set; }
         public double? Lng { get; set; }
+        public string? ImageURL { get; set; }
+        public string? ProfileImageURL { get; set; }
         public ICollection<string> RoleName { get; set; }
        // public int CenterId { get; set; }
 
+    }
+    public class location{
+        public double lat { get; set; }
+        public double lng { get; set; }
+    }
+    public class photo
+    {
+        public string Id { get; set; }
+        public IFormFile File { get; set; }
+        
     }
     public class UserLoginDTO
     {
@@ -50,6 +62,8 @@ namespace BeautyPlanet.DTOs
 
         public double? Lat { get; set; }
         public double? Lng { get; set; }
+        public string? ImageURL { get; set; }
+        public string? ProfileImageURL { get; set; }
         public ICollection<string> RoleName { get; set; }
         // public int CenterId { get; set; }
 

@@ -27,7 +27,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAppointment([FromBody]AppointmentDTO appointment)
         {
-            var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.SpecialistId.Equals(appointment.SpecialistId)&&q.ServiceId==appointment.ServiceId,include:x=>x.Include(q=>q.Specialistt).ThenInclude(t=>t.Times));
+            var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.SpecialistId.Equals(appointment.SpecialistId)&&q.ServiceId==appointment.ServiceId,include:x=>x.Include(q=>q.Specialistt).Include(s=>s.Servicee));
             if (!sp.Specialistt.Times.Contains(appointment.DateTime))
             {
                 var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.UserId));
@@ -37,6 +37,7 @@ namespace BeautyPlanet.Controllers
                 _unitOfWork.Specialist.Update(spcialist);
 
                 _unitOfWork.User.Update(user);
+                //await _unitOfWork.Save();
                 var app = _mapper.Map<Appointment>(appointment);
                 app.StatusId = 1;
                 await _unitOfWork.Appointment.Insert(app);
@@ -52,13 +53,13 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetAppointment> app = new List<GetAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll(include: q => q.Include(x => x.ServiceSpecialist).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialist).ThenInclude(p => p.Specialistt).Include(s => s.Status));
+            var appointment = await _unitOfWork.Appointment.GetAll(include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             foreach (Appointment a in appointment)
             {
-                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialist.Specialistt.CenterId));
-                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialist.SpecialistId)));
-                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialist.Servicee.CategoryId));
-                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialist.ServiceId));
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.Specialist.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.Service.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceId));
                 app.Add(new GetAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Status.Name, Center = center, Specialist = specialist, Category = category, Service = service });
             }
 
@@ -69,13 +70,13 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetAppointment> app = new List<GetAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(UserId), include: q => q.Include(x => x.ServiceSpecialist).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialist).ThenInclude(p => p.Specialistt).Include(s => s.Status));
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(UserId),include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             foreach (Appointment a in appointment)
             {
-                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialist.Specialistt.CenterId));
-                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialist.SpecialistId)));
-                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialist.Servicee.CategoryId));
-                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialist.ServiceId));
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.Specialist.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.Service.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceId));
                 app.Add(new GetAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Status.Name, Center = center, Specialist = specialist, Category = category, Service = service });
             }
 
@@ -86,13 +87,13 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetDashAppointment> app = new List<GetDashAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll( include: q => q.Include(x => x.ServiceSpecialist).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialist).ThenInclude(p => p.Specialistt).Include(s => s.Status));
+            var appointment = await _unitOfWork.Appointment.GetAll(include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             foreach (Appointment a in appointment)
             {
-                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialist.Specialistt.CenterId));
-                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialist.SpecialistId)));
-                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialist.Servicee.CategoryId));
-                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialist.ServiceId));
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.Specialist.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.Service.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceId));
                 var user = _mapper.Map<GetUserDTO>(await _unitOfWork.User.Get(q => q.Id.Equals(a.UserId)));
                 app.Add(new GetDashAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Status.Name, Center = center, Specialist = specialist, Category = category, Service = service, User = user });
             }
@@ -104,13 +105,13 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetDashAppointment> app = new List<GetDashAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(DashUserId), include: q => q.Include(x => x.ServiceSpecialist).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialist).ThenInclude(p => p.Specialistt).Include(s => s.Status));
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(DashUserId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             foreach (Appointment a in appointment)
             {
-                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialist.Specialistt.CenterId));
-                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialist.SpecialistId)));
-                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialist.Servicee.CategoryId));
-                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialist.ServiceId));
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.Specialist.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.Service.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceId));
                 var user = _mapper.Map<GetUserDTO>(await _unitOfWork.User.Get(q => q.Id.Equals(a.UserId)));
                 app.Add(new GetDashAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Status.Name, Center = center, Specialist = specialist, Category = category, Service = service ,User=user});
             }
@@ -122,13 +123,13 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetDashAppointment> app = new List<GetDashAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll(q => q.StatusId == status && q.UserId.Equals(userId), include: q => q.Include(x => x.ServiceSpecialist).ThenInclude(x => x.Servicee).Include(q => q.ServiceSpecialist).ThenInclude(p => p.Specialistt).Include(s => s.Status));
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.StatusId == status && q.UserId.Equals(userId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             foreach (Appointment a in appointment)
             {
-                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.ServiceSpecialist.Specialistt.CenterId));
-                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialist.SpecialistId)));
-                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialist.Servicee.CategoryId));
-                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialist.ServiceId));
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.Specialist.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.Service.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceId));
                 var user = _mapper.Map<GetUserDTO>(await _unitOfWork.User.Get(q => q.Id.Equals(a.UserId)));
                 app.Add(new GetDashAppointment { Id = a.Id, DateTime = a.DateTime, Status = a.Status.Name, Center = center, Specialist = specialist, Category = category, Service = service, User = user });
             }
@@ -141,13 +142,13 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetAppointment> app = new List<GetAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll(q=>q.StatusId==status&&q.UserId.Equals(userId), include:q=>q.Include(x=>x.ServiceSpecialist).ThenInclude(x=>x.Servicee).Include(q=>q.ServiceSpecialist).ThenInclude(p=>p.Specialistt).Include(s=>s.Status));
+            var appointment = await _unitOfWork.Appointment.GetAll(q=>q.StatusId==status&&q.UserId.Equals(userId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             foreach (Appointment a in appointment)
             {
-                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q=>q.Id==a.ServiceSpecialist.Specialistt.CenterId));
-                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.ServiceSpecialist.SpecialistId)));
-                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.ServiceSpecialist.Servicee.CategoryId));
-                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceSpecialist.ServiceId));
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.Specialist.CenterId));
+                var specialist = _mapper.Map<AppSpecialist>(await _unitOfWork.Specialist.Get(q => q.Id.Equals(a.SpecialistId)));
+                var category = _mapper.Map<CategoryIdDTO>(await _unitOfWork.Category.Get(q => q.Id == a.Service.CategoryId));
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == a.ServiceId));
                 app.Add(new GetAppointment {Id=a.Id,DateTime=a.DateTime,Status=a.Status.Name, Center = center, Specialist = specialist, Category = category, Service = service });
             }
 

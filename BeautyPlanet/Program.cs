@@ -60,10 +60,11 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    c.SwaggerDoc("v3", new OpenApiInfo
     {
         Title = "BeautyPlanetAPI",
-        Version = "v1"
+        Version = "v3",
+        
     });
 });
 
@@ -76,7 +77,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI(c =>
     {
         string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
-        c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "BeautyPlanetApi");
+        c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v3/swagger.json", "BeautyPlanetApi");
     });
 }
 app.ConfigureExceptionHandler();

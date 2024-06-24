@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BeautyPlanet.DTOs;
 using BeautyPlanet.IRepository;
+using BeautyPlanet.Migrations;
 using BeautyPlanet.Models;
 using BeautyPlanet.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace BeautyPlanet.Controllers
 {
@@ -21,15 +23,18 @@ namespace BeautyPlanet.Controllers
         private readonly IAuthoManger _authoManger;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _environment;
 
-        public AccountsManagerController(IUnitOfWork unitOfWork,UserManager<Person> userManager, ILogger<AccountsManagerController> logger, IAuthoManger authoManger, IMapper mapper)
+        public AccountsManagerController(UserManager<Person> userManager, ILogger<AccountsManagerController> logger, IAuthoManger authoManger, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _logger = logger;
             _authoManger = authoManger;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _environment = environment;
         }
+
         [HttpPost]
         [Route("Regis")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
@@ -44,23 +49,23 @@ namespace BeautyPlanet.Controllers
             }
             try
             {
-             
-                  var  user = _mapper.Map<User>(personDTO);
-                    user.UserName = personDTO.FirstName + personDTO.LastName;
-                    user.Email = personDTO.Email;
-                    var result = await _userManager.CreateAsync(user, personDTO.Password);
-                    if (!result.Succeeded)
+
+                var user = _mapper.Map<User>(personDTO);
+                user.UserName = personDTO.FirstName + personDTO.LastName;
+                user.Email = personDTO.Email;
+                var result = await _userManager.CreateAsync(user, personDTO.Password);
+                if (!result.Succeeded)
+                {
+                    foreach (var Error in result.Errors)
                     {
-                        foreach (var Error in result.Errors)
-                        {
-                            ModelState.AddModelError(Error.Code, Error.Description);
+                        ModelState.AddModelError(Error.Code, Error.Description);
 
-                        }
-                        return BadRequest(ModelState);
                     }
-                    await _userManager.AddToRolesAsync(user, personDTO.RoleName);
+                    return BadRequest(ModelState);
+                }
+                await _userManager.AddToRolesAsync(user, personDTO.RoleName);
 
-                
+
                 //result = await _userManager.AddPasswordAsync(user,);
 
                 return Ok($"StatusCode:{StatusCodes.Status202Accepted}");
@@ -71,7 +76,7 @@ namespace BeautyPlanet.Controllers
                 return Problem($"somthging went wrong in the {nameof(Register)}");
             }
         }
-       
+
         [HttpPost]
         [Route("RegisSpecialist")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
@@ -133,7 +138,7 @@ namespace BeautyPlanet.Controllers
                 var person = await _userManager.FindByEmailAsync(personDTO.Email) as Person;
                 person.Code = myRandomNo.ToString();
                 await _userManager.UpdateAsync(person);
-                return Accepted(new TokenRequest { Token = await _authoManger.CreatToken(), RefreshToken = await _authoManger.CreateRefreshToken(), rand = myRandomNo.ToString(),Id=await _userManager.GetUserIdAsync(person) });
+                return Accepted(new TokenRequest { Token = await _authoManger.CreatToken(), RefreshToken = await _authoManger.CreateRefreshToken(), rand = myRandomNo.ToString(), Id = await _userManager.GetUserIdAsync(person) });
             }
             catch (Exception ex)
             {
@@ -153,7 +158,7 @@ namespace BeautyPlanet.Controllers
 
             return Ok(tokenRequest);
         }
-        
+
         [HttpGet("GetUser")]
 
         public async Task<IActionResult> GetAllUser()
@@ -173,6 +178,106 @@ namespace BeautyPlanet.Controllers
             var result = _mapper.Map<IList<GetSpecialistDTO>>(specialist);
             return Ok(result);
 
+        }
+        [HttpPut]
+        [Route("RefreshLocation/{Id}")]
+        public async Task<IActionResult> RefreshLocation(String Id, [FromBody]location location )
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+            if (user != null)
+            {
+                user.Lat = location.lat;
+                user.Lng = location.lng;
+                await _userManager.UpdateAsync(user);
+                return Ok(new {StatusCode=StatusCodes.Status200OK,StatusBody="Update Done",Status=true});
+            }
+            else return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "faield", Status = false });
+        }
+        [HttpPut]
+        [Route("UpdatePhoto")]
+        public async Task<IActionResult>UpdatePhoto([FromForm]photo photo)
+        {
+            var user = await _userManager.FindByIdAsync(photo.Id);
+            if (user != null)
+            {
+
+                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+
+                try
+                {
+                    string FilePath = GetFilePath(user.Email.Replace(" ", "_"));
+                    if (!System.IO.Directory.Exists(FilePath))
+                    {
+                        System.IO.Directory.CreateDirectory(FilePath);
+                    }
+                    string url = FilePath + "\\" + photo.File.FileName;
+                    if (System.IO.File.Exists(url))
+                    {
+                        System.IO.File.Delete(url);
+                    }
+                    using (FileStream stream = System.IO.File.Create(url))
+                    {
+                        await photo.File.CopyToAsync(stream);
+                        user.ImageURL = hosturl + "/Upload/UserImage/" + user.Email.Replace(" ", "_") + "/" + photo.File.FileName;
+                        await _userManager.UpdateAsync(user);
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Update Done", Status = true });
+                    }
+                }
+                catch (Exception e)
+                {
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "faield", Status = false });
+                }
+                }
+            else return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "faield", Status = false });
+
+        }
+        [HttpPut]
+        [Route("UpdateProfilePhoto")]
+        public async Task<IActionResult> UpdateProfilePhoto([FromForm] photo photo)
+        {
+            var user = await _userManager.FindByIdAsync(photo.Id);
+            if (user != null)
+            {
+
+                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+
+                try
+                {
+                    string FilePath = GetProfileFilePath(user.Email.Replace(" ", "_"));
+                    if (!System.IO.Directory.Exists(FilePath))
+                    {
+                        System.IO.Directory.CreateDirectory(FilePath);
+                    }
+                    string url = FilePath + "\\" + photo.File.FileName;
+                    if (System.IO.File.Exists(url))
+                    {
+                        System.IO.File.Delete(url);
+                    }
+                    using (FileStream stream = System.IO.File.Create(url))
+                    {
+                        await photo.File.CopyToAsync(stream);
+                        user.ProfileImageURL = hosturl + "/Upload/ProfileImage/" + user.Email.Replace(" ", "_") + "/" + photo.File.FileName;
+                        await _userManager.UpdateAsync(user);
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Update Done", Status = true });
+                    }
+                }
+                catch (Exception e)
+                {
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "faield", Status = false });
+                }
+            }
+            else return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "faield", Status = false });
+
+        }
+        [NonAction]
+        private string GetFilePath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/UserImage/" + name;
+        }
+         [NonAction]
+        private string GetProfileFilePath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/ProfileImage/" + name;
         }
     }
 }
