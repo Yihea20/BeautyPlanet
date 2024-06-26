@@ -25,6 +25,7 @@ builder.Host.UseSerilog((ctx, cl) => cl.WriteTo.Console().ReadFrom.Configuration
 builder.Services.AddScoped<IAuthoManger,AuthoManger>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddCors(options => { options.AddPolicy("AllowAll", b => b.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin()); });
 builder.Services.AddSwaggerGen(c =>
 {

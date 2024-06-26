@@ -4,11 +4,16 @@ using BeautyPlanet.IRepository;
 using BeautyPlanet.Migrations;
 using BeautyPlanet.Models;
 using BeautyPlanet.Services;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using MimeKit.Text;
 using System;
 
 namespace BeautyPlanet.Controllers
@@ -24,8 +29,9 @@ namespace BeautyPlanet.Controllers
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _environment;
+        private readonly IEmailService _emailService;
 
-        public AccountsManagerController(UserManager<Person> userManager, ILogger<AccountsManagerController> logger, IAuthoManger authoManger, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment environment)
+        public AccountsManagerController(UserManager<Person> userManager, ILogger<AccountsManagerController> logger, IAuthoManger authoManger, IMapper mapper, IUnitOfWork unitOfWork, IWebHostEnvironment environment, IEmailService emailService)
         {
             _userManager = userManager;
             _logger = logger;
@@ -33,6 +39,7 @@ namespace BeautyPlanet.Controllers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _environment = environment;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -278,6 +285,13 @@ namespace BeautyPlanet.Controllers
         private string GetProfileFilePath(string name)
         {
             return this._environment.WebRootPath + "/Upload/ProfileImage/" + name;
+        }
+        [HttpPost("SendEmail")]
+        public IActionResult SendEmail([FromBody] EmailDTO email)
+        {
+            _emailService.SendEmail(email);
+            return Ok();
+
         }
     }
 }
