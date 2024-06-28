@@ -15,8 +15,9 @@ namespace BeautyPlanet.Models.Entity
     {
         public static void ConfigureNotification(this IServiceCollection services, IWebHostEnvironment environment)
         {
-
-            var order = GoogleCredential.FromFile(environment.WebRootPath + "\\FireBase\\FireBase.json");
+            string path = environment.WebRootPath + "\\FireBase\\Admin.json";
+            string json = File.ReadAllText(path);
+            var order = GoogleCredential.FromFile(path);
             FirebaseApp.Create(new AppOptions { Credential = order, });
         }
         public static void ConfigureIdentity(this IServiceCollection services)
