@@ -33,6 +33,7 @@ namespace BeautyPlanet.Models
         public ICollection<Product> Products { get; set; }
         public ICollection<User> UserFavorate { get; set; }
         public ICollection<Category> Categories { get; set; }
+        public ICollection<Post>Posts { get; set; }
         //public ICollection<ShoppingCart> ShoppingCarts { get; set; }
     }
 }

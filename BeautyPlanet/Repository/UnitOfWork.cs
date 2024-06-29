@@ -32,6 +32,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Rating> _rating;
         private IGenericRepository<Notification> _notification;
         private IGenericRepository<Favorate> _favorate;
+        private IGenericRepository<Post> _post;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -81,6 +82,8 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<Notification> Notification => _notification ??=new GenericRepository<Notification>(_context);
 
         public IGenericRepository<Favorate> Favorate => _favorate ??=new GenericRepository<Favorate>(_context);
+
+        public IGenericRepository<Post> Post => _post ??=new GenericRepository<Post>(_context);
 
         public Task BeginTransactionAsync()
         {

@@ -89,5 +89,6 @@ namespace BeautyPlanet.DataAccess
         public DbSet<Rating>Ratings { get; set; }
         public DbSet<Favorate> Favorates { get; set; }
         public DbSet<CenterCategory> CenterCategories { get; set; }
+        public DbSet<Post>Posts { get; set; }
     }
 }
