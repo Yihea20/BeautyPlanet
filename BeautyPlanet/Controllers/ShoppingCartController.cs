@@ -38,87 +38,97 @@ namespace BeautyPlanet.Controllers
         {
             var cart = await _unitOfWork.ShoppingCart.Get(q => q.UserId.Equals(shop.UserId) && q.CenterId == shop.CenterId);
             var prc = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == shop.ProductId && q.CenterId == shop.CenterId && q.ColorId == shop.ColorId && q.SizeId == shop.SizeId, include: q => q.Include(x => x.Product));
+
             Dictionary<int, string> pairs = new Dictionary<int, string>();
-            if (cart != null && prc != null)
+            if (prc.Count >= shop.Count)
             {
-                var productCart = await _unitOfWork.ProductShopCart.Get(q => q.ProductCenterColorSizeId == prc.Id && q.ShoppingCartId == cart.Id);
-                if (productCart != null)
+                if (cart != null && prc != null)
                 {
-                    productCart.count += shop.Count;
-                    cart.TotalPrice += prc.Product.Price * shop.Count;
-                    _unitOfWork.ShoppingCart.Update(cart);
-                    _unitOfWork.ProductShopCart.Update(productCart);
-                    await _unitOfWork.Save();
-                    pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
-                    return Ok(pairs);
+                    var productCart = await _unitOfWork.ProductShopCart.Get(q => q.ProductCenterColorSizeId == prc.Id && q.ShoppingCartId == cart.Id);
+                    if (productCart != null)
+                    {
+                        productCart.count += shop.Count;
+                        cart.TotalPrice += prc.Product.Price * shop.Count;
+                        _unitOfWork.ShoppingCart.Update(cart);
+                        _unitOfWork.ProductShopCart.Update(productCart);
+                        await _unitOfWork.Save();
+                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        return Ok(pairs);
+                    }
+                    else
+                    {
+                        ProductShopDTO product = new ProductShopDTO();
+                        product.ShoppingCartId = cart.Id;
+                        product.ProductCenterColorSizeId = prc.Id;
+                        product.count = shop.Count;
+                        var map = _mapper.Map<ProductShopCart>(product);
+
+                        await _unitOfWork.ProductShopCart.Insert(map);
+
+                        cart.TotalPrice += shop.Count * prc.Product.Price;
+                        _unitOfWork.ShoppingCart.Update(cart);
+                        await _unitOfWork.Save();
+                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        return Ok(pairs);
+                    }
+                }
+                else if (prc != null && cart == null)
+                {
+                    ShoppingCartDTO shopping = new ShoppingCartDTO();
+                    shopping.UserId = shop.UserId;
+                    shopping.CenterId = shop.CenterId;
+                    try
+                    {
+
+                        var map = _mapper.Map<ShoppingCart>(shopping);
+                        await _unitOfWork.ShoppingCart.Insert(map);
+                        await _unitOfWork.Save();
+                        var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId.Equals(shop.UserId));
+                        ProductShopDTO product = new ProductShopDTO();
+                        product.ShoppingCartId = newcart.Id;
+                        product.ProductCenterColorSizeId = prc.Id;
+                        product.count = shop.Count;
+                        var map1 = _mapper.Map<ProductShopCart>(product);
+                        await _unitOfWork.ProductShopCart.Insert(map1);
+
+                        newcart.TotalPrice += shop.Count * prc.Product.Price;
+                        _unitOfWork.ShoppingCart.Update(newcart);
+                        await _unitOfWork.Save();
+
+                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        return Ok(pairs);
+
+                    }
+                    catch (Exception e)
+                    {
+                        var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId.Equals(shop.UserId));
+
+                        ProductShopDTO product = new ProductShopDTO();
+                        product.ShoppingCartId = newcart.Id;
+                        product.ProductCenterColorSizeId = prc.Id;
+                        product.count = shop.Count;
+                        var map1 = _mapper.Map<ProductShopCart>(product);
+                        await _unitOfWork.ProductShopCart.Insert(map1);
+
+                        newcart.TotalPrice += shop.Count * prc.Product.Price;
+                        _unitOfWork.ShoppingCart.Update(newcart);
+                        await _unitOfWork.Save();
+
+                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        return Ok(pairs);
+                    }
                 }
                 else
                 {
-                    ProductShopDTO product = new ProductShopDTO();
-                    product.ShoppingCartId = cart.Id;
-                    product.ProductCenterColorSizeId = prc.Id;
-                    product.count = shop.Count;
-                    var map = _mapper.Map<ProductShopCart>(product);
-
-                    await _unitOfWork.ProductShopCart.Insert(map);
-
-                    cart.TotalPrice += shop.Count * prc.Product.Price;
-                    _unitOfWork.ShoppingCart.Update(cart);
-                    await _unitOfWork.Save();
-                    pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
-                    return Ok(pairs);
-                }
-            }
-            else if (prc != null && cart == null)
-            {
-                ShoppingCartDTO shopping = new ShoppingCartDTO();
-                shopping.UserId = shop.UserId;
-                shopping.CenterId = shop.CenterId;
-                try
-                {
-                  
-                    var map = _mapper.Map<ShoppingCart>(shopping);
-                    await _unitOfWork.ShoppingCart.Insert(map);
-                    await _unitOfWork.Save();
-                    var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId.Equals(shop.UserId));
-                    ProductShopDTO product = new ProductShopDTO();
-                    product.ShoppingCartId = newcart.Id;
-                    product.ProductCenterColorSizeId = prc.Id;
-                    product.count = shop.Count;
-                    var map1 = _mapper.Map<ProductShopCart>(product);
-                    await _unitOfWork.ProductShopCart.Insert(map1);
-
-                    newcart.TotalPrice += shop.Count * prc.Product.Price;
-                    _unitOfWork.ShoppingCart.Update(newcart);
-                    await _unitOfWork.Save();
-
-                    pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
-                    return Ok(pairs);
-
-                }
-                catch (Exception e)
-                {
-                    var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId.Equals(shop.UserId));
-
-                    ProductShopDTO product = new ProductShopDTO();
-                    product.ShoppingCartId = newcart.Id;
-                    product.ProductCenterColorSizeId = prc.Id;
-                    product.count = shop.Count;
-                    var map1 = _mapper.Map<ProductShopCart>(product);
-                    await _unitOfWork.ProductShopCart.Insert(map1);
-
-                    newcart.TotalPrice += shop.Count * prc.Product.Price;
-                    _unitOfWork.ShoppingCart.Update(newcart);
-                    await _unitOfWork.Save();
-
-                    pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
-                    return Ok(pairs);
+                    pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart");
+                    return NotFound(pairs);
                 }
             }
             else
             {
-                pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart");
+                pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart count not enouph in center");
                 return NotFound(pairs);
+
             }
         }
         [HttpGet]
@@ -178,30 +188,48 @@ namespace BeautyPlanet.Controllers
             return Ok(new GetCartDTO { ShoppingCart=map});
         }
         [HttpPut("Incress")]
-        public async Task<IActionResult>IncressProduct(int Cart,int Product)
+        public async Task<IActionResult>IncressProduct(int Cart,int Product,int count )
         {
             var cart = await _unitOfWork.ProductShopCart.Get(q => q.ProductCenterColorSizeId == Product && q.ShoppingCartId == Cart,include:x=>x.Include(q=>q.ProductCenterColorSize).ThenInclude(p=>p.Product));
-            cart.count++;
-            _unitOfWork.ProductShopCart.Update(cart);
-            var shop = await _unitOfWork.ShoppingCart.Get(q => q.Id == Cart);
-            shop.TotalPrice = cart.count * cart.ProductCenterColorSize.Product.Price;
-            _unitOfWork.ShoppingCart.Update(shop);
-            await _unitOfWork.Save();
-            
-            return Ok();
+           var prod= await _unitOfWork.ProductCenterColorSize.Get(q => q.Id == Product );
+            Dictionary<int, string> pairs = new Dictionary<int, string>();
+
+            if (count <= prod.Count)
+            {
+                cart.count += count;
+                _unitOfWork.ProductShopCart.Update(cart);
+                var shop = await _unitOfWork.ShoppingCart.Get(q => q.Id == Cart);
+                shop.TotalPrice = cart.count * cart.ProductCenterColorSize.Product.Price;
+                _unitOfWork.ShoppingCart.Update(shop);
+                await _unitOfWork.Save();
+
+                pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                return Ok(pairs);
+
+            }
+            else
+            {
+                pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart count not enouph in center");
+                return NotFound(pairs);
+
+            }
         }
         [HttpPut("Decress")]
-        public async Task<IActionResult> DecressProduct(int Cart, int Product)
+        public async Task<IActionResult> DecressProduct(int Cart, int Product,int count )
         {
+            Dictionary<int, string> pairs = new Dictionary<int, string>();
+
             var cart = await _unitOfWork.ProductShopCart.Get(q => q.ProductCenterColorSizeId == Product && q.ShoppingCartId == Cart, include: x => x.Include(q => q.ProductCenterColorSize).ThenInclude(p => p.Product));
-            cart.count++;
+            cart.count+=count;
             _unitOfWork.ProductShopCart.Update(cart);
             var shop = await _unitOfWork.ShoppingCart.Get(q => q.Id == Cart);
             shop.TotalPrice = cart.count * cart.ProductCenterColorSize.Product.Price;
             _unitOfWork.ShoppingCart.Update(shop);
             await _unitOfWork.Save();
 
-            return Ok();
+            pairs.Add(StatusCodes.Status200OK, " Cart Done");
+            return Ok(pairs);
+
         }
         [HttpPut("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus(int id, int status)

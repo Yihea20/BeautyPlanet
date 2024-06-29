@@ -16,13 +16,14 @@ namespace BeautyPlanet.Controllers
         private readonly ILogger<PostController> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public ProductController(IUnitOfWork unitOfWork, IMapper mapper, ILogger<PostController> logger, IWebHostEnvironment environment)
+        public PostController(IUnitOfWork unitOfWork, IMapper mapper, ILogger<PostController> logger, IWebHostEnvironment environment)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
             _environment = environment;
         }
+
         [NonAction]
         private string GetFilePath(string name)
         {
