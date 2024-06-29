@@ -15,4 +15,8 @@ namespace BeautyPlanet.DTOs
         public Center Center { get; set; }
         public Category Category { get; set; }
     }
+    public class GetCenterCategoryDTO
+    {
+        public CategoryIdDTO Category { get; set; }
+    }
 }

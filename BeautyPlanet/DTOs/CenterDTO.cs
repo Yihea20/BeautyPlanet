@@ -38,6 +38,7 @@ namespace BeautyPlanet.DTOs
         public double? Lat { get; set; }
         public double? Lng { get; set; }
         public ICollection<GetSpecialistDTO> Specialists { get; set; }
+        public ICollection<CategoryIdDTO> Categories { get; set; }
     }
     public class GetCenterwithIdDTO:GetCenterDTO
     {

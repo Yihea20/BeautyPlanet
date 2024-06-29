@@ -65,7 +65,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllCenter()
         {
 
-            var center = await _unitOfWork.Center.GetAll(include:x=>x.Include(p=>p.Specialists));
+            var center = await _unitOfWork.Center.GetAll(include: x => x.Include(p => p.Specialists));
             var result = _mapper.Map<IList<GetCenterDTO>>(center);
             return Ok(result);
         }
@@ -106,6 +106,14 @@ namespace BeautyPlanet.Controllers
             var center = await _unitOfWork.Center.Get(q => q.Name == Name);
             var result = _mapper.Map<GetCenterDTO>(center);
             return Ok(result);
+        }
+        [HttpPost("AddCategoryToCenter")]
+        public async Task<IActionResult> AddCategoryToCenter([FromBody]CenterCategoryDTO centerCategory)
+        {
+            var map=_mapper.Map<CenterCategory>(centerCategory);
+            await _unitOfWork.CenterCategory.Insert(map);
+            await _unitOfWork.Save();
+            return Ok();
         }
     }
 }

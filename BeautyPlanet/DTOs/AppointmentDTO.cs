@@ -9,14 +9,26 @@ namespace BeautyPlanet.DTOs
 
         
         public string SpecialistId { get; set; }
-       
-        
-        public int ServiceId { get; set; }
+
+        public int CenterId { get; set; }
+
+
+        public int? ServiceId { get; set; }
 
         public string UserId { get; set; }
+
+        public string? CostomServiceName { get; set; }
+        public string? description { get; set; }
+        public string? ImageUrl { get; set; }
         //public int StatusId { get; set; }
         public DateTime DateTime { get; set; }
 
+    }
+    public class AppointmentFile
+    {
+
+        public AppointmentDTO AppointmentDTO { get; set; }
+        public IFormFile Files { get; set; }
     }
     public class AppId
     {

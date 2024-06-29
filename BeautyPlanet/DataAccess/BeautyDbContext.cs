@@ -44,7 +44,11 @@ namespace BeautyPlanet.DataAccess
                 uc => uc.HasOne(prop => prop.User).WithMany().HasForeignKey(prop => prop.UserId),
                 uc => uc.HasOne(prop => prop.Center).WithMany().HasForeignKey(prop => prop.CenterId),
                 uc => uc.HasIndex(prod => new {prod.CenterId,prod.UserId})
-                );
+               );
+            modelBuilder.Entity<Center>()
+            .HasMany(u => u.Appointments)
+            .WithOne(o => o.Center)
+            .HasForeignKey(o => o.CenterId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Center>().HasMany(ca => ca.Categories).WithMany(c => c.Centers).UsingEntity<CenterCategory>(
                 cc => cc.HasOne(prod => prod.Category).WithMany().HasForeignKey(prod=>prod.CategoryId),
                 cc=>cc.HasOne(prod=>prod.Center).WithMany().HasForeignKey(prod=>prod.CenterId),
@@ -90,5 +94,6 @@ namespace BeautyPlanet.DataAccess
         public DbSet<Favorate> Favorates { get; set; }
         public DbSet<CenterCategory> CenterCategories { get; set; }
         public DbSet<Post>Posts { get; set; }
+
     }
 }

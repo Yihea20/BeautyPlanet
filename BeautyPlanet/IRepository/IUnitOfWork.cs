@@ -29,6 +29,7 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<Notification> Notification { get; }
         public IGenericRepository<Favorate> Favorate { get; }
         public IGenericRepository<Post>Post { get; }
+        public IGenericRepository<CenterCategory>CenterCategory { get; }
         Task Save();
         Task<int> CompleteAsync();
         Task BeginTransactionAsync();

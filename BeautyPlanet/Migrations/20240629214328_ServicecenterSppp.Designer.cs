@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240629214328_ServicecenterSppp")]
+    partial class ServicecenterSppp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -992,19 +995,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e78a9317-102b-41f5-83a6-0ab31c5b4321",
+                            Id = "95cb4b75-846a-460a-ad8d-b5780a143f42",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "c0fd5f59-00e3-415c-a73e-3297d5c9b66c",
+                            Id = "f653a9f0-42da-4143-9e48-6fec221346cc",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "57262702-00db-46f1-9244-5ed6c7c2e4d7",
+                            Id = "e291f1ef-f228-4635-9d35-e516be3f62c3",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1172,10 +1175,9 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.Appointment", b =>
                 {
-                    b.HasOne("BeautyPlanet.Models.Center", "Center")
+                    b.HasOne("BeautyPlanet.Models.Center", null)
                         .WithMany("Appointments")
-                        .HasForeignKey("CenterId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("CenterId");
 
                     b.HasOne("BeautyPlanet.Models.Service", "Service")
                         .WithMany()
@@ -1198,8 +1200,6 @@ namespace BeautyPlanet.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Center");
 
                     b.Navigation("Service");
 

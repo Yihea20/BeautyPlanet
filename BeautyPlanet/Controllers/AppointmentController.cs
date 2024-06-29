@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BeautyPlanet.DTOs;
 using BeautyPlanet.IRepository;
+
 using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,23 +18,77 @@ namespace BeautyPlanet.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<AppointmentController> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public AppointmentController(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AppointmentController> logger)
+        public AppointmentController(IUnitOfWork unitOfWork, IMapper mapper, ILogger<AppointmentController> logger, IWebHostEnvironment environment)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _environment = environment;
+        }
+
+        [NonAction]
+        private string GetFilePath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/CostomServiceImage/" + name;
         }
         [HttpPost]
-        public async Task<IActionResult> AddAppointment([FromBody]AppointmentDTO appointment)
+        public async Task<IActionResult> AddAppointment([FromForm] AppointmentFile appointment)
         {
-            var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.SpecialistId.Equals(appointment.SpecialistId)&&q.ServiceId==appointment.ServiceId,include:x=>x.Include(q=>q.Specialistt).Include(s=>s.Servicee));
-            if (!sp.Specialistt.Times.Contains(appointment.DateTime))
+            var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.SpecialistId.Equals(appointment.AppointmentDTO.SpecialistId) && q.ServiceId == appointment.AppointmentDTO.ServiceId, include: x => x.Include(q => q.Specialistt).Include(s => s.Servicee));
+            if (appointment.Files != null)
             {
-                var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.UserId));
-                user.Times.Add(appointment.DateTime);
+                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+
+                try
+                {
+
+                    if (!sp.Specialistt.Times.Contains(appointment.AppointmentDTO.DateTime))
+                    {
+                        string FilePath = GetFilePath(appointment.AppointmentDTO.CostomServiceName.Replace(" ", "_"));
+                        if (!System.IO.Directory.Exists(FilePath))
+                        {
+                            System.IO.Directory.CreateDirectory(FilePath);
+                        }
+                        string url = FilePath + "\\" + appointment.Files.FileName;
+                        if (System.IO.File.Exists(url))
+                        {
+                            System.IO.File.Delete(url);
+                        }
+                        using (FileStream stream = System.IO.File.Create(url))
+                        {
+                            await appointment.Files.CopyToAsync(stream);
+                            var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.AppointmentDTO.UserId));
+                            user.Times.Add(appointment.AppointmentDTO.DateTime);
+                            var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
+                            spcialist.Times.Add(appointment.AppointmentDTO.DateTime);
+                            _unitOfWork.Specialist.Update(spcialist);
+
+                            _unitOfWork.User.Update(user);
+                            var result = _mapper.Map<Appointment>(appointment.AppointmentDTO);
+                            result.ImageUrl = hosturl + "/Upload/CostomServiceImage/" + appointment.Files.FileName.Replace(" ", "_") + "/" + appointment.Files.FileName;
+                            result.StatusId = 1;
+                            await _unitOfWork.Appointment.Insert(result);
+                            await _unitOfWork.Save();
+                            return Ok();
+                        }
+                    }
+                    else { return NotFound(); }
+                }
+                catch (Exception e)
+                {
+                    return NotFound();
+                }
+
+            }
+            else { 
+            if (!sp.Specialistt.Times.Contains(appointment.AppointmentDTO.DateTime))
+            {
+                var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.AppointmentDTO.UserId));
+                user.Times.Add(appointment.AppointmentDTO.DateTime);
                 var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
-                spcialist.Times.Add(appointment.DateTime);
+                spcialist.Times.Add(appointment.AppointmentDTO.DateTime);
                 _unitOfWork.Specialist.Update(spcialist);
 
                 _unitOfWork.User.Update(user);
@@ -46,6 +101,7 @@ namespace BeautyPlanet.Controllers
             }
             else
                 return NotFound();
+        }
         }
 
         [HttpGet("AllAppointment")]
@@ -163,5 +219,28 @@ namespace BeautyPlanet.Controllers
             await _unitOfWork.Save();
             return Ok();
         }
+        [HttpGet("GetAllCategoryByCenter")]
+        public async Task<IActionResult> GetAllCategoryByCenter(int centerId)
+        {
+            var category = await _unitOfWork.CenterCategory.GetAll(q=>q.CenterId==centerId,include:x=>x.Include(x=>x.Category));
+            var Cat = _mapper.Map<IList<GetCenterCategoryDTO>>(category);
+            return Ok(Cat);
+        }
+        [HttpGet("GetServiceByCategory")]
+        public async Task<IActionResult>GetServiceByCategory(int centerId,int categoryId)
+        {
+            var cercat = await _unitOfWork.CenterCategory.Get(q=>q.CategoryId==categoryId&&q.CenterId==centerId,include:x=>x.Include(s=>s.Category));
+            var service = await _unitOfWork.Service.GetAll(q=>q.CategoryId==cercat.CategoryId);
+            var map =_mapper.Map<IList<GetServiceDTO>>(service);
+            return Ok(map);
+        }
+        [HttpGet("GetSpecealistbyService")]
+        public async Task<IActionResult> GetSpecealistbyService(int serviceId,int centerId)
+        {
+            var sp = await _unitOfWork.ServiceSpecialist.GetAll(q=>q.ServiceId==serviceId&&q.Specialistt.CenterId==centerId,include:c=>c.Include(s=>s.Specialistt));
+            var map = _mapper.Map<IList<GetSp>>(sp);
+            return Ok(map);
+        }
+
     }
 }

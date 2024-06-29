@@ -84,6 +84,9 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Favorate, GetFavorate>().ReverseMap();
             CreateMap<CenterCategory, CenterCategoryDTO>().ReverseMap();
             CreateMap<CenterCategory,GetCenterCategory>().ReverseMap();
+            CreateMap<CenterCategory, GetCenterCategoryDTO>().ReverseMap();
+            CreateMap<ServiceSpecialist,GetSp>().ReverseMap();
+
         }
     }
 }

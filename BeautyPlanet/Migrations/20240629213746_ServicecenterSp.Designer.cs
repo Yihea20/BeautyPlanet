@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240629213746_ServicecenterSp")]
+    partial class ServicecenterSp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace BeautyPlanet.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)");
@@ -68,8 +71,6 @@ namespace BeautyPlanet.Migrations
                     b.HasIndex("SpecialistId");
 
                     b.HasIndex("StatusId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Appointments");
                 });
@@ -992,19 +993,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e78a9317-102b-41f5-83a6-0ab31c5b4321",
+                            Id = "f248b7b5-7539-4901-b104-bfde26acb8d8",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "c0fd5f59-00e3-415c-a73e-3297d5c9b66c",
+                            Id = "48ac4f62-b5ab-4dbf-a7f5-83c5cc1862c2",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "57262702-00db-46f1-9244-5ed6c7c2e4d7",
+                            Id = "11af3807-4152-47b2-aa0d-fe5c9665a10a",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1172,10 +1173,9 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.Appointment", b =>
                 {
-                    b.HasOne("BeautyPlanet.Models.Center", "Center")
+                    b.HasOne("BeautyPlanet.Models.Center", null)
                         .WithMany("Appointments")
-                        .HasForeignKey("CenterId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("CenterId");
 
                     b.HasOne("BeautyPlanet.Models.Service", "Service")
                         .WithMany()
@@ -1193,21 +1193,11 @@ namespace BeautyPlanet.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BeautyPlanet.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Center");
-
                     b.Navigation("Service");
 
                     b.Navigation("Specialist");
 
                     b.Navigation("Status");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Center", b =>

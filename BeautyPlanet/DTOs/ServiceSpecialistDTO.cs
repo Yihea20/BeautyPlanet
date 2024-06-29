@@ -17,4 +17,8 @@ namespace BeautyPlanet.DTOs
         public Service Servicee { get; set; }
         public Specialist Specialistt { get; set; }
     }
+    public class GetSp
+    {
+        public GetSpecialistDTO Specialistt { get; set; }
+    }
 }
