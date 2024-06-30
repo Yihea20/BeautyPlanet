@@ -224,6 +224,7 @@ namespace BeautyPlanet.Controllers
         {
             var category = await _unitOfWork.CenterCategory.GetAll(q=>q.CenterId==centerId,include:x=>x.Include(x=>x.Category));
             var Cat = _mapper.Map<IList<GetCenterCategoryDTO>>(category);
+            
             return Ok(Cat);
         }
         [HttpGet("GetServiceByCategory")]

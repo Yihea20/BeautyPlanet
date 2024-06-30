@@ -18,5 +18,6 @@ namespace BeautyPlanet.DTOs
     public class GetCenterCategoryDTO
     {
         public CategoryIdDTO Category { get; set; }
+        public int ServiceCount { get; set; }
     }
 }

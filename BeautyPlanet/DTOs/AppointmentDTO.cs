@@ -19,7 +19,7 @@ namespace BeautyPlanet.DTOs
 
         public string? CostomServiceName { get; set; }
         public string? description { get; set; }
-        public string? ImageUrl { get; set; }
+        //public string? ImageUrl { get; set; }
         //public int StatusId { get; set; }
         public DateTime DateTime { get; set; }
 

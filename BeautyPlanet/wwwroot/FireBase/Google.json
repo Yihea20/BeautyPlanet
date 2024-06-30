@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "635574495544",
+    "project_id": "beauty-planet-81ece",
+    "storage_bucket": "beauty-planet-81ece.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635574495544:android:bed086dbc6e90c6bd639cd",
+        "android_client_info": {
+          "package_name": "com.example.beauty_planet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIklAKKZEiVfwqe3NpZWknCWLUsi7AnX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
