@@ -21,4 +21,8 @@ namespace BeautyPlanet.DTOs
     {
         public GetSpecialistDTO Specialistt { get; set; }
     }
+    public class GetSpTime
+    {
+        public IList<DateTime>? Times { get; set; }
+    }
 }

@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240630132826_Postspcenter")]
+    partial class Postspcenter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,8 +117,10 @@ namespace BeautyPlanet.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("GalaryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -148,6 +153,8 @@ namespace BeautyPlanet.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AdminId");
+
+                    b.HasIndex("GalaryId");
 
                     b.HasIndex("PlatformId");
 
@@ -1022,19 +1029,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "322a6e18-a655-4941-adee-6d4a53b389d8",
+                            Id = "9b96a4ed-15cb-40c4-bf5a-e90b9f05a762",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "ec4faaff-fcee-4c9d-8018-01607d9e6399",
+                            Id = "6708e340-4a61-4afd-a439-33fc6a3f2836",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "ea886dfb-8df6-4d04-908d-3e04703ad4f3",
+                            Id = "09c29847-2cb5-4ebd-9b28-b9433689280a",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1188,10 +1195,10 @@ namespace BeautyPlanet.Migrations
                 {
                     b.HasBaseType("BeautyPlanet.Models.Person");
 
-                    b.Property<int?>("Age")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Point")
+                    b.Property<int>("Point")
                         .HasColumnType("int");
 
                     b.Property<string>("Times")
@@ -1246,11 +1253,17 @@ namespace BeautyPlanet.Migrations
                         .WithMany()
                         .HasForeignKey("AdminId");
 
+                    b.HasOne("BeautyPlanet.Models.Gallery", "Galary")
+                        .WithMany()
+                        .HasForeignKey("GalaryId");
+
                     b.HasOne("BeautyPlanet.Models.Platform", "Platform")
                         .WithMany("Centers")
                         .HasForeignKey("PlatformId");
 
                     b.Navigation("Admin");
+
+                    b.Navigation("Galary");
 
                     b.Navigation("Platform");
                 });

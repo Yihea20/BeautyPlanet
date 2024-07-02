@@ -86,7 +86,12 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<CenterCategory,GetCenterCategory>().ReverseMap();
             CreateMap<CenterCategory, GetCenterCategoryDTO>().ReverseMap();
             CreateMap<ServiceSpecialist,GetSp>().ReverseMap();
-
+            CreateMap<Post, CenterPostDTO>().ReverseMap();
+            CreateMap<Post, SpPostDTO>().ReverseMap();
+            CreateMap<Post,GetCenterPost>().ReverseMap();
+            CreateMap<Post, GetSpPost>().ReverseMap();
+            CreateMap<Specialist, GetSpTime>().ReverseMap();
+            CreateMap<Center, GetCenterGalleryDTO>().ReverseMap();
         }
     }
 }

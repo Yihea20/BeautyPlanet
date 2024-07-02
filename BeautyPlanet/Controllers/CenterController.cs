@@ -5,6 +5,7 @@ using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BeautyPlanet.Controllers
 {
@@ -114,6 +115,64 @@ namespace BeautyPlanet.Controllers
             await _unitOfWork.CenterCategory.Insert(map);
             await _unitOfWork.Save();
             return Ok();
+        }
+        //[HttpPut("ImageToGalery")]
+        //public async Task<IActionResult>AddImageToGallery([FromForm] CenterGallery image)
+        //{
+        //    var center = await _unitOfWork.Center.Get(q => q.Id == image.CenterId);
+        //    if(center!=null)
+        //    {
+        //        string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+               
+        //        try
+        //        {
+        //            foreach (var f in image.Files)
+        //            {
+
+
+        //                string FilePath = GetFilePath(f.FileName);
+        //                if (!System.IO.Directory.Exists(FilePath))
+        //                {
+        //                    System.IO.Directory.CreateDirectory(FilePath);
+        //                }
+        //                string url = FilePath + "\\" + f.FileName;
+        //                if (System.IO.File.Exists(url))
+        //                {
+        //                    System.IO.File.Delete(url);
+        //                }
+        //                using (FileStream stream = System.IO.File.Create(url))
+        //                {
+        //                    await f.CopyToAsync(stream);
+
+        //                    center.GalleryImage.Add(hosturl + "/Upload/CenterGalleryImage/" + f.FileName + "/" + f.FileName);
+
+        //                }
+        //            }
+        //             _unitOfWork.Center.Update(center);
+        //            await _unitOfWork.Save();
+        //            return Ok();
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            return NotFound();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
+        [HttpGet("GetCenterGallery")]
+        public async Task<IActionResult> CenterGallery(int centerID)
+        {
+            var center = await _unitOfWork.Center.Get(q=>q.Id==centerID);
+            var map = _mapper.Map<GetCenterGalleryDTO>(center);
+            return Ok(map);
+        }
+        [NonAction]
+        private string GetPath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/CenterGalleryImage/" + name;
         }
     }
 }

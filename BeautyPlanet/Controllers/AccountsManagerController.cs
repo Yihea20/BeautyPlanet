@@ -18,8 +18,11 @@ using System;
 
 namespace BeautyPlanet.Controllers
 {
+
     [Route("api/[controller]")]
+    
     [ApiController]
+   
     public class AccountsManagerController : ControllerBase
     {
 
@@ -71,8 +74,16 @@ namespace BeautyPlanet.Controllers
                     return BadRequest(ModelState);
                 }
                 await _userManager.AddToRolesAsync(user, personDTO.RoleName);
-
-
+                Random rnd = new Random();
+                int myRandomNo = rnd.Next(10000000, 99999999);
+                var person = await _userManager.FindByEmailAsync(personDTO.Email) as Person;
+                person.Code = myRandomNo.ToString();
+                await _userManager.UpdateAsync(person);
+                EmailDTO emailDTO = new EmailDTO();
+                emailDTO.To= personDTO.Email;
+                emailDTO.Subject = "veryfiyEmail";
+                emailDTO.Body = $"your code is{myRandomNo} ";
+                 _emailService.SendEmail(emailDTO);
                 //result = await _userManager.AddPasswordAsync(user,);
 
                 return Ok($"StatusCode:{StatusCodes.Status202Accepted}");
@@ -178,7 +189,8 @@ namespace BeautyPlanet.Controllers
 
         }
         [Authorize]
-        [HttpGet("GetSpecialist")]
+        [HttpGet]
+        [Route("GetSpecialist")]
         public async Task<IActionResult> GetAllSpecialist()
         {
             var specialist = await _unitOfWork.Specialist.GetAll();

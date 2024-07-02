@@ -36,6 +36,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAppointment([FromForm] AppointmentFile appointment)
         {
+            Dictionary<string, string> d = new Dictionary<string, string>();
             var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.SpecialistId.Equals(appointment.AppointmentDTO.SpecialistId) && q.ServiceId == appointment.AppointmentDTO.ServiceId, include: x => x.Include(q => q.Specialistt).Include(s => s.Servicee));
             if (appointment.Files != null)
             {
@@ -71,37 +72,48 @@ namespace BeautyPlanet.Controllers
                             result.StatusId = 1;
                             await _unitOfWork.Appointment.Insert(result);
                             await _unitOfWork.Save();
-                            return Ok();
+                            d.Add("Message", "Appointment succeded");
+                            return Ok(d);
                         }
                     }
-                    else { return NotFound(); }
+                    else
+                    {
+                        d.Add("Message", "Appointment Faild");
+                        return NotFound(d);
+                    }
                 }
                 catch (Exception e)
                 {
-                    return NotFound();
+                    d.Add("Message", "Appointment Faild");
+                    return NotFound(d);
                 }
 
             }
-            else { 
-            if (!sp.Specialistt.Times.Contains(appointment.AppointmentDTO.DateTime))
-            {
-                var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.AppointmentDTO.UserId));
-                user.Times.Add(appointment.AppointmentDTO.DateTime);
-                var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
-                spcialist.Times.Add(appointment.AppointmentDTO.DateTime);
-                _unitOfWork.Specialist.Update(spcialist);
-
-                _unitOfWork.User.Update(user);
-                //await _unitOfWork.Save();
-                var app = _mapper.Map<Appointment>(appointment);
-                app.StatusId = 1;
-                await _unitOfWork.Appointment.Insert(app);
-                await _unitOfWork.Save();
-                return Ok();
-            }
             else
-                return NotFound();
-        }
+            {
+                if (!sp.Specialistt.Times.Contains(appointment.AppointmentDTO.DateTime))
+                {
+                    var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.AppointmentDTO.UserId));
+                    user.Times.Add(appointment.AppointmentDTO.DateTime);
+                    var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
+                    spcialist.Times.Add(appointment.AppointmentDTO.DateTime);
+                    _unitOfWork.Specialist.Update(spcialist);
+
+                    _unitOfWork.User.Update(user);
+                    //await _unitOfWork.Save();
+                    var app = _mapper.Map<Appointment>(appointment.AppointmentDTO);
+                    app.StatusId = 1;
+                    await _unitOfWork.Appointment.Insert(app);
+                    await _unitOfWork.Save();
+                    d.Add("Message", "Appointment succeded");
+                    return Ok(d);
+                }
+                else
+                {
+                    d.Add("Message", "Appointment Faild");
+                    return NotFound(d);
+                }
+            }
         }
 
         [HttpGet("AllAppointment")]
@@ -222,9 +234,15 @@ namespace BeautyPlanet.Controllers
         [HttpGet("GetAllCategoryByCenter")]
         public async Task<IActionResult> GetAllCategoryByCenter(int centerId)
         {
-            var category = await _unitOfWork.CenterCategory.GetAll(q=>q.CenterId==centerId,include:x=>x.Include(x=>x.Category));
+            var category = await _unitOfWork.CenterCategory.GetAll(q=>q.CenterId==centerId,include:x=>x.Include(x=>x.Category).ThenInclude(s=>s.Services));
             var Cat = _mapper.Map<IList<GetCenterCategoryDTO>>(category);
-            
+            foreach(var c in category)
+            {
+                var s = c.Category.Services.Count;
+                Cat.Where(x => x.Category.Id == c.CategoryId).ToList().ForEach(x => x.Category.ServiceCount = s);
+
+
+            }
             return Ok(Cat);
         }
         [HttpGet("GetServiceByCategory")]
@@ -241,6 +259,32 @@ namespace BeautyPlanet.Controllers
             var sp = await _unitOfWork.ServiceSpecialist.GetAll(q=>q.ServiceId==serviceId&&q.Specialistt.CenterId==centerId,include:c=>c.Include(s=>s.Specialistt));
             var map = _mapper.Map<IList<GetSp>>(sp);
             return Ok(map);
+        }
+        [HttpGet("GetTimeSpecealist")]
+        public async Task<IActionResult> GetTimeSpecealist(string spId)
+        {
+            var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId));
+            var map = _mapper.Map<GetSpTime>(sp);
+            return Ok(map);
+        }
+        [HttpDelete("DeleteAppointment")]
+        public async Task<IActionResult>DeleteAppointment(int id)
+        {
+            var center = await _unitOfWork.Appointment.Get(q => q.Id == id);
+
+
+            if (center == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                await _unitOfWork.Appointment.Delete(id);
+                await _unitOfWork.Save();
+
+
+                return Ok();
+            }
         }
 
     }

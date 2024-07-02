@@ -27,19 +27,17 @@ namespace BeautyPlanet.Controllers
         [NonAction]
         private string GetFilePath(string name)
         {
-            return this._environment.WebRootPath + "/Upload/PostImage/" + name;
+            return this._environment.WebRootPath + "/Upload/SpPostImage/" + name;
         }
-        [HttpPost]
-        public async Task<IActionResult> AddProduct([FromForm] ProductFile product)
+        [HttpPost("AddSpPost")]
+        public async Task<IActionResult> AddSpPost([FromForm] PostSpFile product)
         {
             string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
-            var result = _mapper.Map<Product>(product.Products);
+            var result = _mapper.Map<Post>(product.SpPost);
             try
             {
                 foreach (var f in product.Files)
                 {
-
-
                     string FilePath = GetFilePath(f.FileName);
                     if (!System.IO.Directory.Exists(FilePath))
                     {
@@ -53,12 +51,51 @@ namespace BeautyPlanet.Controllers
                     using (FileStream stream = System.IO.File.Create(url))
                     {
                         await f.CopyToAsync(stream);
-
-                        result.ImageUrl.Add(hosturl + "/Upload/PostImage/" + f.FileName + "/" + f.FileName);
-
+                        result.ImageUrl.Add(hosturl + "/Upload/SpPostImage/" + f.FileName + "/" + f.FileName);
                     }
                 }
-                await _unitOfWork.Product.Insert(result);
+
+                await _unitOfWork.Post.Insert(result);
+                await _unitOfWork.Save();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
+        }
+        [NonAction]
+        private string GetCenterFilePath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/CenterPostImage/" + name;
+        }
+        [HttpPost("AddCenterPost")]
+        public async Task<IActionResult> AddCenterPost([FromForm] PostCenterPost product)
+        {
+            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            var result = _mapper.Map<Post>(product.SpPost);
+            try
+            {
+                foreach (var f in product.Files)
+                {
+                    string FilePath = GetFilePath(f.FileName);
+                    if (!System.IO.Directory.Exists(FilePath))
+                    {
+                        System.IO.Directory.CreateDirectory(FilePath);
+                    }
+                    string url = FilePath + "\\" + f.FileName;
+                    if (System.IO.File.Exists(url))
+                    {
+                        System.IO.File.Delete(url);
+                    }
+                    using (FileStream stream = System.IO.File.Create(url))
+                    {
+                        await f.CopyToAsync(stream);
+                        result.ImageUrl.Add(hosturl + "/Upload/CenterPostImage/" + f.FileName + "/" + f.FileName);
+                    }
+                }
+
+                await _unitOfWork.Post.Insert(result);
                 await _unitOfWork.Save();
                 return Ok();
             }
@@ -68,4 +105,5 @@ namespace BeautyPlanet.Controllers
             }
         }
     }
+
 }

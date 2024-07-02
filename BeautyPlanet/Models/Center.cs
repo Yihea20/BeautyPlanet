@@ -10,16 +10,14 @@ namespace BeautyPlanet.Models
         public string Name { get; set; }
         public string Address { get; set; }
         public int Phone { get; set; }
+        public string Description { get; set; }
         public string? WebSiteUrl { get; set; }
         [ForeignKey(nameof(Admin))]
         public string? AdminId { get; set; }
         public Admin? Admin { get; set; }
         public int? Rate { get; set; }
         public string? ImageUrl { get; set; }
-        [ForeignKey(nameof(Galary))]
-        public int? GalaryId { get; set; }
-        public Gallery? Galary { get; set; }
-        public string? Description { get; set; }
+        //public IList<string>? GalleryImage { get; set; } = new List<string>();
         [ForeignKey(nameof(Platform))]
         public int? PlatformId { get; set; }
         public Platform? Platform { get; set; }

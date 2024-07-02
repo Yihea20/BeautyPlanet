@@ -4,6 +4,7 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
@@ -15,8 +16,8 @@ namespace BeautyPlanet.Models.Entity
     {
         public static void ConfigureNotification(this IServiceCollection services, IWebHostEnvironment environment)
         {
-            string path = environment.WebRootPath + "\\FireBase\\beauty-planet-81ece-firebase-adminsdk-jwf55-49bde94bd2.json";
-            string json = File.ReadAllText(path);
+            string path = environment.WebRootPath + "\\FireBase\\beauty-planet-81ece-firebase-adminsdk-jwf55-5734f98605.json";
+            
             var order = GoogleCredential.FromFile(path);
             FirebaseApp.Create(new AppOptions { Credential = order, });
         }
@@ -41,12 +42,7 @@ namespace BeautyPlanet.Models.Entity
 
             var jwtSetting = Configuration.GetSection("jwt");
             var key = JWTKey.KEY;
-            services.AddAuthentication(
-                o =>
-                {
-                    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                }).AddJwtBearer(o =>
+            services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
                 {
                     o.TokenValidationParameters = new TokenValidationParameters
                     {

@@ -22,6 +22,7 @@ namespace BeautyPlanet.DTOs
     {
         public int Id { get; set; }
         public string ImageUrl { get; set; }
+        public int ServiceCount { get; set; }
     }
     public class CategoryFile
     {

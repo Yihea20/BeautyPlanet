@@ -10,8 +10,8 @@ namespace BeautyPlanet.Models
         public ICollection<ShoppingCart>? ShoppingCarts { get; set; }
         public ICollection<Review>? Reviews { get; set; }
         public IList<DateTime>? Times { get; set; } = new List<DateTime>();
-        public int Point { get; set; } 
-        public int Age { get; set; } 
+        public int ?Point { get; set; } 
+        public int? Age { get; set; } 
         public ICollection<Center>?FavorateCenter { get; set; } 
         
 

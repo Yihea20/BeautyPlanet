@@ -40,6 +40,30 @@ namespace BeautyPlanet.DTOs
         public ICollection<GetSpecialistDTO> Specialists { get; set; }
         public ICollection<CategoryIdDTO> Categories { get; set; }
     }
+    public class GetCenterGalleryDTO : CenterDTO
+    {
+        public int Id { get; set; }
+        public string? WebSiteUrl { get; set; }
+        //[ForeignKey(nameof(Admin))]
+        //public int? AdminId { get; set; }
+        //public Admin? Admin { get; set; }
+        public int? Rate { get; set; }
+        public string? ImageUrl { get; set; }
+        //public IList<string> GalleryImage { get; set; }
+        //[ForeignKey(nameof(Galary))]
+        //  public int? GalaryId { get; set; }
+        // public Gallery? Galary { get; set; }
+        //  [ForeignKey(nameof(Platform))]
+        // public int? PlatformId { get; set; }
+        //public Platform? Platform { get; set; }
+        public DateTime? OpenTime { get; set; }
+        public DateTime? CloseTime { get; set; }
+
+        public double? Lat { get; set; }
+        public double? Lng { get; set; }
+        public ICollection<GetSpecialistDTO> Specialists { get; set; }
+        public ICollection<CategoryIdDTO> Categories { get; set; }
+    }
     public class GetCenterwithIdDTO:GetCenterDTO
     {
        public int  Id { get; set; }
@@ -64,5 +88,11 @@ namespace BeautyPlanet.DTOs
         public string Name { get; set; }
         public string ImageUrl { get; set; }
 
+    }
+    public class CenterGallery
+    {
+
+        public int CenterId  { get; set; }
+        public IList<IFormFile> Files { get; set; }
     }
 }

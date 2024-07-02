@@ -39,7 +39,7 @@ namespace BeautyPlanet.Controllers
             var cart = await _unitOfWork.ShoppingCart.Get(q => q.UserId.Equals(shop.UserId) && q.CenterId == shop.CenterId);
             var prc = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == shop.ProductId && q.CenterId == shop.CenterId && q.ColorId == shop.ColorId && q.SizeId == shop.SizeId, include: q => q.Include(x => x.Product));
 
-            Dictionary<int, string> pairs = new Dictionary<int, string>();
+            Dictionary<string, string> pairs = new Dictionary<string, string>();
             if (prc.Count >= shop.Count)
             {
                 if (cart != null && prc != null)
@@ -52,7 +52,7 @@ namespace BeautyPlanet.Controllers
                         _unitOfWork.ShoppingCart.Update(cart);
                         _unitOfWork.ProductShopCart.Update(productCart);
                         await _unitOfWork.Save();
-                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        pairs.Add("Message", "Add To Cart Done");
                         return Ok(pairs);
                     }
                     else
@@ -68,7 +68,7 @@ namespace BeautyPlanet.Controllers
                         cart.TotalPrice += shop.Count * prc.Product.Price;
                         _unitOfWork.ShoppingCart.Update(cart);
                         await _unitOfWork.Save();
-                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        pairs.Add("Message", "Add To Cart Done");
                         return Ok(pairs);
                     }
                 }
@@ -95,7 +95,7 @@ namespace BeautyPlanet.Controllers
                         _unitOfWork.ShoppingCart.Update(newcart);
                         await _unitOfWork.Save();
 
-                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        pairs.Add("Message", "Add To Cart Done");
                         return Ok(pairs);
 
                     }
@@ -114,19 +114,19 @@ namespace BeautyPlanet.Controllers
                         _unitOfWork.ShoppingCart.Update(newcart);
                         await _unitOfWork.Save();
 
-                        pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                        pairs.Add("Message", "Add To Cart Done");
                         return Ok(pairs);
                     }
                 }
                 else
                 {
-                    pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart");
+                    pairs.Add("Message", "Can Not Add To Cart");
                     return NotFound(pairs);
                 }
             }
             else
             {
-                pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart count not enouph in center");
+                pairs.Add("Message", "Can Not Add To Cart count not enouph in center");
                 return NotFound(pairs);
 
             }
@@ -192,7 +192,7 @@ namespace BeautyPlanet.Controllers
         {
             var cart = await _unitOfWork.ProductShopCart.Get(q => q.ProductCenterColorSizeId == Product && q.ShoppingCartId == Cart,include:x=>x.Include(q=>q.ProductCenterColorSize).ThenInclude(p=>p.Product));
            var prod= await _unitOfWork.ProductCenterColorSize.Get(q => q.Id == Product );
-            Dictionary<int, string> pairs = new Dictionary<int, string>();
+            Dictionary<string, string> pairs = new Dictionary<string, string>();
 
             if (count <= prod.Count)
             {
@@ -203,13 +203,13 @@ namespace BeautyPlanet.Controllers
                 _unitOfWork.ShoppingCart.Update(shop);
                 await _unitOfWork.Save();
 
-                pairs.Add(StatusCodes.Status200OK, "Add To Cart Done");
+                pairs.Add("Message", "Add To Cart Done");
                 return Ok(pairs);
 
             }
             else
             {
-                pairs.Add(StatusCodes.Status400BadRequest, "Can Not Add To Cart count not enouph in center");
+                pairs.Add("Message", "Can Not Add To Cart count not enouph in center");
                 return NotFound(pairs);
 
             }
@@ -217,7 +217,7 @@ namespace BeautyPlanet.Controllers
         [HttpPut("Decress")]
         public async Task<IActionResult> DecressProduct(int Cart, int Product,int count )
         {
-            Dictionary<int, string> pairs = new Dictionary<int, string>();
+            Dictionary<string, string> pairs = new Dictionary<string, string>();
 
             var cart = await _unitOfWork.ProductShopCart.Get(q => q.ProductCenterColorSizeId == Product && q.ShoppingCartId == Cart, include: x => x.Include(q => q.ProductCenterColorSize).ThenInclude(p => p.Product));
             cart.count+=count;
@@ -227,7 +227,7 @@ namespace BeautyPlanet.Controllers
             _unitOfWork.ShoppingCart.Update(shop);
             await _unitOfWork.Save();
 
-            pairs.Add(StatusCodes.Status200OK, " Cart Done");
+            pairs.Add("Message", " Cart Done");
             return Ok(pairs);
 
         }
@@ -246,10 +246,14 @@ namespace BeautyPlanet.Controllers
 
             var center = await _unitOfWork.ShoppingCart.Get(q => q.Id == id);
 
+            Dictionary<string, string> d = new Dictionary<string, string>();
+
 
             if (center == null)
             {
-                return NotFound();
+                d.Add("message", "can not delete");
+
+                return NotFound(d);
             }
             else
             {
@@ -258,21 +262,23 @@ namespace BeautyPlanet.Controllers
                
                 await _unitOfWork.ShoppingCart.Delete(id);
                 await _unitOfWork.Save();
+                d.Add("message", "delete done");
 
 
-                return Ok();
+                return Ok(d);
             }
         }
         [HttpDelete("DeleteCarts")]
         public async Task<IActionResult> DeleteCarts()
         {
-
+            Dictionary<string ,string> d= new Dictionary<string ,string>();
             var center = await _unitOfWork.ShoppingCart.GetAll();
 
 
             if (center == null)
             {
-                return NotFound();
+                d.Add("message", "can not delete");
+                return NotFound(d);
             }
             else
             {
@@ -283,7 +289,8 @@ namespace BeautyPlanet.Controllers
                 }
                  _unitOfWork.ShoppingCart.DeleteRange(center);
                 await _unitOfWork.Save();
-                return Ok();
+                d.Add("message","delete done");
+                return Ok(d);
             }
         }
     }

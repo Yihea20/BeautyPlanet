@@ -28,7 +28,7 @@ namespace BeautyPlanet.DTOs
     {
 
         public AppointmentDTO AppointmentDTO { get; set; }
-        public IFormFile Files { get; set; }
+        public IFormFile? Files { get; set; }
     }
     public class AppId
     {
