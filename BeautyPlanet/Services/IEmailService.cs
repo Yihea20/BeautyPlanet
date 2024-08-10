@@ -4,6 +4,6 @@ namespace BeautyPlanet.Services
 {
     public interface IEmailService
     {
-        void SendEmail(EmailDTO request);
+        bool SendEmail(EmailDTO request);
     }
 }

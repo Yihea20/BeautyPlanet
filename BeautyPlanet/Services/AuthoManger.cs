@@ -101,7 +101,7 @@ namespace BeautyPlanet.Services
                 var isValid = await _userManager.VerifyUserTokenAsync(_user, "BeautyPlanetApi", "RefreshToken", request.RefreshToken);
                 if (isValid)
                 {
-                    return new TokenRequest { Token = await CreatToken(), RefreshToken = await CreateRefreshToken(), rand = request.rand };
+                    return new TokenRequest { Token = await CreatToken(), RefreshToken = await CreateRefreshToken() };
                 }
                 await _userManager.UpdateSecurityStampAsync(_user);
             }

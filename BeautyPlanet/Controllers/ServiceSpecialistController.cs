@@ -21,14 +21,7 @@ namespace BeautyPlanet.Controllers
             _mapper = mapper;
             _logger = logger;
         }
-        [HttpPost]
-        public async Task<IActionResult> AddServiceSpecialist([FromBody] ServiceSpecialistDTO serviceSpecialist)
-        {
-            var m = _mapper.Map<ServiceSpecialist>(serviceSpecialist);
-            await _unitOfWork.ServiceSpecialist.Insert(m);
-            await _unitOfWork.Save();
-            return Ok();
-        }
+        
         [HttpGet]
         public async Task<IActionResult> GetAllServiceSpecialist()
         {

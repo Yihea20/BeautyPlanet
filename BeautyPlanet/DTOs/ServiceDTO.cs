@@ -5,14 +5,14 @@ namespace BeautyPlanet.DTOs
 {
     public class ServiceDTO
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Type { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? Type { get; set; }
        // public string ImageURL { get; set; }
-        public int CategoryId { get; set; }
-        public string Duration { get; set; }
-        public int Price { get; set; }
-        public int Rate { get; set; }
+        public int? CategoryId { get; set; }
+        public TimeSpan? Duration { get; set; }
+        public int? Price { get; set; }
+        public int? Rate { get; set; }
     }
     public class ServiceFile
     {
@@ -25,7 +25,7 @@ namespace BeautyPlanet.DTOs
         public int Id { get; set; }
         public string ImageURL { get; set; }
         
-        public ICollection<CenterDTO> Centers { get; set; }
+        public ICollection<GetCenterDTO> Centers { get; set; }
       
        // public ICollection<GetSpecialistDTO> Specialists { get; set; }
         
@@ -42,7 +42,7 @@ namespace BeautyPlanet.DTOs
     public class AppService
     {
         public int Id { get; set; }
-        public string Duration { get; set; }
+        public TimeSpan Duration { get; set; }
         public int Price { get; set; }
     }
 }

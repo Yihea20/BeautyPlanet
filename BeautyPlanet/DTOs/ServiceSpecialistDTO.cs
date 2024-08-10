@@ -14,12 +14,12 @@ namespace BeautyPlanet.DTOs
     {
 
         public int Id { get; set; }
-        public Service Servicee { get; set; }
-        public Specialist Specialistt { get; set; }
+        public Service Service { get; set; }
+        public Specialist Specialist { get; set; }
     }
     public class GetSp
     {
-        public GetSpecialistDTO Specialistt { get; set; }
+        public GetSpecialistDTO Specialist { get; set; }
     }
     public class GetSpTime
     {

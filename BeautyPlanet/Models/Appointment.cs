@@ -19,13 +19,16 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Center))]
         public int? CenterId { get; set; }
         public Center? Center { get; set; }
+        [ForeignKey(nameof(Category))]
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
         [ForeignKey(nameof(Status))]
         public int StatusId { get; set; }
         public Status Status { get; set; }
         public string? CostomServiceName { get; set; }
         public string? description { get; set; }
         public string? ImageUrl { get; set; }
-        public DateTime DateTime { get; set; }
-
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
     }
 }

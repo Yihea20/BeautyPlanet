@@ -9,9 +9,9 @@ namespace BeautyPlanet.Models
         public int Id { get; set; }
         [ForeignKey(nameof(Sizes))]
         public int SizeId { get; set; }
-        public Sizes Size { get; set; }
+        public Sizes Sizes { get; set; }
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
-        public Product Productt { get; set; }
+        public Product Product { get; set; }
     }
 }

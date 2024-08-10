@@ -13,6 +13,7 @@ namespace BeautyPlanet.DTOs
     {
         public string ImageUrl { get; set; }
         public ICollection<GetServiceDTO> Services { get; set; }
+       
     }
     public class GetCategoryWithIdDTO:GetCategoryDTO
     {

@@ -30,6 +30,15 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<Favorate> Favorate { get; }
         public IGenericRepository<Post>Post { get; }
         public IGenericRepository<CenterCategory>CenterCategory { get; }
+        public IGenericRepository<TimeSlot>TimeSlot { get; }
+        public IGenericRepository<Code> Code { get; }
+        public IGenericRepository<Comment>Comment { get; }
+        public IGenericRepository<Rate>Rate { get; }
+        public IGenericRepository<Distance> Distance { get;  }
+        public IGenericRepository<UserPost> UserPost { get; }
+        public IGenericRepository<UserComment> UserComment { get; }
+        public IGenericRepository<UserSavedPost> UserSavedPost { get; }
+        public IGenericRepository<Admin> Admin { get; }
         Task Save();
         Task<int> CompleteAsync();
         Task BeginTransactionAsync();

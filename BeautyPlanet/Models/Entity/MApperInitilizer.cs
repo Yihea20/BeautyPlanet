@@ -92,6 +92,24 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Post, GetSpPost>().ReverseMap();
             CreateMap<Specialist, GetSpTime>().ReverseMap();
             CreateMap<Center, GetCenterGalleryDTO>().ReverseMap();
-        }
+            CreateMap<TimeSlot, TimeSlotDTO>().ReverseMap();
+            CreateMap<Appointment, GetAppointment>().ReverseMap();
+            CreateMap<Appointment, GetDashAppointment>().ReverseMap();
+            CreateMap<Code, CodeDTO>().ReverseMap();
+            CreateMap<Code, GetCodeDTO>().ReverseMap();
+            CreateMap<User, EditUsetProfile>().ReverseMap();
+            CreateMap<Specialist, EditSpecialistProfile>().ReverseMap();
+            CreateMap<Comment, CommentDTO>().ReverseMap();
+            CreateMap<Comment, GetComment>().ReverseMap();
+            CreateMap<Center, EditCenter>().ReverseMap();
+            CreateMap<Distance, DistanceDTO>().ReverseMap();
+            CreateMap<UserPost, UserPostDTO>().ReverseMap();
+            CreateMap<UserComment, UserCommentDTO>().ReverseMap();
+            CreateMap<UserSavedPost, UserSavedPostDTO>().ReverseMap();
+            CreateMap<UserSavedPost,GetSavedPost>().ReverseMap();
+            CreateMap<ServiceSpecialist, GetSpecialistDTO>().ReverseMap();
+            CreateMap<Admin, RegistAdmin>().ReverseMap();
+            CreateMap<Admin,AdminLogIn>().ReverseMap();
+          }
     }
 }

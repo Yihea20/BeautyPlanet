@@ -84,9 +84,9 @@ namespace BeautyPlanet.Controllers
             return Ok(result);
         }
         [HttpGet("ID")]
-        public async Task<IActionResult> GetCenterById(int id)
+        public async Task<IActionResult> GetCategoryById(int id)
         {
-            var category = await _unitOfWork.Category.Get(q => q.Id == id, include: x => x.Include(p => p.Services));
+            var category = await _unitOfWork.Category.Get(q => q.Id == id, include: x => x.Include(p => p.Services).ThenInclude(c=>c.Centers));
             var result = _mapper.Map<GetCategoryDTO>(category);
             return Ok(result);
         }

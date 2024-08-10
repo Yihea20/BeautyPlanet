@@ -9,6 +9,7 @@ namespace BeautyPlanet.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
+        public ICollection<Specialist>Specialists { get; set; }
         public ICollection<Service> Services { get; set; }
         public ICollection<Center> Centers { get; set; }
     }

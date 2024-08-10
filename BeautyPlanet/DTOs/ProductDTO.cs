@@ -141,6 +141,6 @@ namespace BeautyPlanet.DTOs
     public class GetProductSizeDTO
     {
         
-        public SizeDTO Size { get; set; }
+        public SizeDTO Sizes { get; set; }
      }
 }

@@ -9,9 +9,9 @@ namespace BeautyPlanet.Models
         public int Id { get; set; }
         [ForeignKey(nameof(Service))]
         public int ServiceId { get; set; }
-        public Service Servicee { get; set; }
+        public Service Service { get; set; }
         [ForeignKey(nameof(Specialist))]
         public string SpecialistId { get; set; }
-        public Specialist Specialistt { get; set; }
+        public Specialist Specialist { get; set; }
     }
 }

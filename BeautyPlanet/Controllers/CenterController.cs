@@ -66,7 +66,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllCenter()
         {
 
-            var center = await _unitOfWork.Center.GetAll(include: x => x.Include(p => p.Specialists));
+            var center = await _unitOfWork.Center.GetAll(include: x => x.Include(p => p.Specialists).Include(pp=>pp.Posts).ThenInclude(c=>c.Comments).ThenInclude(u=>u.User));
             var result = _mapper.Map<IList<GetCenterDTO>>(center);
             return Ok(result);
         }
@@ -92,10 +92,14 @@ namespace BeautyPlanet.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCenter(int id, [FromBody] CenterDTO centerDto)
+        public async Task<IActionResult> UpdateCenter(int id, List<string>s)
         {
             var old = await _unitOfWork.Center.Get(q => q.Id == id);
-            _mapper.Map(centerDto, old);
+            old.WorkingTime.Clear();
+            old.WorkingTime.Add("Monday - Friday   , 08:00 am - 10:00 pm "
+ 
+             );
+            old.WorkingTime.Add("Saturday  - Sunday   , 10:00 am - 06:00 pm ");
             _unitOfWork.Center.Update(old);
             await _unitOfWork.Save();
             return Ok();
@@ -173,6 +177,15 @@ namespace BeautyPlanet.Controllers
         private string GetPath(string name)
         {
             return this._environment.WebRootPath + "/Upload/CenterGalleryImage/" + name;
+        }
+        [HttpPut("EditCenter/{id}")]
+        public async Task<IActionResult> EditCenter(int id, [FromBody]EditCenter? center)
+        {
+            var c = await _unitOfWork.Center.Get(q => q.Id == id);
+            _mapper.Map(center, c);
+            _unitOfWork.Center.Update(c);
+            await _unitOfWork.Save();
+            return Ok();
         }
     }
 }

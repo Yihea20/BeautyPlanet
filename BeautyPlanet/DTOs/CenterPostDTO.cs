@@ -21,8 +21,14 @@ namespace BeautyPlanet.DTOs
         public string subject { get; set; }
         public IList<string> ImageUrl { get; set; } = new List<string>();
         public int likes { get; set; }
-      
-        public GetCenterDTO? Center { get; set; }
+
+        public string? Title { get; set; }
+        public bool? IsLiked { get; set; }=false;
+        public bool? IsSaved { get; set; }=false;
+        // public ICollection<GetComment> Comments { get; set; }
+        //public GetCenterDTO? Center { get; set; }
+        public GetSpecialistDTO? Specialist { get; set; }
+
     }
     public class GetSpPost
     {
@@ -30,7 +36,8 @@ namespace BeautyPlanet.DTOs
         public string subject { get; set; }
         public IList<string> ImageUrl { get; set; } = new List<string>();
         public int likes { get; set; }
-        public GetSpecialistDTO? Specialist { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
     }
     public class PostSpFile
     {
@@ -40,7 +47,7 @@ namespace BeautyPlanet.DTOs
     public class PostCenterPost
     {
 
-        public CenterPostDTO SpPost { get; set; }
+        public CenterPostDTO CenterPost { get; set; }
         public IList<IFormFile> Files { get; set; }
     }
 }

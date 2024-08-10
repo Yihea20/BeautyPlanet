@@ -23,7 +23,8 @@ namespace BeautyPlanet.Models
         public Platform? Platform { get; set; }
         public DateTime? OpenTime { get; set; }
         public DateTime? CloseTime { get; set; }
-
+        public IList<string >WorkingTime { get; set; }=new List<string>();
+        public bool Active { get; set; }
         public double? Lat { get; set; }
         public double? Lng { get; set; }
         public ICollection<Service> Services { get; set; }

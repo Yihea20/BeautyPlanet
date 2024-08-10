@@ -26,7 +26,9 @@ namespace BeautyPlanet.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult>HomeApi(String Id)
         {
-                var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(Id)));
+            var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(Id)));
+
+            
             var category = _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
             var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(include:x=>x.Include(p=>p.Specialists) ,orderBy:x=>x.OrderByDescending(p=>p.Rate)));
             IList<OfferHome> hf = new List<OfferHome>();
@@ -39,6 +41,14 @@ namespace BeautyPlanet.Controllers
                 hf.Add(new OfferHome { Offer = result, Service = service, Center = cente });
             }
             return Accepted(new Home { User=user,Categories=category,Centers=center,Offers=hf});
+        }
+        [HttpGet("GetFilter")]
+        public async Task<IActionResult> GetFilters()
+        {
+            var category= _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
+            var distance =_mapper.Map<IList<DistanceDTO>>( await _unitOfWork.Distance.GetAll());
+            var rate=await _unitOfWork.Rate.GetAll();
+            return Accepted(new Filter { Categories = category, Distances = distance, Rates = rate });
         }
         [HttpGet("GlopalSearch")]
         public async Task<IActionResult> GlopalSearch(string search)

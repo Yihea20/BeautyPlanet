@@ -1,4 +1,6 @@
-﻿namespace BeautyPlanet.DTOs
+﻿using BeautyPlanet.Models;
+
+namespace BeautyPlanet.DTOs
 {
     public class Home
     {
@@ -25,4 +27,18 @@
         public IList<HomeProduct> GetProduct { get; set; }
         public IList<HomeProduct> NewProduct { get; set; }
     }
+    public class Filter
+    {
+        public IList<CategoryIdDTO> Categories { get; set; }
+        public IList<Rate> Rates { get; set; }
+        public IList<DistanceDTO> Distances { get; set; }
+    }
+    public class FilterApplay
+    {
+        public int? CategoryId { get; set; }
+        public int? DistanceId { get; set; }
+        public int? RateId { get; set; }
+    }
+
+
 }

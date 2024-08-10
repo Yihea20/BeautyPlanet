@@ -97,13 +97,28 @@ namespace BeautyPlanet.Controllers
             return Ok(result);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCenter(int id, [FromBody] ServiceDTO centerDto)
+        public async Task<IActionResult> UpdateCenter(int id,int centerId, [FromBody] ServiceDTO centerDto)
         {
-            var old = await _unitOfWork.Service.Get(q => q.Id == id);
+            var old = await _unitOfWork.Service.Get(q => q.Id == id );
             _mapper.Map(centerDto, old);
             _unitOfWork.Service.Update(old);
             await _unitOfWork.Save();
             return Ok();
+        }
+        [HttpDelete("DeleteService")]
+        public async Task<IActionResult>DeleteService(int id)
+        {
+            var service=await _unitOfWork.Service.Get(q=>q.Id==id);
+            if(service==null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                await _unitOfWork.Service.Delete(id);
+                await _unitOfWork.Save();
+                return Ok();
+            }
         }
 
     }

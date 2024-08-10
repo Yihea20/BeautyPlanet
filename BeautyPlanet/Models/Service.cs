@@ -15,7 +15,7 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
         public Category  Category{ get; set; }
-        public string Duration { get; set; }
+        public TimeSpan Duration { get; set; }
         public ICollection<Center> Centers { get; set; }
         public ICollection<Specialist> Specialists { get; set; }
         public int Price { get; set; }

@@ -15,20 +15,27 @@ namespace BeautyPlanet.Services
             _config = config;
         }
 
-        public void SendEmail(EmailDTO request)
+        public bool SendEmail(EmailDTO request)
         {
-            var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse("yiheayihea95@gmail.com"));
-            email.To.Add(MailboxAddress.Parse(request.To));
-            email.Subject = request.Subject;
-            email.Body = new TextPart(TextFormat.Html) { Text =request.Body };
-            using var smtp = new SmtpClient();
-            smtp.Connect(_config.GetSection("EmailHost").Value, 587, SecureSocketOptions.StartTls);
-            var user = _config.GetSection("EmailUserName").Value;
-            var pass = _config.GetSection("EmailPassWord").Value;
-            smtp.Authenticate(user,pass);
-            smtp.Send(email);
-            smtp.Disconnect(true);
+            try
+            {
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse("yiheayihea95@gmail.com"));
+                email.To.Add(MailboxAddress.Parse(request.To));
+                email.Subject = request.Subject;
+                email.Body = new TextPart(TextFormat.Html) { Text = request.Body };
+                using var smtp = new SmtpClient();
+                smtp.Connect(_config.GetSection("EmailHost").Value, 587, SecureSocketOptions.StartTls);
+                var user = _config.GetSection("EmailUserName").Value;
+                var pass = _config.GetSection("EmailPassWord").Value;
+                smtp.Authenticate(user, pass);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+                return true;
+            }
+            catch (Exception ex) {
+                return false;
+            }
         }
     }
 }

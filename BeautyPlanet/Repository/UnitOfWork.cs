@@ -34,6 +34,15 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Favorate> _favorate;
         private IGenericRepository<Post> _post;
         private IGenericRepository<CenterCategory> _centerCategory;
+        private IGenericRepository<TimeSlot> _timeSlot;
+        private IGenericRepository<Code> _code;
+        private IGenericRepository<Comment> _comment;
+        private IGenericRepository<Rate> _rate;
+        private IGenericRepository<Distance> _distance;
+        private IGenericRepository<UserPost> _userPost;
+        private IGenericRepository<UserComment> _userComment;
+        private IGenericRepository<UserSavedPost> _userSavedPost;
+        private IGenericRepository<Admin> _admin;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -87,6 +96,24 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<Post> Post => _post ??=new GenericRepository<Post>(_context);
 
         public IGenericRepository<CenterCategory> CenterCategory => _centerCategory ??=new GenericRepository<CenterCategory>(_context);
+
+        public IGenericRepository<TimeSlot> TimeSlot => _timeSlot= new GenericRepository<TimeSlot>(_context);
+
+        public IGenericRepository<Code> Code => _code ??=new GenericRepository<Code>(_context);
+
+        public IGenericRepository<Comment> Comment => _comment ??=new GenericRepository<Comment>(_context);
+
+        public IGenericRepository<Rate> Rate => _rate ??=new GenericRepository<Rate>(_context);
+
+        public IGenericRepository<Distance> Distance => _distance ??=new GenericRepository<Distance>(_context);
+
+        public IGenericRepository<UserPost> UserPost => _userPost ??=new GenericRepository<UserPost>(_context);
+
+        public IGenericRepository<UserComment> UserComment => _userComment ??=new GenericRepository<UserComment>(_context);
+
+        public IGenericRepository<UserSavedPost> UserSavedPost => _userSavedPost ??=new GenericRepository<UserSavedPost>(_context);
+
+        public IGenericRepository<Admin> Admin => _admin ??=new GenericRepository<Admin>(_context);
 
         public Task BeginTransactionAsync()
         {
