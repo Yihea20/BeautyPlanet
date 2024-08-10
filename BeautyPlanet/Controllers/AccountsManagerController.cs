@@ -70,8 +70,8 @@ namespace BeautyPlanet.Controllers
                 personDTO.RoleName.Add("USER");
                 var user = _mapper.Map<User>(personDTO);
                 user.UserName = "New User";
-                user.ProfileImageURL = "http://11181198:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
-                user.ImageURL = "http://11181198:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
+                user.ProfileImageURL = "http://11189934:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
+                user.ImageURL = "http://11189934:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
                 user.Email = personDTO.Email;
             
                 var result = await _userManager.CreateAsync(user, personDTO.Password);
@@ -241,7 +241,7 @@ namespace BeautyPlanet.Controllers
             if (user != null)
             {
 
-                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+                string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
 
                 try
                 {
@@ -343,7 +343,7 @@ namespace BeautyPlanet.Controllers
             if (user != null)
             {
 
-                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+                string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
 
                 try
                 {

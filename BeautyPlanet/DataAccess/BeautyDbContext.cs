@@ -67,8 +67,8 @@ namespace BeautyPlanet.DataAccess
             modelBuilder.Entity<Center>().Property(w => w.WorkingTime).HasConversion(v => JsonConvert.SerializeObject(v),
                 v => JsonConvert.DeserializeObject<List<string>>(v) ?? new List<string>()
            );
-            modelBuilder.Entity<Center>().Property(w => w.WorkingTime).HasDefaultValue(new List<string> { "monday - friday   , 08:00 am - 10:00 pm ",
-            "saturday - sunday   , 08:00 am - 10:00 pm "});
+            //modelBuilder.Entity<Center>().Property(w => w.WorkingTime).HasDefaultValue(new List<string> { "monday - friday   , 08:00 am - 10:00 pm ",
+            //"saturday - sunday   , 08:00 am - 10:00 pm "});
             modelBuilder.Entity<Center>().HasMany(ca => ca.Categories).WithMany(c => c.Centers).UsingEntity<CenterCategory>(
                 cc => cc.HasOne(prod => prod.Category).WithMany().HasForeignKey(prod=>prod.CategoryId),
                 cc=>cc.HasOne(prod=>prod.Center).WithMany().HasForeignKey(prod=>prod.CenterId),

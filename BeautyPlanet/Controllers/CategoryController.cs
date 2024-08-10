@@ -33,7 +33,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromForm] CategoryFile category)
         {
-            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
                 string FilePath = GetFilePath(category.Categories.Name.Replace(" ", "_"));

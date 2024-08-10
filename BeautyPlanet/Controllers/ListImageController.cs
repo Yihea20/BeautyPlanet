@@ -33,7 +33,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCenter([FromForm] Files center)
         {
-            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             ListImageDTO list = new ListImageDTO();
             list.ImageUrl = new List<string>();
             try

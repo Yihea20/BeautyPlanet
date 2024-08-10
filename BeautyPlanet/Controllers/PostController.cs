@@ -33,7 +33,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost("AddSpPost")]
         public async Task<IActionResult> AddSpPost([FromForm] PostSpFile product)
         {
-            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             var result = _mapper.Map<Post>(product.SpPost);
             try
             {
@@ -73,7 +73,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost("AddCenterPost")]
         public async Task<IActionResult> AddCenterPost([FromForm] PostCenterPost product)
         {
-            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             var result = _mapper.Map<Post>(product.CenterPost);
             try
             {

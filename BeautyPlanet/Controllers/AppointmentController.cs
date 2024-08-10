@@ -77,7 +77,7 @@ namespace BeautyPlanet.Controllers
 
 
                 }
-                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+                string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
 
                 try
                 {
@@ -119,7 +119,7 @@ namespace BeautyPlanet.Controllers
             else if(appointment.AppointmentDTO.ServiceId == null && appointment.Files != null && appointment.AppointmentDTO.SpecialistId != null)
             {
                
-                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+                string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
 
                 try
                 {

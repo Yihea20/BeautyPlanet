@@ -32,7 +32,7 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> AddService([FromForm] ServiceFile service)
         {
-            string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
             try
             {
                 string FilePath = GetFilePath(service.Services.Name.Replace(" ", "_"));
