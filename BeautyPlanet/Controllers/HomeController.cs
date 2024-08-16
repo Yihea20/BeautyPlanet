@@ -24,23 +24,26 @@ namespace BeautyPlanet.Controllers
             _logger = logger;
         }
         [HttpGet("{Id}")]
-        public async Task<IActionResult>HomeApi(String Id)
+        public async Task<IActionResult>HomeApi(String Id )
         {
-            var user = _mapper.Map<GetUserHome>(await _unitOfWork.User.Get(q => q.Id.Equals(Id)));
+            var u = await _unitOfWork.User.Get(q => q.Id.Equals(Id));
+            var user = _mapper.Map<GetUserHome>(u);
 
-            
-            var category = _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
-            var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(include:x=>x.Include(p=>p.Specialists) ,orderBy:x=>x.OrderByDescending(p=>p.Rate)));
-            IList<OfferHome> hf = new List<OfferHome>();
-            var offer = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x => x.Center).Include(x => x.ServiceCente).ThenInclude(x => x.Service));
-            foreach (Offer f in offer)
-            {
-                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == f.ServiceCente.ServiceId));
-                var cente = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == f.ServiceCente.CenterId));
-                var result = _mapper.Map<GetOffersIdDTO>(f);
-                hf.Add(new OfferHome { Offer = result, Service = service, Center = cente });
-            }
-            return Accepted(new Home { User=user,Categories=category,Centers=center,Offers=hf});
+                var category = _mapper.Map<IList<CategoryIdDTO>>(await _unitOfWork.Category.GetAll());
+
+                var center = _mapper.Map<IList<GetCenterwithIdDTO>>(await _unitOfWork.Center.GetAll(include: x => x.Include(p => p.Specialists), orderBy: x => x.OrderByDescending(p => p.Rate)));
+                IList<OfferHome> hf = new List<OfferHome>();
+                var offer = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x => x.Center).Include(x => x.ServiceCente).ThenInclude(x => x.Service));
+                foreach (var f in offer)
+                {
+                    var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == f.ServiceCente.ServiceId));
+                    var cente = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == f.ServiceCente.CenterId));
+                    var result = _mapper.Map<GetOffersIdDTO>(f);
+                    hf.Add(new OfferHome { Offer = result, Service = service, Center = cente });
+                }
+                return Accepted(new Home { User=user,Categories=category,Centers=center,Offers=hf});
+         
+             
         }
         [HttpGet("GetFilter")]
         public async Task<IActionResult> GetFilters()
@@ -71,7 +74,7 @@ namespace BeautyPlanet.Controllers
             var category = _mapper.Map<IList<GetShoppingCategory>>(await _unitOfWork.ShoppingCategory.GetAll());
             IList<HomeProduct> home1 = new List<HomeProduct>();
             HomeProduct h1=new HomeProduct();
-            var service1 = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Center).ThenInclude(s => s.Specialists).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            var service1 = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Store).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr), orderBy: x => x.OrderByDescending(p => p.Product.Conter));
             var result1 = _mapper.Map<IList<ProductDetels>>(service1);
             foreach (var p in result1)
@@ -88,13 +91,14 @@ namespace BeautyPlanet.Controllers
                 h1.Description = p.Product.Description;
                 h1.Colors = p.Product.Colors;
                 h1.EarnPoint = p.Product.EarnPoint;
-                h1.Center = p.Center;
+                h1.Store = p.Store;
+                h1.Count=p.Count;
                 home1.Add(h1);
             }
 
             IList<HomeProduct> home = new List<HomeProduct>();
             HomeProduct h = new HomeProduct();
-            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Center).ThenInclude(s => s.Specialists).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Store).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr),orderBy:x=>x.OrderByDescending(p=>p.Product.ProductAddTime));
             var result = _mapper.Map<IList<ProductDetels>>(service);
             foreach (var p in result)
@@ -111,7 +115,8 @@ namespace BeautyPlanet.Controllers
                 h.Description = p.Product.Description;
                 h.Colors = p.Product.Colors;
                 h.EarnPoint = p.Product.EarnPoint;
-                h.Center = p.Center;
+                h.Store = p.Store;
+                h.Count = p.Count;
                 home.Add(h);
             }
             return Accepted(new ShopHome {GetShoppingCategory=category, GetProduct=home1,NewProduct=home} );

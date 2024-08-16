@@ -73,6 +73,10 @@ namespace BeautyPlanet.DTOs
        
         public ICollection<string> RoleName { get; set; }
     }
+    public class GetSpecialistAppointment
+    {
+        public ICollection<GetAppointment>? Appointments { get; set; }
+    }
     public class GetSpecialistDTO
     {
 
@@ -88,6 +92,7 @@ namespace BeautyPlanet.DTOs
         public string ImageUrl { get; set; }
         public CategoryIdDTO Category { get; set; }
         public ICollection<GetAppointment>? Appointments { get; set; }
+        public ICollection< GetServiceBesic> Services { get; set; }
     }
     public class AppSpecialist
     {

@@ -9,13 +9,18 @@ namespace BeautyPlanet.DTOs
         //public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int ServiceCenterId { get; set; }
+        public int Price { get; set; }
+        public int Serviced { get;set; }
+        public int CenterId { get; set; }
         
     }
-    public class GetOfferDTO:OfferDTO
+    public class GetOfferDTO
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
         public GetServiceCenter ServiceCente { get; set; }
         public string ImageUrl { get; set; }
+        public int Price { get; set; }
         public int Id { get; set; }
     }
     public class GetOffersIdDTO
@@ -24,6 +29,7 @@ namespace BeautyPlanet.DTOs
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public string Description { get; set; }
+        public int Price { get; set; }
     }
     public class OfferFile
     {

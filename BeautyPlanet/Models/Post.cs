@@ -20,5 +20,7 @@ namespace BeautyPlanet.Models
         public ICollection<Comment> Comments { get; set; }
         public ICollection<User>Users { get; set; }
         public ICollection<User> UserSaved { get; set; }
+        public ICollection<Specialist>LikedSpecialists{ get; set; }
+        public ICollection<Specialist> SpecialistsSave { get; set; }
     }
 }

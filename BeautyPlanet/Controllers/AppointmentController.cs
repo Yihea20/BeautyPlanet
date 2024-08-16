@@ -55,7 +55,7 @@ namespace BeautyPlanet.Controllers
                 await _unitOfWork.Appointment.Insert(app);
                 await _unitOfWork.Save();
                 d.Add("Message", "Appointment succeded");
-                return Ok(d);
+                return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
             }
 
             else if (appointment.AppointmentDTO.ServiceId ==null && appointment.Files != null&&appointment.AppointmentDTO.SpecialistId==null)
@@ -105,7 +105,7 @@ namespace BeautyPlanet.Controllers
                         await _unitOfWork.Appointment.Insert(result);
                         await _unitOfWork.Save();
                         d.Add("Message", "Appointment succeded");
-                        return Ok(d);
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
                     }
 
                 }
@@ -147,7 +147,7 @@ namespace BeautyPlanet.Controllers
                         await _unitOfWork.Appointment.Insert(result);
                         await _unitOfWork.Save();
                         d.Add("Message", "Appointment succeded");
-                        return Ok(d);
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
                     }
 
                 }
@@ -191,7 +191,7 @@ namespace BeautyPlanet.Controllers
                     await _unitOfWork.Appointment.Insert(app);
                     await _unitOfWork.Save();
                     d.Add("Message", "Appointment succeded");
-                    return Ok(d);
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
                 }
 
                 else { 
@@ -746,6 +746,7 @@ namespace BeautyPlanet.Controllers
 
                 }
             }
+            var list = times.Distinct().ToList();
             times.Sort();
             List<TimeSpan> ss = new List<TimeSpan>();
             foreach (var r in times)
@@ -761,11 +762,16 @@ namespace BeautyPlanet.Controllers
 
             return Ok(map);
         }
-        //[HttpGet("ServicePerDay")]
-        //public async Task<IActionResult> ServicePerDay(int serviceid,DateTime startDayOfMonth,DateTime endDayOfMonth)
-        //{
-        //    var service = await _unitOfWork.Appointment.GetAll(q => q.StartTime.Date>=startDayOfMonth.Date &&q.StartTime.Date<=endDayOfMonth.Date q.ServiceId == serviceid, include: s => s.Include(c => c.Service));
-
-        //}
+        [HttpGet("ServicePerDay/{serviceid}")]
+        public async Task<IActionResult> ServicePerDay(int serviceid, DateTime startDayOfMonth, DateTime endDayOfMonth)
+        {
+            Dictionary<DateTime,int >pairs=new Dictionary<DateTime,int>();
+            var service = await _unitOfWork.Appointment.GetAll(q => q.StartTime.Date >= startDayOfMonth.Date && q.StartTime.Date <= endDayOfMonth.Date &&q.ServiceId == serviceid, include: s => s.Include(c => c.Service));
+            for (var date = startDayOfMonth; date <= endDayOfMonth; date = date.AddDays(1))
+            {
+                pairs.Add(date.Date, service.Where(s => s.StartTime.Date == date.Date).ToList().Count());
+            }
+            return Ok(pairs);
+        }
     }
 }

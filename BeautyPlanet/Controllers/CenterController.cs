@@ -66,7 +66,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllCenter()
         {
 
-            var center = await _unitOfWork.Center.GetAll(include: x => x.Include(p => p.Specialists).Include(pp=>pp.Posts).ThenInclude(c=>c.Comments).ThenInclude(u=>u.User));
+            var center = await _unitOfWork.Center.GetAll(include: x => x.Include(p => p.Specialists).Include(pp=>pp.Posts).ThenInclude(c=>c.Comments).ThenInclude(u=>u.Person));
             var result = _mapper.Map<IList<GetCenterDTO>>(center);
             return Ok(result);
         }
@@ -120,52 +120,52 @@ namespace BeautyPlanet.Controllers
             await _unitOfWork.Save();
             return Ok();
         }
-        //[HttpPut("ImageToGalery")]
-        //public async Task<IActionResult>AddImageToGallery([FromForm] CenterGallery image)
-        //{
-        //    var center = await _unitOfWork.Center.Get(q => q.Id == image.CenterId);
-        //    if(center!=null)
-        //    {
-        //        string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
-               
-        //        try
-        //        {
-        //            foreach (var f in image.Files)
-        //            {
+        [HttpPut("ImageToGalery")]
+        public async Task<IActionResult> AddImageToGallery([FromForm] CenterGallery image)
+        {
+            var center = await _unitOfWork.Center.Get(q => q.Id == image.CenterId);
+            if (center != null)
+            {
+                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+
+                try
+                {
+                    foreach (var f in image.Files)
+                    {
 
 
-        //                string FilePath = GetFilePath(f.FileName);
-        //                if (!System.IO.Directory.Exists(FilePath))
-        //                {
-        //                    System.IO.Directory.CreateDirectory(FilePath);
-        //                }
-        //                string url = FilePath + "\\" + f.FileName;
-        //                if (System.IO.File.Exists(url))
-        //                {
-        //                    System.IO.File.Delete(url);
-        //                }
-        //                using (FileStream stream = System.IO.File.Create(url))
-        //                {
-        //                    await f.CopyToAsync(stream);
+                        string FilePath = GetFilePath(f.FileName);
+                        if (!System.IO.Directory.Exists(FilePath))
+                        {
+                            System.IO.Directory.CreateDirectory(FilePath);
+                        }
+                        string url = FilePath + "\\" + f.FileName;
+                        if (System.IO.File.Exists(url))
+                        {
+                            System.IO.File.Delete(url);
+                        }
+                        using (FileStream stream = System.IO.File.Create(url))
+                        {
+                            await f.CopyToAsync(stream);
 
-        //                    center.GalleryImage.Add(hosturl + "/Upload/CenterGalleryImage/" + f.FileName + "/" + f.FileName);
+                            center.GalleryImage.Add(hosturl + "/Upload/CenterGalleryImage/" + f.FileName + "/" + f.FileName);
 
-        //                }
-        //            }
-        //             _unitOfWork.Center.Update(center);
-        //            await _unitOfWork.Save();
-        //            return Ok();
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            return NotFound();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
+                        }
+                    }
+                    _unitOfWork.Center.Update(center);
+                    await _unitOfWork.Save();
+                    return Ok();
+                }
+                catch (Exception e)
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
         [HttpGet("GetCenterGallery")]
         public async Task<IActionResult> CenterGallery(int centerID)
         {
@@ -187,5 +187,10 @@ namespace BeautyPlanet.Controllers
             await _unitOfWork.Save();
             return Ok();
         }
+        //[HttpGet("GetCategoryByCenter/{centerId}")]
+        //public async Task<IActionResult>GetCategoryByCenter(int centerId)
+        //{
+        //    var center =
+        //}
     }
 }

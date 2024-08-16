@@ -23,7 +23,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Product> _product;
         private IGenericRepository<ShoppingCategory> _shoppingCategory;
         private IGenericRepository<ShoppingCart> _shoppingCart;
-        private IGenericRepository<Company> _company;
+        private IGenericRepository<Store> _store;
        // private IGenericRepository<ProductColor> _productColor;
         private IGenericRepository<ProductCenterColorSize> _productCenterColorSize;
         private IGenericRepository<Review> _review;
@@ -43,6 +43,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<UserComment> _userComment;
         private IGenericRepository<UserSavedPost> _userSavedPost;
         private IGenericRepository<Admin> _admin;
+        private IGenericRepository<StoreShopCategory> _storeShoppCategory;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -76,7 +77,7 @@ namespace BeautyPlanet.Repository
 
         public IGenericRepository<ShoppingCart> ShoppingCart => _shoppingCart ??=new GenericRepository<ShoppingCart>(_context);
 
-        public IGenericRepository<Company> Company => _company ??=new GenericRepository<Company>(_context);
+        public IGenericRepository<Store> Store => _store ??=new GenericRepository<Store>(_context);
 
         
         public IGenericRepository<Review> Review => _review ??=new GenericRepository<Review>(_context);
@@ -114,6 +115,10 @@ namespace BeautyPlanet.Repository
         public IGenericRepository<UserSavedPost> UserSavedPost => _userSavedPost ??=new GenericRepository<UserSavedPost>(_context);
 
         public IGenericRepository<Admin> Admin => _admin ??=new GenericRepository<Admin>(_context);
+
+
+
+        public IGenericRepository<StoreShopCategory> StoreShoppCategory =>_storeShoppCategory ??=new GenericRepository<StoreShopCategory>(_context);
 
         public Task BeginTransactionAsync()
         {

@@ -81,7 +81,7 @@ namespace BeautyPlanet.Controllers
         {
             IList<HomeDashProduct> home = new List<HomeDashProduct>();
             //HomeDashProduct h1 = new HomeDashProduct();
-            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c => c.Store).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr).Include(c=>c.Product).ThenInclude(s=>s.ShoppingCategoryy));
             var result = _mapper.Map<IList<ProductDashDetels>>(service);
             foreach (var p in result)
@@ -99,7 +99,7 @@ namespace BeautyPlanet.Controllers
                 Description = p.Product.Description,
                 Colors = p.Product.Colors,
                 EarnPoint = p.Product.EarnPoint,
-                Centers = p.Center,
+                Store = p.Store,
                 ShoppingCategoryy = p.Product.ShoppingCategoryy,
                 Count = p.Count,
             });
@@ -112,7 +112,7 @@ namespace BeautyPlanet.Controllers
         {
             IList<HomeProduct> home = new List<HomeProduct>();
           //  HomeProduct h1 = new HomeProduct();
-            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c=>c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include: x => x.Include(c=>c.Store).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
             var result = _mapper.Map<IList<ProductDetels>>(service);
             foreach (var p in result)
@@ -129,7 +129,7 @@ namespace BeautyPlanet.Controllers
                 Description = p.Product.Description,
                 Colors = p.Product.Colors,
                 EarnPoint = p.Product.EarnPoint,
-                Center = p.Center,
+                Store = p.Store,
                 Count = result.Count, });
                 
             }
@@ -138,10 +138,10 @@ namespace BeautyPlanet.Controllers
 
 
         [HttpGet("DashProductById")]
-        public async Task<IActionResult> GetDashProduct(int id, int centerid)
+        public async Task<IActionResult> GetDashProduct(int id, int storeid)
         {
             HomeDashProduct h = new HomeDashProduct();
-            var service = await _unitOfWork.ProductCenterColorSize.Get(q => q.CenterId == centerid && q.ProductId == id, include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            var service = await _unitOfWork.ProductCenterColorSize.Get(q => q.SizeId == storeid && q.ProductId == id, include: x => x.Include(c => c.Store).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr).Include(p=>p.Product.ShoppingCategoryy));
             var result = _mapper.Map<ProductDashDetels>(service);
 
@@ -157,7 +157,7 @@ namespace BeautyPlanet.Controllers
             h.Description = result.Product.Description;
             h.Colors = result.Product.Colors;
             h.EarnPoint = result.Product.EarnPoint;
-            h.Centers = result.Center;
+            h.Store = result.Store;
             h.ShoppingCategoryy=result.Product.ShoppingCategoryy;
             h.Count = result.Count;
 
@@ -165,14 +165,14 @@ namespace BeautyPlanet.Controllers
         }
 
         [HttpGet("id")]
-        public async Task<IActionResult> GetProduct(int id,int centerid)
+        public async Task<IActionResult> GetProduct(int id,int storeId)
         {
             HomeProduct product = new HomeProduct();
             IList<HomeProduct> related = new List<HomeProduct>();
             //HomeProduct re = new HomeProduct();
-            var service = await _unitOfWork.ProductCenterColorSize.Get(q=>q.CenterId==centerid&&q.ProductId==id,include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            var service = await _unitOfWork.ProductCenterColorSize.Get(q=>q.StoreId==storeId&&q.ProductId==id,include: x => x.Include(c => c.Store).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
-            var prod = await _unitOfWork.ProductCenterColorSize.GetAll(q =>q.Product.Type.Equals(service.Product.Type), include: x => x.Include(c => c.Center).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
+            var prod = await _unitOfWork.ProductCenterColorSize.GetAll(q =>q.Product.Type.Equals(service.Product.Type), include: x => x.Include(c => c.Store).Include(p => p.Product).ThenInclude(p => p.Sizes).Include(p => p.Product).ThenInclude(p => p.Colors)
             .Include(p => p.Product).ThenInclude(p => p.Reviews).ThenInclude(u => u.Userr));
             var lated = _mapper.Map<IList<ProductDetels>>(prod);
             var result = _mapper.Map<ProductDetels>(service);
@@ -190,7 +190,7 @@ namespace BeautyPlanet.Controllers
                 Description = r.Product.Description,
                 Colors = r.Product.Colors,
                 EarnPoint = r.Product.EarnPoint,
-                Center = r.Center,
+                Store = r.Store,
                 Count = r.Count,
                 Counter = r.Product.Conter,
             });
@@ -207,7 +207,7 @@ namespace BeautyPlanet.Controllers
                 product.Description = result.Product.Description;
                 product.Colors = result.Product.Colors;
                 product.EarnPoint = result.Product.EarnPoint;
-                product.Center = result.Center;
+                product.Store = result.Store;
                 product.Count = result.Count;
                 product.Counter = result.Product.Conter;
 

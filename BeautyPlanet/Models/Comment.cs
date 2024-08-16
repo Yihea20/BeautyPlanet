@@ -10,12 +10,15 @@ namespace BeautyPlanet.Models
         public string Comments { get; set; }
         public int Like { get; set; } = 0;
         public DateTime CommentTime { get; set; }
-        [ForeignKey(nameof(User))]
-        public string UserId { get; set; }
-        public User User { get; set; }
+        [ForeignKey(nameof(Person))]
+        public string? PersonId { get; set; }
+        public Person ?Person { get; set; }
+
+
         [ForeignKey(nameof(Post))]
         public int PostId { get; set; }
         public Post Post { get; set; }
         public ICollection<User> LikeUser { get; set; }
+        public ICollection <Specialist> LikeSpecialist { get;set; }
     }
 }

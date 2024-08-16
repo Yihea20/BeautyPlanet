@@ -11,9 +11,9 @@ namespace BeautyPlanet.Models
         [ForeignKey(nameof(Sizes))]
         public int? SizeId { get; set; }
         public Sizes? Size { get; set; }
-        [ForeignKey(nameof(Center))]
-        public int CenterId { get; set; }
-        public Center Center { get; set; } 
+        [ForeignKey(nameof(Store))]
+        public int StoreId { get; set; }
+        public Store Store { get; set; } 
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
         public Product Product { get; set; }

@@ -69,7 +69,9 @@ namespace BeautyPlanet.Controllers
                 personDTO.RoleName = new List<string>();
                 personDTO.RoleName.Add("USER");
                 var user = _mapper.Map<User>(personDTO);
-                user.UserName = "New User";
+                user.UserName = $"NewUser{code}";
+                user.FirstName = "New";
+                user.LastName = "User";
                 user.ProfileImageURL = "http://11189934:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
                 user.ImageURL = "http://11189934:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
                 user.Email = personDTO.Email;
@@ -123,7 +125,7 @@ namespace BeautyPlanet.Controllers
            
         }
         [HttpPost]  
-        [Route("RegisSpecialist")]
+        [Route("RegisSpecialist/{code}")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -131,12 +133,28 @@ namespace BeautyPlanet.Controllers
         {
             try
             {
-
+                Dictionary<string, string> pairs = new Dictionary<string, string>();
                 var email = await _unitOfWork.Code.Get(q => q.MyCode == code);
+                if (email == null)
+                {
+                    pairs.Add("message", "WrongCode");
+                    return NotFound(pairs);
+                }
                 UserRegistDTO personDTO = new UserRegistDTO();
-                var user = _mapper.Map<Specialist>(personDTO);
-                user.Email = personDTO.Email;
+              //  var user = _mapper.Map<Specialist>(personDTO);
+               personDTO.Email=email.Email;
+                personDTO.Password = email.Password;
+                personDTO.RoleName = new List<string>();
                 personDTO.RoleName.Add("EMPLOYEE");
+                var user = _mapper.Map<Specialist>(personDTO);
+                user.UserName = $"NewEmployee{code}";
+                user.FirstName = "New";
+                user.LastName = "Employee";
+                //user.Exparences = "FreshEmployee";
+                user.ProfileImageURL = "http://11189934:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
+                user.ImageURL = "http://11189934:60-dayfreetrial@yiheamasa-001-site1.jtempurl.com/Upload/CenterImage/yihea/yihea.png";
+                user.Email = personDTO.Email;
+
                 var result = await _userManager.CreateAsync(user, personDTO.Password);
                 if (!result.Succeeded)
                 {
@@ -214,7 +232,7 @@ namespace BeautyPlanet.Controllers
         [Route("GetSpecialist")]
         public async Task<IActionResult> GetAllSpecialist()
         {
-            var specialist = await _unitOfWork.Specialist.GetAll(include:x=>x.Include(a=>a.Appointments));
+            var specialist = await _unitOfWork.Specialist.GetAll(include:x=>x.Include(a=>a.Appointments).Include(c=>c.Category).Include(s=>s.Services));
             var result = _mapper.Map<IList<GetSpecialistDTO>>(specialist);
             return Ok(result);
 
@@ -313,14 +331,14 @@ namespace BeautyPlanet.Controllers
                 return NotFound(pairs); }
         }
         [HttpPut("AddSpecialistInfo/{id}")]
-        public async Task<IActionResult> AddSpecialistInfo(string id, [FromBody] EditSpecialistProfile edit)
+        public async Task<IActionResult> AddSpecialistInfo(String id, [FromBody] EditSpecialistProfile edit)
         {
             var useer = await _unitOfWork.Specialist.Get(q => q.Id.Equals(id));
 
             useer.UserName = edit.FirstName + " " + edit.LastName;
             _mapper.Map(edit, useer);
             var category = await _unitOfWork.Category.Get(q => q.Id == edit.CategoryId, include: x => x.Include(s => s.Services));
-            var specialist = await _unitOfWork.Specialist.Get(q => q.Equals(id));
+            //var specialist = await _unitOfWork.Specialist.Get(q => q.Equals(id));
             foreach (var s in category.Services)
             {
                 ServiceSpecialistDTO serviceSpecialistDTO = new ServiceSpecialistDTO();

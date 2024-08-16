@@ -17,7 +17,7 @@ namespace BeautyPlanet.Models
         public string? Address{get;set;}
         public ICollection<Post>Posts { get; set; }
         public ICollection<Post>SavedPost { get; set; }
-       public ICollection<Comment>Comments { get; set; }
+
         public ICollection<Comment> LikeComment { get; set; }
     }
 }

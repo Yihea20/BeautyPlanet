@@ -58,11 +58,11 @@ namespace BeautyPlanet.Controllers
 
                 await _unitOfWork.Post.Insert(result);
                 await _unitOfWork.Save();
-                return Ok();
+                return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "post done", Status = true });
             }
             catch (Exception e)
             {
-                return NotFound();
+                return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "not post", Status = false });
             }
         }
         [NonAction]
@@ -109,46 +109,86 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> Like([FromBody]UserPostDTO userPost)
         {
             var post = await _unitOfWork.Post.Get(q => q.Id == userPost.PostId);
-            var user =await _unitOfWork.User.Get(q => q.Id.Equals(userPost.UserId));
-            if (post == null || user == null)
+            if (userPost.UserId != null)
             {
-                Dictionary<string, string> pairs = new Dictionary<string, string>();
-                pairs.Add("message", "some thing not true");
-                return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false});
-            }
-            else
-            {
-                var userpost = await _unitOfWork.UserPost.Get(q => q.UserId.Equals(userPost.UserId) && q.PostId == userPost.PostId,include:x=>x.Include(u=>u.User).Include(p=>p.Post));
+                var user = await _unitOfWork.User.Get(q => q.Id.Equals(userPost.UserId));
 
-                if (userpost == null)
+                if (post == null || user == null)
                 {
-                    post.likes++;
-                    user.Like++;
-                    var map = _mapper.Map<UserPost>(userPost);
-                    await _unitOfWork.UserPost.Insert(map);
-                    _unitOfWork.Post.Update(post);
-                    _unitOfWork.User.Update(user);
-                    await _unitOfWork.Save();
-                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Like", Status = true,IsLike=true,Liks=post.likes });
+                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    pairs.Add("message", "some thing not true");
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
                 }
                 else
                 {
-                    post.likes--;
-                    user.Like--;
-                    await _unitOfWork.UserPost.Delete(userpost.Id);
-                    _unitOfWork.Post.Update(post);
-                    _unitOfWork.User.Update(user);
-                    await _unitOfWork.Save();
-                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "DisLike", Status = true, IsLike = false, Liks = post.likes });
+                    var userpost = await _unitOfWork.UserPost.Get(q => q.UserId.Equals(userPost.UserId) && q.PostId == userPost.PostId, include: x => x.Include(u => u.User).Include(p => p.Post));
+
+                    if (userpost == null)
+                    {
+                        post.likes++;
+                        user.Like++;
+                        var map = _mapper.Map<UserPost>(userPost);
+                        await _unitOfWork.UserPost.Insert(map);
+                        _unitOfWork.Post.Update(post);
+                        _unitOfWork.User.Update(user);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Like", Status = true, IsLike = true, Liks = post.likes });
+                    }
+                    else
+                    {
+                        post.likes--;
+                        user.Like--;
+                        await _unitOfWork.UserPost.Delete(userpost.Id);
+                        _unitOfWork.Post.Update(post);
+                        _unitOfWork.User.Update(user);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "DisLike", Status = true, IsLike = false, Liks = post.likes });
+                    }
+                }
+            }else
+            {
+                var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(userPost.SpecialistId));
+
+                if (post == null || sp == null)
+                {
+                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    pairs.Add("message", "some thing not true");
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
+                }
+                else
+                {
+                    var userpost = await _unitOfWork.UserPost.Get(q => q.SpecialistId.Equals(userPost.SpecialistId) && q.PostId == userPost.PostId, include: x => x.Include(u => u.Specialist).Include(p => p.Post));
+
+                    if (userpost == null)
+                    {
+                        post.likes++;
+                     //   sp.Like++;
+                        var map = _mapper.Map<UserPost>(userPost);
+                        await _unitOfWork.UserPost.Insert(map);
+                        _unitOfWork.Post.Update(post);
+                        _unitOfWork.Specialist.Update(sp);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Like", Status = true, IsLike = true, Liks = post.likes });
+                    }
+                    else
+                    {
+                        post.likes--;
+                        //sp.Like--;
+                        await _unitOfWork.UserPost.Delete(userpost.Id);
+                        _unitOfWork.Post.Update(post);
+                        _unitOfWork.Specialist.Update(sp);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "DisLike", Status = true, IsLike = false, Liks = post.likes });
+                    }
                 }
             }
       }
         [HttpGet("GetAllPost")]
-        public async Task<IActionResult> GetAllPost(string userId)
+        public async Task<IActionResult> GetAllPost(string? userID,string? spid)
         {
             var post = await _unitOfWork.Post.GetAll(include: x => x.Include(s=>s.Specialist).Include(c=>c.Comments));
-            var userpos = await _unitOfWork.UserPost.GetAll(q => q.UserId.Equals(userId));
-            var usersave = await _unitOfWork.UserSavedPost.GetAll(q => q.UserId.Equals(userId));
+            var userpos = await _unitOfWork.UserPost.GetAll(q => q.UserId.Equals(userID)||q.SpecialistId.Equals(spid));
+            var usersave = await _unitOfWork.UserSavedPost.GetAll(q => q.UserId.Equals(userID) || q.SpecialistId.Equals(spid));
             var map =_mapper.Map<IList<GetCenterPost>>(post);
             foreach(var u in userpos)
                 foreach(var v in map)
@@ -172,6 +212,13 @@ namespace BeautyPlanet.Controllers
             var map = _mapper.Map<GetCenterPost>(post);
             return Ok(map);
         }
+        [HttpGet("GetPostBySpecialistId")]
+        public async Task<IActionResult> GetPostById(string spId)
+        {
+            var post = await _unitOfWork.Post.GetAll(q => q.SpecialistId.Equals(spId), include: x => x.Include(s => s.Specialist).Include(c => c.Comments));
+            var map = _mapper.Map<IList<GetCenterPost>>(post);
+            return Ok(map);
+        }
         [HttpPost("AddComment")]
         public async Task<IActionResult> AddComment([FromBody]CommentDTO comment)
         {
@@ -183,10 +230,10 @@ namespace BeautyPlanet.Controllers
             return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "AddDone", Status = true });
         }
         [HttpGet("GetAllComments")]
-        public async Task<IActionResult>GetAllComments(string userId,int postId)
+        public async Task<IActionResult>GetAllComments(string personId,int postid)
         {
-            var comments = await _unitOfWork.Comment.GetAll(q=>q.PostId==postId,include:x=>x.Include(c=>c.User).Include(p=>p.Post));
-            var usercomment=await _unitOfWork.UserComment.GetAll(q=>q.UserId.Equals(userId),include:x=>x.Include(u=>u.UserLike));
+            var comments = await _unitOfWork.Comment.GetAll(q=>q.PostId==postid,include:x=>x.Include(c=>c.Person).Include(p=>p.Post));
+            var usercomment=await _unitOfWork.UserComment.GetAll(q=>q.UserId.Equals(personId) ||q.SpecialistId.Equals(personId),include:x=>x.Include(u=>u.UserLike));
             var map=_mapper.Map<IList<GetComment>>(comments);
             foreach (var u in usercomment)
                 foreach (var v in map)
@@ -199,7 +246,7 @@ namespace BeautyPlanet.Controllers
         [HttpGet("GetComment")]
         public async Task<IActionResult>GetComment(int commintId)
         {
-            var comments = await _unitOfWork.Comment.Get(q=>q.Id==commintId,include: x => x.Include(c => c.User));
+            var comments = await _unitOfWork.Comment.Get(q=>q.Id==commintId,include: x => x.Include(c => c.Person));
             var map = _mapper.Map<GetComment>(comments);
             return Ok(map);
 
@@ -208,34 +255,69 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> CommentLike([FromBody] UserCommentDTO userComment)
         {
             var comments = await _unitOfWork.Comment.Get(q => q.Id == userComment.CommentId);
-            var user = await _unitOfWork.User.Get(q => q.Id.Equals(userComment.UserId));
-            if (comments == null || user == null)
+            if (userComment.UserId != null)
             {
-                Dictionary<string, string> pairs = new Dictionary<string, string>();
-                pairs.Add("message", "some thing not true");
-                return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
-            }
-            else
-            {
-                var usercomment = await _unitOfWork.UserComment.Get(q => q.UserId.Equals(userComment.UserId) && q.CommentId == userComment.CommentId, include: x => x.Include(u => u.UserLike).Include(p => p.Comment));
-
-                if (usercomment == null)
+                var user = await _unitOfWork.User.Get(q => q.Id.Equals(userComment.UserId));
+                if (comments == null || user == null)
                 {
-                    comments.Like++;
-
-                    var map = _mapper.Map<UserComment>(userComment);
-                    await _unitOfWork.UserComment.Insert(map);
-                    _unitOfWork.Comment.Update(comments);
-                    await _unitOfWork.Save();
-                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Like", Status = true, IsLike = true,Liks=comments.Like });
+                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    pairs.Add("message", "some thing not true");
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
                 }
                 else
                 {
-                    comments.Like--;
-                    await _unitOfWork.UserComment.Delete(usercomment.Id);
-                    _unitOfWork.Comment.Update(comments);
-                    await _unitOfWork.Save();
-                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "DisLike", Status = true, IsLike = false, Liks = comments.Like });
+                    var usercomment = await _unitOfWork.UserComment.Get(q => q.UserId.Equals(userComment.UserId) && q.CommentId == userComment.CommentId, include: x => x.Include(u => u.UserLike).Include(p => p.Comment));
+
+                    if (usercomment == null)
+                    {
+                        comments.Like++;
+
+                        var map = _mapper.Map<UserComment>(userComment);
+                        await _unitOfWork.UserComment.Insert(map);
+                        _unitOfWork.Comment.Update(comments);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Like", Status = true, IsLike = true, Liks = comments.Like });
+                    }
+                    else
+                    {
+                        comments.Like--;
+                        await _unitOfWork.UserComment.Delete(usercomment.Id);
+                        _unitOfWork.Comment.Update(comments);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "DisLike", Status = true, IsLike = false, Liks = comments.Like });
+                    }
+                }
+            }else
+            {
+                var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(userComment.SpecialistId));
+                if (comments == null || sp == null)
+                {
+                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    pairs.Add("message", "some thing not true");
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
+                }
+                else
+                {
+                    var usercomment = await _unitOfWork.UserComment.Get(q => q.SpecialistId.Equals(userComment.SpecialistId) && q.CommentId == userComment.CommentId, include: x => x.Include(u => u.SpecialistLike).Include(p => p.Comment));
+
+                    if (usercomment == null)
+                    {
+                        comments.Like++;
+
+                        var map = _mapper.Map<UserComment>(userComment);
+                        await _unitOfWork.UserComment.Insert(map);
+                        _unitOfWork.Comment.Update(comments);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Like", Status = true, IsLike = true, Liks = comments.Like });
+                    }
+                    else
+                    {
+                        comments.Like--;
+                        await _unitOfWork.UserComment.Delete(usercomment.Id);
+                        _unitOfWork.Comment.Update(comments);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "DisLike", Status = true, IsLike = false, Liks = comments.Like });
+                    }
                 }
             }
         }
@@ -244,42 +326,107 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> Save([FromBody] UserSavedPostDTO userPost)
         {
             var post = await _unitOfWork.Post.Get(q => q.Id == userPost.PostId);
-            var user = await _unitOfWork.User.Get(q => q.Id.Equals(userPost.UserId));
-            if (post == null || user == null)
+            if (userPost.UserId != null)
             {
-                Dictionary<string, string> pairs = new Dictionary<string, string>();
-                pairs.Add("message", "some thing not true");
-                return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
-            }
-            else
-            {
-                var userpost = await _unitOfWork.UserSavedPost.Get(q => q.UserId.Equals(userPost.UserId) && q.PostId == userPost.PostId, include: x => x.Include(u => u.User).Include(p => p.Post));
-
-                if (userpost == null)
+                var user = await _unitOfWork.User.Get(q => q.Id.Equals(userPost.UserId));
+                if (post == null || user == null)
                 {
-                   
-                    var map = _mapper.Map<UserSavedPost>(userPost);
-                    await _unitOfWork.UserSavedPost.Insert(map);
-                  
-                    await _unitOfWork.Save();
-                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Save", Status = true, IsSave = true });
+                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    pairs.Add("message", "some thing not true");
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
                 }
                 else
                 {
-                   
-                    await _unitOfWork.UserSavedPost.Delete(userpost.Id);
-                   
-                    await _unitOfWork.Save();
-                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "UnSave", Status = true, IsSave = false });
+                    var userpost = await _unitOfWork.UserSavedPost.Get(q => q.UserId.Equals(userPost.UserId) && q.PostId == userPost.PostId, include: x => x.Include(u => u.User).Include(p => p.Post));
+
+                    if (userpost == null)
+                    {
+
+                        var map = _mapper.Map<UserSavedPost>(userPost);
+                        await _unitOfWork.UserSavedPost.Insert(map);
+
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Save", Status = true, IsSave = true });
+                    }
+                    else
+                    {
+
+                        await _unitOfWork.UserSavedPost.Delete(userpost.Id);
+
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "UnSave", Status = true, IsSave = false });
+                    }
+                }
+            }else
+            {
+                var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(userPost.SpecialistId));
+                if (post == null || sp == null)
+                {
+                    Dictionary<string, string> pairs = new Dictionary<string, string>();
+                    pairs.Add("message", "some thing not true");
+                    return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "false", Status = false });
+                }
+                else
+                {
+                    var userpost = await _unitOfWork.UserSavedPost.Get(q => q.SpecialistId.Equals(userPost.SpecialistId) && q.PostId == userPost.PostId, include: x => x.Include(u => u.SpecialistSave).Include(p => p.Post));
+
+                    if (userpost == null)
+                    {
+
+                        var map = _mapper.Map<UserSavedPost>(userPost);
+                        await _unitOfWork.UserSavedPost.Insert(map);
+
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Save", Status = true, IsSave = true });
+                    }
+                    else
+                    {
+
+                        await _unitOfWork.UserSavedPost.Delete(userpost.Id);
+
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "UnSave", Status = true, IsSave = false });
+                    }
                 }
             }
+
         }
         [HttpGet("GetSavedPost")]
-        public async Task<IActionResult> GetSavedPost(string usserID)
+        public async Task<IActionResult> GetSavedPost(string? usserID,string? spId)
         {
-            var userpost = await _unitOfWork.UserSavedPost.GetAll(q => q.UserId.Equals(usserID) , include: x => x.Include(p => p.Post));
-            var map = _mapper.Map<IList<GetSavedPost>>(userpost);
+            var usersave = await _unitOfWork.UserSavedPost.GetAll(q => q.UserId.Equals(usserID)||q.SpecialistId.Equals(spId) , include: x => x.Include(p => p.Post).ThenInclude(s=>s.Specialist));
+            var userpos = await _unitOfWork.UserPost.GetAll(q => q.UserId.Equals(usserID)||q.SpecialistId.Equals(spId), include: x => x.Include(p => p.Post).ThenInclude(s => s.Specialist));
+
+            var map = _mapper.Map<IList<GetSavedPost>>(usersave);
+            foreach (var u in userpos)
+                foreach (var v in map)
+                    if (v.Post.Id == u.PostId)
+                    {
+                        v.Post.IsLiked = true;
+                    }
+            foreach (var u in usersave)
+                foreach (var v in map)
+                    if (v.Post.Id == u.PostId)
+                    {
+                        v.Post.IsSaved = true;
+                    }
             return Ok(map);
+        }
+        [HttpDelete("DeletePost")]
+        public async Task<IActionResult> DeletePost(int postid)
+        {
+            var p = await _unitOfWork.Post.Get(q => q.Id == postid);
+            if (p != null)
+            {
+                await _unitOfWork.Post.Delete(postid);
+                await _unitOfWork.Save();
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+
+            }
         }
     }
     

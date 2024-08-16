@@ -36,8 +36,8 @@ namespace BeautyPlanet.Controllers
         [HttpPost]
         public async Task<IActionResult> UpSertShoppingCart([FromBody] ShopCart shop)
         {
-            var cart = await _unitOfWork.ShoppingCart.Get(q => q.UserId.Equals(shop.UserId) && q.CenterId == shop.CenterId);
-            var prc = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == shop.ProductId && q.CenterId == shop.CenterId && q.ColorId == shop.ColorId && q.SizeId == shop.SizeId, include: q => q.Include(x => x.Product));
+            var cart = await _unitOfWork.ShoppingCart.Get(q => q.UserId.Equals(shop.UserId) && q.StatusId == shop.StoreId);
+            var prc = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == shop.ProductId && q.StoreId == shop.StoreId && q.ColorId == shop.ColorId && q.SizeId == shop.SizeId, include: q => q.Include(x => x.Product));
 
             Dictionary<string, string> pairs = new Dictionary<string, string>();
             if (prc.Count >= shop.Count)
@@ -76,14 +76,14 @@ namespace BeautyPlanet.Controllers
                 {
                     ShoppingCartDTO shopping = new ShoppingCartDTO();
                     shopping.UserId = shop.UserId;
-                    shopping.CenterId = shop.CenterId;
+                    shopping.CenterId = shop.StoreId;
                     try
                     {
 
                         var map = _mapper.Map<ShoppingCart>(shopping);
                         await _unitOfWork.ShoppingCart.Insert(map);
                         await _unitOfWork.Save();
-                        var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId.Equals(shop.UserId));
+                        var newcart = await _unitOfWork.ShoppingCart.Get(q => q.StoreId == shop.StoreId && q.UserId.Equals(shop.UserId));
                         ProductShopDTO product = new ProductShopDTO();
                         product.ShoppingCartId = newcart.Id;
                         product.ProductCenterColorSizeId = prc.Id;
@@ -101,7 +101,7 @@ namespace BeautyPlanet.Controllers
                     }
                     catch (Exception e)
                     {
-                        var newcart = await _unitOfWork.ShoppingCart.Get(q => q.CenterId == shop.CenterId && q.UserId.Equals(shop.UserId));
+                        var newcart = await _unitOfWork.ShoppingCart.Get(q => q.StoreId == shop.StoreId && q.UserId.Equals(shop.UserId));
 
                         ProductShopDTO product = new ProductShopDTO();
                         product.ShoppingCartId = newcart.Id;
@@ -135,14 +135,14 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllShoppingCart()
         {
 
-            var shop = await _unitOfWork.ShoppingCart.GetAll(include: q => q.Include(c => c.Center).Include(u => u.User).Include(p => p.ProductCenterColorSize).ThenInclude(p => p.Product).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Color).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Size).Include(x=>x.Status));
+            var shop = await _unitOfWork.ShoppingCart.GetAll(include: q => q.Include(c => c.Store).Include(u => u.User).Include(p => p.ProductCenterColorSize).ThenInclude(p => p.Product).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Color).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Size).Include(x=>x.Status));
 
             int c = 0;
             int p = 0;
             var map = _mapper.Map<IList<GetShoppingCart>>(shop);
             foreach (var item in map)
             {
-                var cart = await _unitOfWork.ProductShopCart.GetAll(q=>q.ShoppingCartId==item.Id,include: x => x.Include(c => c.ShoppingCart).ThenInclude(p => p.Center).Include(c => c.ShoppingCart).ThenInclude(u => u.User).Include(s => s.ProductCenterColorSize).ThenInclude(p=>p.Product));
+                var cart = await _unitOfWork.ProductShopCart.GetAll(q=>q.ShoppingCartId==item.Id,include: x => x.Include(c => c.ShoppingCart).ThenInclude(p => p.Store).Include(c => c.ShoppingCart).ThenInclude(u => u.User).Include(s => s.ProductCenterColorSize).ThenInclude(p=>p.Product));
 
                 c = 0;
                 p = 0;
@@ -176,8 +176,8 @@ namespace BeautyPlanet.Controllers
         {
             GetCartDTO  cartDTO=new GetCartDTO();
             int c = 0;
-           var shop = await _unitOfWork.ShoppingCart.Get(q => q.Id == id, include: q => q.Include(c => c.Center).Include(u => u.User).Include(p => p.ProductCenterColorSize).ThenInclude(p => p.Product).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Color).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Size));
-            var cart = await _unitOfWork.ProductShopCart.GetAll(q => q.ShoppingCartId== id, include: x => x.Include(c => c.ShoppingCart).ThenInclude(p => p.Center).Include(c => c.ShoppingCart).ThenInclude(u => u.User).Include(s=>s.ProductCenterColorSize));
+           var shop = await _unitOfWork.ShoppingCart.Get(q => q.Id == id, include: q => q.Include(c => c.Store).Include(u => u.User).Include(p => p.ProductCenterColorSize).ThenInclude(p => p.Product).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Color).Include(p => p.ProductCenterColorSize).ThenInclude(x => x.Size));
+            var cart = await _unitOfWork.ProductShopCart.GetAll(q => q.ShoppingCartId== id, include: x => x.Include(c => c.ShoppingCart).ThenInclude(p => p.Store).Include(c => c.ShoppingCart).ThenInclude(u => u.User).Include(s=>s.ProductCenterColorSize));
              var map = _mapper.Map<GetShoppingCart>(shop);
             foreach(var item in cart)
             {

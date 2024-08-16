@@ -86,7 +86,7 @@ namespace BeautyPlanet.DTOs
         public ICollection<ColorDTO> Colors { get; set; }
         public ICollection<SizeDTO> Sizes { get; set; }
         public ICollection<GetReviewDTO> Reviews { get; set; }
-        public GetCenterDTO Center { get; set; }
+        public GetStorDTO Store { get; set; }
         public int? Count { get; set; }
 
     }
@@ -105,7 +105,7 @@ namespace BeautyPlanet.DTOs
         public ICollection<ColorDTO> Colors { get; set; }
         public ICollection<SizeDTO> Sizes { get; set; }
         public ICollection<GetReviewDTO> Reviews { get; set; }
-        public GetCenterDTO Centers { get; set; }
+        public GetStorDTO Store { get; set; }
         public int? Count { get; set; }
     }
     public class ProductFile
@@ -129,7 +129,7 @@ namespace BeautyPlanet.DTOs
         public int? ColorId { get; set; }
         public int? SizeId { get; set; }
         public int ProductId { get; set; }
-        public int CenterId { get; set; }
+        public int StoreId { get; set; }
         public int Count { get; set; }
       }
     public class GetProductColorDTO

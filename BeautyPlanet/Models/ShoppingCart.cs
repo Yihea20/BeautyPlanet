@@ -10,8 +10,8 @@ namespace BeautyPlanet.Models
         public int Id { get; set; }
 
         [ForeignKey(nameof(Center))]
-        public int CenterId { get; set; }
-        public Center Center { get; set; }
+        public int StoreId { get; set; }
+        public Store Store { get; set; }
         public ICollection<ProductCenterColorSize> ProductCenterColorSize { get; set; }
         [ForeignKey(nameof(User))]
         public string UserId { get; set; }

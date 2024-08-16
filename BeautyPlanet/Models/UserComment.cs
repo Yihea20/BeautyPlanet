@@ -8,8 +8,11 @@ namespace BeautyPlanet.Models
         [Key]
         public int Id { get; set; }
         [ForeignKey(nameof(User))]
-        public string UserId { get; set; }
-        public User UserLike { get; set; }
+        public string? UserId { get; set; }
+        public User? UserLike { get; set; }
+        [ForeignKey(nameof(Specialist))]
+        public string? SpecialistId { get; set; }
+        public Specialist? SpecialistLike { get; set; }
         [ForeignKey(nameof(Comment))]
         public int CommentId { get; set; }
         public Comment Comment { get; set; }

@@ -7,7 +7,7 @@ namespace BeautyPlanet.DTOs
     public class ProductCenterDTO
     {
 
-        public int CenterId { get; set; }
+        public int StoreId { get; set; }
         public int ProductId { get; set; }
         
     }
@@ -15,7 +15,7 @@ namespace BeautyPlanet.DTOs
     {
 
         public int Id { get; set; }
-        public GetCenterDTO Center { get; set; }
+        public GetStorDTO Store { get; set; }
         public GetProduct Product { get; set; }
         public ICollection<ShoppingCartDTO> ShoppingCarts { get; set; }
 
@@ -23,13 +23,13 @@ namespace BeautyPlanet.DTOs
     public class ProductDetels
     {
         public GetProduct Product{ get; set; }
-        public GetCenterDTO Center { get; set; }
+        public GetStorDTO Store { get; set; }
         public int? Count { get; set; }
     }
     public class ProductDashDetels
     {
         public GetDashProduct Product { get; set; }
-        public GetCenterDTO Center { get; set; }
+        public GetStorDTO Store { get; set; }
         public int? Count { get; set; }
     }
     public class ProductCenterColorSizeDTO

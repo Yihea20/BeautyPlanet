@@ -25,10 +25,10 @@ namespace BeautyPlanet.DataAccess
                 (ss => ss.HasOne(prop => prop.Specialist).WithMany().HasForeignKey(prop => prop.SpecialistId),
                 ss => ss.HasOne(prop => prop.Service).WithMany().HasForeignKey(prop => prop.ServiceId),
                 ss => ss.HasIndex(prop => new { prop.ServiceId, prop.SpecialistId }));
-            modelBuilder.Entity<Product>().HasMany(c => c.Centers).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>
-                (pc => pc.HasOne(prop => prop.Center).WithMany().HasForeignKey(Prop => Prop.CenterId),
+            modelBuilder.Entity<Product>().HasMany(c => c.Stores).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>
+                (pc => pc.HasOne(prop => prop.Store).WithMany().HasForeignKey(Prop => Prop.StoreId),
                 pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
-                pc => pc.HasIndex(prop => new { prop.ProductId, prop.CenterId }));
+                pc => pc.HasIndex(prop => new { prop.ProductId, prop.StoreId }));
             modelBuilder.Entity<Product>().HasMany(s => s.Sizes).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>(
                 pc => pc.HasOne(prop => prop.Size).WithMany().HasForeignKey(prop => prop.SizeId),
                 pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
@@ -51,15 +51,28 @@ namespace BeautyPlanet.DataAccess
                 up => up.HasOne(prop => prop.Post).WithMany().HasForeignKey(prop => prop.PostId),
                 up => up.HasOne(prop => prop.User).WithMany().HasForeignKey(prop => prop.UserId),
                 up => up.HasIndex(prop => new { prop.UserId, prop.PostId }));
+            modelBuilder.Entity<Specialist>().HasMany(p => p.LikedPosts).WithMany(u => u.LikedSpecialists).UsingEntity<UserPost>(
+                up => up.HasOne(prop => prop.Post).WithMany().HasForeignKey(prop => prop.PostId),
+                up => up.HasOne(prop => prop.Specialist).WithMany().HasForeignKey(prop => prop.SpecialistId),
+                up => up.HasIndex(prop => new { prop.SpecialistId, prop.PostId }));
             modelBuilder.Entity<User>().HasMany(p => p.SavedPost).WithMany(u => u.UserSaved).UsingEntity<UserSavedPost>(
                 up => up.HasOne(prop => prop.Post).WithMany().HasForeignKey(prop => prop.PostId),
                 up => up.HasOne(prop => prop.User).WithMany().HasForeignKey(prop => prop.UserId),
                 up => up.HasIndex(prop => new { prop.UserId, prop.PostId }));
-            modelBuilder.Entity<User>().HasMany(C=>C.Comments).WithOne(u => u.User).HasForeignKey(u => u.UserId);
+            modelBuilder.Entity<Specialist>().HasMany(p => p.SavePosts).WithMany(u => u.SpecialistsSave).UsingEntity<UserSavedPost>(
+               up => up.HasOne(prop => prop.Post).WithMany().HasForeignKey(prop => prop.PostId),
+               up => up.HasOne(prop => prop.SpecialistSave).WithMany().HasForeignKey(prop => prop.SpecialistId),
+               up => up.HasIndex(prop => new { prop.SpecialistId, prop.PostId }));
+
+          modelBuilder.Entity<Specialist>().HasMany(C => C.Posts).WithOne(u => u.Specialist).HasForeignKey(u => u.SpecialistId);
             modelBuilder.Entity<Comment>().HasMany(p => p.LikeUser).WithMany(u => u.LikeComment).UsingEntity<UserComment>(
                 up => up.HasOne(prop => prop.UserLike).WithMany().HasForeignKey(prop => prop.UserId).OnDelete(DeleteBehavior.Restrict),
                 up => up.HasOne(prop => prop.Comment).WithMany().HasForeignKey(prop => prop.CommentId).OnDelete(DeleteBehavior.Restrict),
                up => up.HasIndex(prop => new { prop.UserId, prop.CommentId }));
+            modelBuilder.Entity<Comment>().HasMany(p => p.LikeSpecialist).WithMany(u => u.LikeComments).UsingEntity<UserComment>(
+              up => up.HasOne(prop => prop.SpecialistLike).WithMany().HasForeignKey(prop => prop.SpecialistId).OnDelete(DeleteBehavior.Restrict),
+              up => up.HasOne(prop => prop.Comment).WithMany().HasForeignKey(prop => prop.CommentId).OnDelete(DeleteBehavior.Restrict),
+             up => up.HasIndex(prop => new { prop.SpecialistId, prop.CommentId }));
             modelBuilder.Entity<Center>()
             .HasMany(u => u.Appointments)
             .WithOne(o => o.Center)
@@ -67,6 +80,9 @@ namespace BeautyPlanet.DataAccess
             modelBuilder.Entity<Center>().Property(w => w.WorkingTime).HasConversion(v => JsonConvert.SerializeObject(v),
                 v => JsonConvert.DeserializeObject<List<string>>(v) ?? new List<string>()
            );
+            modelBuilder.Entity<Center>().Property(w => w.GalleryImage).HasConversion(v => JsonConvert.SerializeObject(v),
+           v => JsonConvert.DeserializeObject<List<string>>(v) ?? new List<string>()
+      );
             //modelBuilder.Entity<Center>().Property(w => w.WorkingTime).HasDefaultValue(new List<string> { "monday - friday   , 08:00 am - 10:00 pm ",
             //"saturday - sunday   , 08:00 am - 10:00 pm "});
             modelBuilder.Entity<Center>().HasMany(ca => ca.Categories).WithMany(c => c.Centers).UsingEntity<CenterCategory>(
@@ -104,7 +120,7 @@ namespace BeautyPlanet.DataAccess
         //public DbSet<ProductCenter> ProductCenters { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<ShoppingCategory> ShoppingCategories { get; set; }
-        public DbSet<Company> Companies { get; set; }
+        public DbSet<Store> Stores { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Sizes> Sizes { get; set; }
         public DbSet<Colors> Colors { get; set; }

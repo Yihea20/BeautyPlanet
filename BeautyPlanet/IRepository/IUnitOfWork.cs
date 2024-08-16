@@ -19,7 +19,7 @@ namespace BeautyPlanet.IRepository
        // public IGenericRepository<ProductCenter> ProductCenter { get; }
         public IGenericRepository<ShoppingCategory> ShoppingCategory { get; }
         public IGenericRepository<ShoppingCart> ShoppingCart { get; }
-        public IGenericRepository<Company> Company { get; }
+        public IGenericRepository<Store> Store { get; }
         public IGenericRepository<ProductCenterColorSize> ProductCenterColorSize { get; }
      //   public IGenericRepository<> ProductColor { get; }
         public IGenericRepository<Review> Review { get; }
@@ -39,6 +39,7 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<UserComment> UserComment { get; }
         public IGenericRepository<UserSavedPost> UserSavedPost { get; }
         public IGenericRepository<Admin> Admin { get; }
+        public IGenericRepository<StoreShopCategory> StoreShoppCategory { get; }
         Task Save();
         Task<int> CompleteAsync();
         Task BeginTransactionAsync();

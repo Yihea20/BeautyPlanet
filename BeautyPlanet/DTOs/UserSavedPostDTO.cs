@@ -7,7 +7,9 @@ namespace BeautyPlanet.DTOs
     public class UserSavedPostDTO
     {
 
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
+
+        public string? SpecialistId { get; set; }
         public int PostId { get; set; }
     }
     public class GetSavedPost

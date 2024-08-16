@@ -23,7 +23,7 @@ namespace BeautyPlanet.Models
         public ShoppingCategory ShoppingCategoryy { get; set; }
         public ICollection<Colors> Colors { get; set; }
        public ICollection<Sizes> Sizes { get; set; }
-        public ICollection<Center> Centers { get; set; }
+        public ICollection<Store> Stores { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public DateTime ProductAddTime { get; set; } = DateTime.Now;
     }

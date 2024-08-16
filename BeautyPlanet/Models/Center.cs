@@ -17,7 +17,7 @@ namespace BeautyPlanet.Models
         public Admin? Admin { get; set; }
         public int? Rate { get; set; }
         public string? ImageUrl { get; set; }
-        //public IList<string>? GalleryImage { get; set; } = new List<string>();
+        public IList<string>? GalleryImage { get; set; } = new List<string>();
         [ForeignKey(nameof(Platform))]
         public int? PlatformId { get; set; }
         public Platform? Platform { get; set; }

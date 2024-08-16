@@ -123,5 +123,10 @@ namespace BeautyPlanet.Controllers
             var result = _mapper.Map<IList<GetServiceDTO>>(service);
             return Ok(result);
         }
+        //[HttpGet("GetCategoryByCenter/{centerId}")]
+        //public async Task<IActionResult>GetCategoriesByCenter(int centerId)
+        //{
+        //    var category=await _unitOfWork.Category
+        //}
     }
 }

@@ -34,6 +34,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> AddOffer([FromForm] OfferFile offer)
         {
             string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            var servicecenter = await _unitOfWork.ServiceCenter.Get(q => q.ServiceId == offer.Offers.Serviced && q.CenterId == offer.Offers.CenterId);
             try
             {
                 string FilePath = GetFilePath(offer.Offers.Name.Replace(" ", "_"));
@@ -50,6 +51,7 @@ namespace BeautyPlanet.Controllers
                 {
                     await offer.Files.CopyToAsync(stream);
                     var result = _mapper.Map<Offer>(offer.Offers);
+                    result.ServiceCenterId=servicecenter.Id;
                     result.ImageUrl = hosturl + "/Upload/OfferImage/" + offer.Offers.Name.Replace(" ", "_") + "/" + offer.Offers.Name.Replace(" ", "_") + ".png";
                     await _unitOfWork.Offer.Insert(result);
                     await _unitOfWork.Save();
@@ -62,7 +64,7 @@ namespace BeautyPlanet.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllOffer(int id)
+        public async Task<IActionResult> GetAllOffer()
         {
             IList<OfferHome> hf = new List<OfferHome>();
             var offer = await _unitOfWork.Offer.GetAll(include: q => q.Include(x => x.ServiceCente).ThenInclude(x=>x.Center).Include(x=>x.ServiceCente).ThenInclude(x=>x.Service),orderBy:x=>x.OrderByDescending(q=>q.DateTime));
@@ -75,6 +77,21 @@ namespace BeautyPlanet.Controllers
             }
                 return Ok(hf);
         }
+        [HttpGet("GetOfferByCenter/{centerId}")]
+        public async Task<IActionResult>GetOfferByCenter(int centerId)
+        {
+            IList<OfferHome> hf = new List<OfferHome>();
+            var offer= await _unitOfWork.Offer.GetAll(q => q.ServiceCente.CenterId == centerId, include: c => c.Include(x => x.ServiceCente).ThenInclude(s=>s.Service).Include(se=>se.ServiceCente).ThenInclude(ce=>ce.Center));
+            foreach (Offer f in offer)
+            {
+                var service = _mapper.Map<GetServiceBesic>(await _unitOfWork.Service.Get(q => q.Id == f.ServiceCente.ServiceId));
+                var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == f.ServiceCente.CenterId));
+                var result = _mapper.Map<GetOffersIdDTO>(f);
+                hf.Add(new OfferHome { Offer = result, Service = service, Center = center });
+            }
+            return Ok(hf);
+        }
+       
         [HttpGet("TopOffer")]
         public async Task<IActionResult> GetTopOffer()
         {
@@ -82,6 +99,21 @@ namespace BeautyPlanet.Controllers
             var center = await _unitOfWork.Offer.GetAll(orderBy:x=>x.OrderByDescending(q=>q.DateTime));
             var result = _mapper.Map<IList<GetOfferDTO>>(center);
             return Ok(result);
+        }
+        [HttpPut("EditOffer/{offerId}")]
+        public async Task<IActionResult> EditOffer(int offerId,OfferDTO f)
+        {
+            var offer = await _unitOfWork.Offer.Get(q => q.Id == offerId);
+            var servicecenter = await _unitOfWork.ServiceCenter.Get(q => q.ServiceId == f.Serviced && q.CenterId == f.CenterId);
+            if (offer != null && servicecenter != null)
+            {
+                offer.ServiceCenterId = servicecenter.Id;
+                _mapper.Map(f, offer);
+                _unitOfWork.Offer.Update(offer);
+                await _unitOfWork.Save();
+                return Ok();
+            }
+            else { return NotFound(); }
         }
     }
 }

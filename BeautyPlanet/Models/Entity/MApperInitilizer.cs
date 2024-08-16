@@ -54,9 +54,9 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ShoppingCategory, ShoppingCategoryDTO>().ReverseMap();
             CreateMap<ShoppingCategory, GetShoppingCategory>().ReverseMap();
             CreateMap<ShoppingCategory, GetShoppingCategoryDTO>().ReverseMap();
-            CreateMap<Company, CompanyDTO>().ReverseMap();
-            CreateMap<Company, GetCompanyDTO>().ReverseMap();
-            CreateMap<Company, GetProductCompanyDTO>().ReverseMap();
+            CreateMap<Store, StoreDTO>().ReverseMap();
+            CreateMap<Store, GetStorDTO>().ReverseMap();
+            CreateMap<Store, GetProductStoreDTO>().ReverseMap();
             CreateMap<GetSearch, GetServiceDTO>().ReverseMap();
             CreateMap<Sizes, SizeDTO>().ReverseMap();
             CreateMap<Colors, ColorDTO>().ReverseMap();
@@ -110,6 +110,11 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ServiceSpecialist, GetSpecialistDTO>().ReverseMap();
             CreateMap<Admin, RegistAdmin>().ReverseMap();
             CreateMap<Admin,AdminLogIn>().ReverseMap();
-          }
+            CreateMap<StoreShopCategory, StoreShoppingCategoryDTO>().ReverseMap();
+            CreateMap<StoreShopCategory, GetStoreCategory>().ReverseMap();
+            CreateMap<Specialist, GetSpecialistAppointment>().ReverseMap();
+            CreateMap<Person, UserReviews>().ReverseMap();
+
+        }
     }
 }

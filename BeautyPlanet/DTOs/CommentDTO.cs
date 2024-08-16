@@ -9,10 +9,17 @@ namespace BeautyPlanet.DTOs
        
         public string Comments { get; set; }
         public DateTime CommentTime { get; set; }= DateTime.Now;
-        public string UserId { get; set; }
-      
+        public string? PersonId { get; set; }
         public int PostId { get; set; }
         
+    }
+    public class GetCommentDTO
+    {
+
+
+        public string? PersonId { get; set; }
+        public int PostId { get; set; }
+
     }
     public class GetComment
     {
@@ -21,8 +28,21 @@ namespace BeautyPlanet.DTOs
         public string Comments { get; set; }
         public DateTime CommentTime { get; set; }
         public int? Like { get; set; }
-        public UserReviews User { get; set; }
+
+        public UserReviews Person { get; set; }
         public bool IsLiked { get; set; }
        // public Post Post { get; set; }
     }
+    public class GetSpComment
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Comments { get; set; }
+        public DateTime CommentTime { get; set; }
+        public int? Like { get; set; }
+        public GetSpecialistDTO Specialist { get; set; }
+        public bool IsLiked { get; set; }
+        // public Post Post { get; set; }
+    }
+    
 }

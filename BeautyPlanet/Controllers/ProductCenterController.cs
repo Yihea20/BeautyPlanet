@@ -26,20 +26,20 @@ namespace BeautyPlanet.Controllers
         [HttpPost("AddProductColorOrSize")]
         public async Task<IActionResult> AddProductSize([FromBody] ProductSizeColorDTO productCenter)
         {
-            if (productCenter.ProductId != 0&&productCenter.CenterId!=0)
+            if (productCenter.ProductId != 0&&productCenter.StoreId!=0)
             {
                 if (productCenter.ColorId != 0 && productCenter.SizeId != 0)
                 {
 
-                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId &&q.CenterId==productCenter.CenterId &&q.SizeId == productCenter.SizeId&&q.ColorId==productCenter.ColorId);
+                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId &&q.StoreId==productCenter.StoreId &&q.SizeId == productCenter.SizeId&&q.ColorId==productCenter.ColorId);
                     if (prod != null)
                     {
                         prod.Count += productCenter.Count;
                         return Ok("color and size exist before");
                     }
                     else {
-                      var  prod1 = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.SizeId == productCenter.SizeId && q.ColorId == 10000);
-                        var prod2= await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.ColorId == productCenter.ColorId && q.SizeId == 10000);
+                      var  prod1 = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.StoreId == productCenter.StoreId && q.SizeId == productCenter.SizeId && q.ColorId == 10000);
+                        var prod2= await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.StoreId == productCenter.StoreId && q.ColorId == productCenter.ColorId && q.SizeId == 10000);
                         if (prod1!=null)
                             {
                             prod1.ColorId = productCenter.ColorId;
@@ -57,14 +57,19 @@ namespace BeautyPlanet.Controllers
                         }
                         var m = _mapper.Map<ProductCenterColorSize>(productCenter);
                         await _unitOfWork.ProductCenterColorSize.Insert(m);
-                        await _unitOfWork.Save();
-                        return Ok();
+                        try
+                        {
+                            await _unitOfWork.Save();
+                            return Ok();
+                        }
+                        catch(Exception e)
+                        { return BadRequest(e.Message); }
                     }
                 }
                 else if (productCenter.ColorId == 0 && productCenter.SizeId != 0) 
                 {
                     productCenter.ColorId = 10000;
-                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.SizeId == productCenter.SizeId);
+                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.StoreId == productCenter.StoreId && q.SizeId == productCenter.SizeId);
                     if(prod!=null)
                     {
                         prod.Count += productCenter.Count;
@@ -84,7 +89,7 @@ namespace BeautyPlanet.Controllers
                 else if (productCenter.SizeId == 0 && productCenter.ColorId != 0)
                 {
                     productCenter.SizeId = 10000;
-                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.CenterId == productCenter.CenterId && q.ColorId == productCenter.ColorId);
+                    var prod = await _unitOfWork.ProductCenterColorSize.Get(q => q.ProductId == productCenter.ProductId && q.StoreId == productCenter.StoreId && q.ColorId == productCenter.ColorId);
                     if (prod != null)
                     {
                         prod.Count += productCenter.Count;
@@ -110,7 +115,7 @@ namespace BeautyPlanet.Controllers
         {
             IList<HomeProduct> home = new List<HomeProduct>();
             HomeProduct h1 = new HomeProduct();
-            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include:x=>x.Include(c=>c.Center).ThenInclude(s=>s.Specialists).Include(p=>p.Product).ThenInclude(p=>p.Sizes).Include(p=>p.Product).ThenInclude(p=>p.Colors)
+            var service = await _unitOfWork.ProductCenterColorSize.GetAll(include:x=>x.Include(c=>c.Store).Include(p=>p.Product).ThenInclude(p=>p.Sizes).Include(p=>p.Product).ThenInclude(p=>p.Colors)
             .Include(p=>p.Product).ThenInclude(p=>p.Reviews).ThenInclude(u=>u.Userr));
             var result = _mapper.Map<IList<ProductDetels>>(service);
             foreach(var p in result)
@@ -127,7 +132,7 @@ namespace BeautyPlanet.Controllers
                 h1.Description = p.Product.Description;
                 h1.Colors = p.Product.Colors;
                 h1.EarnPoint = p.Product.EarnPoint;
-                h1.Center = p.Center;
+                h1.Store = p.Store;
                 home.Add(h1);
             }
             return Ok(home);

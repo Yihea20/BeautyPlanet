@@ -6,14 +6,16 @@ namespace BeautyPlanet.DTOs
     public class CenterPostDTO
     {
         //public int Id { get; set; }
+        public string? Title { get; set; }
         public string subject { get; set; }
         public int? CenterId { get; set; }
     }
     public class SpPostDTO
     {
-       // public int Id { get; set; }
+        // public int Id { get; set; }
+        public string Title { get; set; }
         public string subject { get; set; }
-        public string? SpecialistId { get; set; }
+        public string SpecialistId { get; set; }
     }
     public class GetCenterPost
     {

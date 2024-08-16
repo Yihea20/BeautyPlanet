@@ -1,12 +1,16 @@
-﻿namespace BeautyPlanet.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BeautyPlanet.Models
 {
-    public class Company
+    public class Store
     {
+        [Key]
         public int Id { get; set; }
             public string Name { get; set; }
             public string Address { get; set; }
             public int PhoneNumber { get; set; }
             public string ImageUrl { get; set; }
             public ICollection<Product> Products { get; set; }
+        public ICollection<ShoppingCategory>ShoppingCategories { get; set; }
     }
 }

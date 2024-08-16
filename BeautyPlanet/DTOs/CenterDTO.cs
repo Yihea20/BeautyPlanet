@@ -37,6 +37,7 @@ namespace BeautyPlanet.DTOs
         //public Admin? Admin { get; set; }
         public int? Rate { get; set; }
         public string? ImageUrl { get; set; }
+        public IList<string> GalleryImage { get; set; }
         //[ForeignKey(nameof(Galary))]
         //  public int? GalaryId { get; set; }
         // public Gallery? Galary { get; set; }
@@ -60,7 +61,7 @@ namespace BeautyPlanet.DTOs
         //public Admin? Admin { get; set; }
         public int? Rate { get; set; }
         public string? ImageUrl { get; set; }
-        //public IList<string> GalleryImage { get; set; }
+        public IList<string> GalleryImage { get; set; }
         //[ForeignKey(nameof(Galary))]
         //  public int? GalaryId { get; set; }
         // public Gallery? Galary { get; set; }

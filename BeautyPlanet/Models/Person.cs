@@ -17,5 +17,6 @@ namespace BeautyPlanet.Models
         public string? Code { get; set; }
         public double ? Lat { get; set; }
         public double?Lng { get; set; }
+        public ICollection<Comment> Comments { get; set; }
     }
 }
