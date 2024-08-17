@@ -105,11 +105,12 @@ namespace BeautyPlanet.Controllers
             return Ok();
         }
 
-        [HttpGet("{Name}")]
-        public async Task<IActionResult> GetCenter(String Name)
+        [HttpGet("GetCenterById")]
+        public async Task<IActionResult> GetCenter(int id)
         {
-            var center = await _unitOfWork.Center.Get(q => q.Name == Name);
+            var center = await _unitOfWork.Center.Get(q => q.Id == id,include:x=>x.Include(s=>s.Specialists).Include(s=>s.Services));
             var result = _mapper.Map<GetCenterDTO>(center);
+            result.SpecialistsCount = center.Specialists.Count;
             return Ok(result);
         }
         [HttpPost("AddCategoryToCenter")]

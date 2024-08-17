@@ -30,11 +30,20 @@ namespace BeautyPlanet.Controllers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+        [HttpGet("GetSpecialistById")]
+        public async Task<IActionResult> GetSpecialistById(string spId)
+        {
+            var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId),include:c=>c.Include(s=>s.Services).Include(w=>w.Center).Include(ca=>ca.Category).Include(a=>a.Appointments).ThenInclude(c=>c.Center).Include(a => a.Appointments).ThenInclude(caa=>caa.Category).Include(a => a.Appointments).ThenInclude(se=>se.Service));
+            sp.AppointmentNumber = sp.Appointments.Count;
+            var map = _mapper.Map<GetSpecialistDTO>(sp);
+            return Ok(map);
+        }
         [HttpGet("GetAppointmentByDate")]
         public async Task<IActionResult>GetAppointmentByDate(string spId,DateTime date)
         {
 
             var app = await _unitOfWork.Appointment.GetAll(q => q.SpecialistId.Equals(spId) && q.StartTime.Date == date.Date, include: x => x.Include(c => c.Center).Include(ca => ca.Category).Include(s => s.Specialist).Include(st => st.Status),orderBy:o=>o.OrderBy(s=>s.StartTime));
+           // var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId));
             var map=_mapper.Map<IList<GetAppointment>>(app);
             foreach (var item in map)
             {
@@ -43,6 +52,7 @@ namespace BeautyPlanet.Controllers
                         item.Status = a.Status.Name;
 
             }
+           
             return Ok(map);
         }
     }

@@ -34,6 +34,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> AddSpPost([FromForm] PostSpFile product)
         {
             string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            var spp = await _unitOfWork.Specialist.Get(q=>q.Id.Equals(product.SpPost.SpecialistId));
             var result = _mapper.Map<Post>(product.SpPost);
             try
             {
@@ -55,8 +56,10 @@ namespace BeautyPlanet.Controllers
                         result.ImageUrl.Add(hosturl + "/Upload/SpPostImage/" + f.FileName + "/" + f.FileName);
                     }
                 }
-
+                
                 await _unitOfWork.Post.Insert(result);
+                spp.PoastNumber++;
+                _unitOfWork.Specialist.Update(spp);
                 await _unitOfWork.Save();
                 return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "post done", Status = true });
             }
@@ -162,7 +165,7 @@ namespace BeautyPlanet.Controllers
                     if (userpost == null)
                     {
                         post.likes++;
-                     //   sp.Like++;
+                       sp.Like++;
                         var map = _mapper.Map<UserPost>(userPost);
                         await _unitOfWork.UserPost.Insert(map);
                         _unitOfWork.Post.Update(post);
@@ -173,7 +176,7 @@ namespace BeautyPlanet.Controllers
                     else
                     {
                         post.likes--;
-                        //sp.Like--;
+                        sp.Like--;
                         await _unitOfWork.UserPost.Delete(userpost.Id);
                         _unitOfWork.Post.Update(post);
                         _unitOfWork.Specialist.Update(sp);
@@ -413,9 +416,9 @@ namespace BeautyPlanet.Controllers
             return Ok(map);
         }
         [HttpDelete("DeletePost")]
-        public async Task<IActionResult> DeletePost(int postid)
+        public async Task<IActionResult> DeletePost(int postid,string spId)
         {
-            var p = await _unitOfWork.Post.Get(q => q.Id == postid);
+            var p = await _unitOfWork.Post.Get(q => q.Id == postid&&q.SpecialistId==spId);
             if (p != null)
             {
                 await _unitOfWork.Post.Delete(postid);

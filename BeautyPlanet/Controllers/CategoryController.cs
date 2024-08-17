@@ -123,10 +123,12 @@ namespace BeautyPlanet.Controllers
             var result = _mapper.Map<IList<GetServiceDTO>>(service);
             return Ok(result);
         }
-        //[HttpGet("GetCategoryByCenter/{centerId}")]
-        //public async Task<IActionResult>GetCategoriesByCenter(int centerId)
-        //{
-        //    var category=await _unitOfWork.Category
-        //}
+        [HttpGet("GetCategoryByCenter/{centerId}")]
+        public async Task<IActionResult> GetCategoriesByCenter(int centerId)
+        {
+            var category = await _unitOfWork.CenterCategory.GetAll(q => q.CenterId == centerId, include: x => x.Include(ca => ca.Category).ThenInclude(s=>s.Services));
+            var map = _mapper.Map<IList<CategoryByCenter>>(category);
+            return Ok(map);
+        }
     }
 }

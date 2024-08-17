@@ -4,6 +4,7 @@ using BeautyPlanet.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeautyPlanet.Migrations
 {
     [DbContext(typeof(BeautyDbContext))]
-    partial class BeautyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240816161851_spLike")]
+    partial class spLike
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1325,19 +1328,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7e57b492-a92f-4135-8c30-a72ace272619",
+                            Id = "b3210570-e0f4-4d44-8f19-f693b219576e",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "65d73d4e-c47f-47b1-9a6e-f59eb8aae75e",
+                            Id = "fbcd9a08-b4a6-4715-9a7d-0a648aa7a4f2",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "91a1a93e-f8b1-419b-83f8-e62af2333476",
+                            Id = "cabba29e-563b-4cd6-98f9-2e19d1d51c43",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1480,9 +1483,6 @@ namespace BeautyPlanet.Migrations
                 {
                     b.HasBaseType("BeautyPlanet.Models.Person");
 
-                    b.Property<int?>("AppointmentNumber")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
@@ -1493,9 +1493,6 @@ namespace BeautyPlanet.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Like")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PoastNumber")
                         .HasColumnType("int");
 
                     b.Property<int?>("Rate")

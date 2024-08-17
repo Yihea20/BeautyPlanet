@@ -120,6 +120,13 @@ namespace BeautyPlanet.Controllers
                 return Ok();
             }
         }
+        [HttpGet("GetServiceByCenterId/{centerId}")]
+        public async Task<IActionResult> GetServiceByCenterId(int centerId)
+        {
+            var servicecenter=await _unitOfWork.ServiceCenter.GetAll(q=>q.CenterId==centerId,include:x=>x.Include(s=>s.Service));
+            var map = _mapper.Map<IList<GetSearch>>(servicecenter);
+            return Ok(map);
+        }
 
     }
 }

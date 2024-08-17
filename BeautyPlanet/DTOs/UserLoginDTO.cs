@@ -90,6 +90,9 @@ namespace BeautyPlanet.DTOs
         public string Specialization { get; set; }
         public string PhoneNumber { get; set; }
         public string ImageUrl { get; set; }
+        public int Like { get; set; }
+        public int PoastNumber { get; set; }
+        public int AppointmentNumber { get; set; }
         public CategoryIdDTO Category { get; set; }
         public ICollection<GetAppointment>? Appointments { get; set; }
         public ICollection< GetServiceBesic> Services { get; set; }

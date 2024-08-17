@@ -42,7 +42,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> AddAppointment([FromForm] AppointmentFile appointment)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
-            if (appointment.AppointmentDTO.SpecialistId != null&&appointment.AppointmentDTO.ServiceId!=null)
+            if (appointment.AppointmentDTO.SpecialistId != null && appointment.AppointmentDTO.ServiceId != null)
             {
                 var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.SpecialistId.Equals(appointment.AppointmentDTO.SpecialistId) && q.ServiceId == appointment.AppointmentDTO.ServiceId, include: x => x.Include(q => q.Specialist).Include(s => s.Service));
 
@@ -58,7 +58,7 @@ namespace BeautyPlanet.Controllers
                 return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
             }
 
-            else if (appointment.AppointmentDTO.ServiceId ==null && appointment.Files != null&&appointment.AppointmentDTO.SpecialistId==null)
+            else if (appointment.AppointmentDTO.ServiceId == null && appointment.Files != null && appointment.AppointmentDTO.SpecialistId == null)
             {
                 var spp = await _unitOfWork.Specialist.GetAll(q => q.CenterId == appointment.AppointmentDTO.CenterId && q.CategoryId == appointment.AppointmentDTO.CategoryId);
                 var m = _mapper.Map<List<GetSpecialistDTO>>(spp);
@@ -95,7 +95,7 @@ namespace BeautyPlanet.Controllers
                     using (FileStream stream = System.IO.File.Create(url))
                     {
                         await appointment.Files.CopyToAsync(stream);
-                       // var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
+                        // var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
 
                         var result = _mapper.Map<Appointment>(appointment.AppointmentDTO);
                         result.ImageUrl = hosturl + "/Upload/CostomServiceImage/" + appointment.Files.FileName.Replace(" ", "_") + "/" + appointment.Files.FileName;
@@ -116,9 +116,9 @@ namespace BeautyPlanet.Controllers
                 }
 
             }
-            else if(appointment.AppointmentDTO.ServiceId == null && appointment.Files != null && appointment.AppointmentDTO.SpecialistId != null)
+            else if (appointment.AppointmentDTO.ServiceId == null && appointment.Files != null && appointment.AppointmentDTO.SpecialistId != null)
             {
-               
+
                 string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
 
                 try
@@ -159,13 +159,13 @@ namespace BeautyPlanet.Controllers
 
             }
 
-            else 
+            else
             {
-              
+
                 var sp = await _unitOfWork.ServiceSpecialist.GetAll(q => q.Specialist.CenterId == appointment.AppointmentDTO.CenterId && q.Specialist.CategoryId == appointment.AppointmentDTO.CategoryId && q.ServiceId == appointment.AppointmentDTO.ServiceId, include: x => x.Include(q => q.Specialist).Include(s => s.Service));
 
                 var m = _mapper.Map<List<GetSp>>(sp);
-              
+
                 while (appointment.AppointmentDTO.SpecialistId == null)
                 {
                     if (!m.Any())
@@ -194,13 +194,13 @@ namespace BeautyPlanet.Controllers
                     return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
                 }
 
-                else { 
-                    d.Add("Message", "No Specialist free "); 
+                else {
+                    d.Add("Message", "No Specialist free ");
                     return NotFound(d); }
             }
         }
         [NonAction]
-        private async Task<string> IsFree(string spId,DateTime dt)
+        private async Task<string> IsFree(string spId, DateTime dt)
         {
             var times = new List<DateTime>();
             //DateTime dt = DateTime.Now;
@@ -232,24 +232,24 @@ namespace BeautyPlanet.Controllers
 
             }
             times.Sort();
-            foreach(var g in times)
+            foreach (var g in times)
             {
-                if(g.Date==dt.Date)
+                if (g.Date == dt.Date)
                 {
-                    if(g.TimeOfDay==dt.TimeOfDay)
+                    if (g.TimeOfDay == dt.TimeOfDay)
                         return sp.Id;
                 }
             }
-            
+
             return null;
-           
+
 
         }
         [NonAction]
         static T GetRandomValue<T>(List<T> list)
         {
             Random random = new Random();
-            int index = random.Next(0,list.Count-1);
+            int index = random.Next(0, list.Count - 1);
             return list[index];
         }
         [HttpGet("MyTest")]
@@ -288,7 +288,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllUserAppointment(String UserId)
         {
 
-            var appointment = await _unitOfWork.Appointment.GetAll(q =>  q.UserId.Equals(UserId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status).Include(c => c.Center).Include(ca => ca.Category));
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(UserId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status).Include(c => c.Center).Include(ca => ca.Category));
 
             //foreach (Appointment a in appointment)
             //{
@@ -313,7 +313,7 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetDashAppointment> app = new List<GetDashAppointment>();
-            var appointment = await _unitOfWork.Appointment.GetAll( include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
+            var appointment = await _unitOfWork.Appointment.GetAll(include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             var map = _mapper.Map<IList<GetDashAppointment>>(appointment);
             foreach (var item in map)
             {
@@ -329,7 +329,7 @@ namespace BeautyPlanet.Controllers
         {
 
             IList<GetDashAppointment> app = new List<GetDashAppointment>();
-           // var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(DashUserId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
+            // var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(DashUserId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(DashUserId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
             var map = _mapper.Map<IList<GetDashAppointment>>(appointment);
             foreach (var item in map)
@@ -354,16 +354,16 @@ namespace BeautyPlanet.Controllers
                         item.Status = a.Status.Name;
             }
 
-                return Ok(map);
+            return Ok(map);
         }
 
         [HttpGet("AppointmentByStatus")]
         public async Task<IActionResult> GetAllAppointment(int status, string userId)
         {
 
-            
-            var appointment = await _unitOfWork.Appointment.GetAll(q => q.StatusId == status && q.UserId.Equals(userId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status).Include(c=>c.Center).Include(ca=>ca.Category));
-            
+
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.StatusId == status && q.UserId.Equals(userId), include: q => q.Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status).Include(c => c.Center).Include(ca => ca.Category), orderBy: o => o.OrderBy(a => a.StartTime));
+
             //foreach (Appointment a in appointment)
             //{
             //    var center = _mapper.Map<GetCenterwithIdDTO>(await _unitOfWork.Center.Get(q => q.Id == a.Specialist.CenterId));
@@ -373,8 +373,8 @@ namespace BeautyPlanet.Controllers
             //      app.Add(new GetAppointment {Id=a.Id,StartTime=a.StartTime,EndTime=a.EndTime,Status=a.Status.Name, Center = center, Specialist = specialist, Category = category, Service = service });
             //}
             var map = _mapper.Map<IList<GetAppointment>>(appointment);
-            foreach(var item in map)
-                    {
+            foreach (var item in map)
+            {
                 foreach (var a in appointment)
                     if (item.Id == a.Id)
                         item.Status = a.Status.Name;
@@ -387,12 +387,36 @@ namespace BeautyPlanet.Controllers
         {
             try
             {
+
                 var app = await _unitOfWork.Appointment.Get(q => q.Id == id);
-                app.StatusId = status;
-                _unitOfWork.Appointment.Update(app);
-                await _unitOfWork.Save();
-                return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true });
-            }catch(Exception e)
+                var user = await _unitOfWork.User.Get(q => q.Id.Equals(app.UserId));
+                TimeSpan timeDifference = app.StartTime - DateTime.Now;
+                TimeSpan t = new TimeSpan(1, 0, 0);
+                if (status == 3)
+                {
+                    if (timeDifference >= t)
+                    {
+                        app.StatusId = status;
+                        _unitOfWork.Appointment.Update(app);
+                        await _unitOfWork.Save();
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true });
+                    }
+                    else
+                    {
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Can not cancel appointment in this time pleas Contact the manager ", Status = true });
+                    }
+                }else
+                {
+                    app.StatusId = status;
+                    _unitOfWork.Appointment.Update(app);
+                    await _unitOfWork.Save();
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true });
+                }
+            }
+             
+                
+                    
+                    catch(Exception e)
             {
                 Dictionary<string,string >pairs=new Dictionary<string, string>();
                 pairs.Add("Message", "some thing erroe in change");
@@ -762,7 +786,7 @@ namespace BeautyPlanet.Controllers
 
             return Ok(map);
         }
-        [HttpGet("ServicePerDay/{serviceid}")]
+        [HttpGet("ServicePerDay/{serviceid}/{startDayOfMonth}/{endDayOfMonth}")]
         public async Task<IActionResult> ServicePerDay(int serviceid, DateTime startDayOfMonth, DateTime endDayOfMonth)
         {
             Dictionary<DateTime,int >pairs=new Dictionary<DateTime,int>();

@@ -12,6 +12,9 @@ namespace BeautyPlanet.Models
         public int ?Rate { get; set; } 
         public string ?Exparences { get; set; }
         public string ?Specialization { get; set; }
+        public int? Like { get; set; } = 0;
+        public int? PoastNumber { get; set; } = 0;
+        public int? AppointmentNumber { get; set; } = 0;
         [ForeignKey(nameof(Category))]
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }

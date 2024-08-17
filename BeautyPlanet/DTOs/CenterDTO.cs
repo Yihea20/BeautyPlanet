@@ -50,6 +50,7 @@ namespace BeautyPlanet.DTOs
         public double? Lng { get; set; }
         public ICollection<GetSpecialistDTO> Specialists { get; set; }
         public ICollection<CategoryIdDTO> Categories { get; set; }
+        public int SpecialistsCount { get; set; }
         //public ICollection<GetCenterPost> Posts { get; set; }
     }
     public class GetCenterGalleryDTO : CenterDTO
