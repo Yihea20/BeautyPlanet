@@ -114,6 +114,7 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<StoreShopCategory, GetStoreCategory>().ReverseMap();
             CreateMap<Specialist, GetSpecialistAppointment>().ReverseMap();
             CreateMap<Person, UserReviews>().ReverseMap();
+            CreateMap<CenterCategory, CategoryByCenter>().ReverseMap();
 
         }
     }
