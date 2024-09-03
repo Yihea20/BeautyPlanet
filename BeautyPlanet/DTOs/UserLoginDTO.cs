@@ -1,4 +1,5 @@
 ﻿using BeautyPlanet.Models;
+using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,11 +18,31 @@ namespace BeautyPlanet.DTOs
         public string LastName { get; set; }
 
         public DateTime? Birthday { get; set; }
-        public string? PhoneNumber { get; set; }
-
+        public string PhoneNumber { get; set; }
+ 
         public string? Address { get; set; }
-        public double lat { get; set; }
-        public double lng { get; set; }
+        public double? lat { get; set; }
+        public double? lng { get; set; }
+
+    }
+    public class UserProfile
+    {
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string? ProfileImageURL { get; set; }
+       // public string? ImageURL { get; set; }
+        public DateTime? Birthday { get; set; }
+        public string? PhoneNumber { get; set; }
+        public int? Like { get; set; }
+        public bool Ban { get; set; }
+        public string? Address { get; set; }
+        public double? lat { get; set; }
+        public double? lng { get; set; }
+        public int? Point { get; set; }
+        public int OrderCount { get; set; }
+        public int FavoriteCount { get; set; }
+
     }
     public class EditSpecialistProfile
     {
@@ -36,6 +57,7 @@ namespace BeautyPlanet.DTOs
     public class location{
         public double lat { get; set; }
         public double lng { get; set; }
+        public string? Address { get; set; }
     }
     public class photo
     {
@@ -43,12 +65,16 @@ namespace BeautyPlanet.DTOs
         public IFormFile File { get; set; }
         
     }
+    public class UserOrder
+    {
+        public ICollection<GetShoppingCartDTO>? ShoppingCarts { get; set; }
+    }
     public class UserLoginDTO
     {
 
         public string Email { get; set; }
         public string Password { get; set; }
-        
+        public string? DeviceTokken { get; set; }
     }
     public class GetUserDTO:UserRegistDTO
     {
@@ -62,6 +88,7 @@ namespace BeautyPlanet.DTOs
         public string? Address { get; set; }
         public double lat { get; set; }
         public double lng { get; set; }
+        public string? DeviceTokken { get; set; }
 
     }
     public class GetUserHome
@@ -83,16 +110,19 @@ namespace BeautyPlanet.DTOs
         public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int CenterId { get; set; }
+        
         public int Rate { get; set; }
         public string Exparences { get; set; }
         public string Email { get; set; }
         public string Specialization { get; set; }
         public string PhoneNumber { get; set; }
-        public string ImageUrl { get; set; }
+        //public string? ImageURL { get; set; }
+        public string? ProfileImageURL { get; set; }
+        public string? DeviceTokken { get; set; }
         public int Like { get; set; }
         public int PoastNumber { get; set; }
         public int AppointmentNumber { get; set; }
+        public CenterDTO Center { get; set; }
         public CategoryIdDTO Category { get; set; }
         public ICollection<GetAppointment>? Appointments { get; set; }
         public ICollection< GetServiceBesic> Services { get; set; }

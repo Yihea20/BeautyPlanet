@@ -15,7 +15,7 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<Gallery> Gallery { get; }
         public IGenericRepository<Appointment>Appointment { get; }
         public IGenericRepository<ServiceSpecialist> ServiceSpecialist { get; }
-        public IGenericRepository<Product> Product { get; }
+       // public IGenericRepository<Product> Product { get; }
        // public IGenericRepository<ProductCenter> ProductCenter { get; }
         public IGenericRepository<ShoppingCategory> ShoppingCategory { get; }
         public IGenericRepository<ShoppingCart> ShoppingCart { get; }
@@ -40,6 +40,7 @@ namespace BeautyPlanet.IRepository
         public IGenericRepository<UserSavedPost> UserSavedPost { get; }
         public IGenericRepository<Admin> Admin { get; }
         public IGenericRepository<StoreShopCategory> StoreShoppCategory { get; }
+        public IGenericRepository<HomeImage> HomeImage { get; }
         Task Save();
         Task<int> CompleteAsync();
         Task BeginTransactionAsync();

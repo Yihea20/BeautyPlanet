@@ -25,18 +25,18 @@ namespace BeautyPlanet.DataAccess
                 (ss => ss.HasOne(prop => prop.Specialist).WithMany().HasForeignKey(prop => prop.SpecialistId),
                 ss => ss.HasOne(prop => prop.Service).WithMany().HasForeignKey(prop => prop.ServiceId),
                 ss => ss.HasIndex(prop => new { prop.ServiceId, prop.SpecialistId }));
-            modelBuilder.Entity<Product>().HasMany(c => c.Stores).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>
-                (pc => pc.HasOne(prop => prop.Store).WithMany().HasForeignKey(Prop => Prop.StoreId),
-                pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
-                pc => pc.HasIndex(prop => new { prop.ProductId, prop.StoreId }));
-            modelBuilder.Entity<Product>().HasMany(s => s.Sizes).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>(
-                pc => pc.HasOne(prop => prop.Size).WithMany().HasForeignKey(prop => prop.SizeId),
-                pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
-                pc => pc.HasIndex(prop => new { prop.ProductId, prop.SizeId }));
-            modelBuilder.Entity<Product>().HasMany(s => s.Colors).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>(
-                pc => pc.HasOne(prop => prop.Color).WithMany().HasForeignKey(prop => prop.ColorId),
-                pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
-                pc => pc.HasIndex(prop => new { prop.ProductId, prop.ColorId }));
+            //modelBuilder.Entity<Product>().HasMany(c => c.Stores).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>
+            //    (pc => pc.HasOne(prop => prop.Store).WithMany().HasForeignKey(Prop => Prop.StoreId),
+            //    pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
+            //    pc => pc.HasIndex(prop => new { prop.ProductId, prop.StoreId }));
+            //modelBuilder.Entity<Product>().HasMany(s => s.Sizes).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>(
+            //    pc => pc.HasOne(prop => prop.Size).WithMany().HasForeignKey(prop => prop.SizeId),
+            //    pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
+            //    pc => pc.HasIndex(prop => new { prop.ProductId, prop.SizeId }));
+            //modelBuilder.Entity<Product>().HasMany(s => s.Colors).WithMany(p => p.Products).UsingEntity<ProductCenterColorSize>(
+            //    pc => pc.HasOne(prop => prop.Color).WithMany().HasForeignKey(prop => prop.ColorId),
+            //    pc => pc.HasOne(prop => prop.Product).WithMany().HasForeignKey(prop => prop.ProductId),
+            //    pc => pc.HasIndex(prop => new { prop.ProductId, prop.ColorId }));
           
             modelBuilder.Entity<ShoppingCart>().HasMany(sh => sh.ProductCenterColorSize).WithMany(p => p.ShoppingCarts).UsingEntity<ProductShopCart>(
                 psh => psh.HasOne(prod => prod.ProductCenterColorSize).WithMany().HasForeignKey(prod => prod.ProductCenterColorSizeId).OnDelete(DeleteBehavior.Restrict),
@@ -77,12 +77,19 @@ namespace BeautyPlanet.DataAccess
             .HasMany(u => u.Appointments)
             .WithOne(o => o.Center)
             .HasForeignKey(o => o.CenterId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<ShoppingCategory>().HasMany(u => u.ProductCenterColorSizes).WithOne(o => o.ShoppingCategory).HasForeignKey(o => o.ShoppingCategoryId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Center>().Property(w => w.WorkingTime).HasConversion(v => JsonConvert.SerializeObject(v),
                 v => JsonConvert.DeserializeObject<List<string>>(v) ?? new List<string>()
            );
+            modelBuilder.Entity<ProductCenterColorSize>().Property(w => w.ImageUrl).HasConversion(v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<List<string>>(v) ?? new List<string>()
+       );
             modelBuilder.Entity<Center>().Property(w => w.GalleryImage).HasConversion(v => JsonConvert.SerializeObject(v),
            v => JsonConvert.DeserializeObject<List<string>>(v) ?? new List<string>()
       );
+            modelBuilder.Entity<User>().Property(w => w.CancelDate).HasConversion(v => JsonConvert.SerializeObject(v),
+       v => JsonConvert.DeserializeObject<List<DateTime>>(v) ?? new List<DateTime>()
+  );
             //modelBuilder.Entity<Center>().Property(w => w.WorkingTime).HasDefaultValue(new List<string> { "monday - friday   , 08:00 am - 10:00 pm ",
             //"saturday - sunday   , 08:00 am - 10:00 pm "});
             modelBuilder.Entity<Center>().HasMany(ca => ca.Categories).WithMany(c => c.Centers).UsingEntity<CenterCategory>(
@@ -90,8 +97,9 @@ namespace BeautyPlanet.DataAccess
                 cc=>cc.HasOne(prod=>prod.Center).WithMany().HasForeignKey(prod=>prod.CenterId),
                 cc=>cc.HasIndex(prod=>new { prod.CenterId,prod.CategoryId}));
             modelBuilder.Entity<CenterType>().HasData(new CenterType { Id = 1, Name = "BeautyCenter" }, new CenterType { Id = 2, Name = "Store" });
-
+            modelBuilder.Entity<HomeImage>().HasData(new HomeImage { Id = 1, ImageUrl = new List<string>() });
             modelBuilder.Entity<Status>().HasData(new Status { Id = 1, Name = "UpComing" }, new Status { Id = 2, Name = "Completed" }, new Status { Id = 3, Name = "Cancelled" });
+            modelBuilder.Entity<OrderStatus>().HasData(new OrderStatus { Id = 1, Status = "UnPaid" },new OrderStatus {Id=2,Status="Processing" },new OrderStatus { Id=3,Status="Shipped"});
             modelBuilder.Entity<Colors>().HasData(new Colors { Id = 10000, Name = "No Color" }, new Colors { Id = 1, Name = "#000000" }, new Colors { Id = 2, Name = "#FF0000" }, new Colors { Id = 3, Name = "#00ff00" });
             modelBuilder.Entity<Sizes>().HasData(new Sizes { Id=10000,Name="No Size"},new Sizes { Id = 1, Name = "S" }, new Sizes { Id = 2, Name = "M" }, new Sizes { Id = 3, Name = "L" });
             modelBuilder.Entity<Rate>().HasData(new Rate { Id = 1, TheRate = 1.0 }, new Rate { Id = 2, TheRate = 1.5 }, new Rate { Id = 3, TheRate = 2.0 }, new Rate { Id = 4, TheRate = 2.5 }, new Rate { Id = 5, TheRate = 3.0 }, new Rate { Id = 6, TheRate = 3.5 }, new Rate { Id = 7, TheRate = 4.0 }, new Rate { Id = 8, TheRate = 4.5 }, new Rate { Id = 9, TheRate = 5.0 });
@@ -116,7 +124,7 @@ namespace BeautyPlanet.DataAccess
         public DbSet<ServiceSpecialist> ServiceSpecialists { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Product> Products { get; set; }
+        //public DbSet<Product> Products { get; set; }
         //public DbSet<ProductCenter> ProductCenters { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<ShoppingCategory> ShoppingCategories { get; set; }
@@ -141,5 +149,7 @@ namespace BeautyPlanet.DataAccess
         public DbSet<UserComment> UserComments { get; set; }
         public DbSet<UserPost> UserPosts { get; set; }
         public DbSet<UserSavedPost>UserSavedPosts { get; set; }
+        public DbSet<HomeImage>HomeImages { get; set; }
+        public DbSet<OrderStatus>OrderStatuses { get; set; }
     }
 }

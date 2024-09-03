@@ -9,7 +9,7 @@ namespace BeautyPlanet.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey(nameof(Center))]
+        [ForeignKey(nameof(Store))]
         public int StoreId { get; set; }
         public Store Store { get; set; }
         public ICollection<ProductCenterColorSize> ProductCenterColorSize { get; set; }
@@ -17,8 +17,8 @@ namespace BeautyPlanet.Models
         public string UserId { get; set; }
         public User User { get; set; }
         public int TotalPrice { get; set; }
-        [ForeignKey(nameof(Status))]
-        public int? StatusId { get; set; }
-        public Status Status { get; set; }
+        [ForeignKey(nameof(OrderStatus))]
+        public int? OrderStatusId { get; set; }
+        public OrderStatus Status { get; set; }
     }
 }

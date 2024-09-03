@@ -42,7 +42,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult>GetAppointmentByDate(string spId,DateTime date)
         {
 
-            var app = await _unitOfWork.Appointment.GetAll(q => q.SpecialistId.Equals(spId) && q.StartTime.Date == date.Date, include: x => x.Include(c => c.Center).Include(ca => ca.Category).Include(s => s.Specialist).Include(st => st.Status),orderBy:o=>o.OrderBy(s=>s.StartTime));
+            var app = await _unitOfWork.Appointment.GetAll(q => q.SpecialistId.Equals(spId) &&q.StatusId!=3 &&q.StartTime.Date == date.Date, include: x => x.Include(c => c.Center).Include(ca => ca.Category).Include(s => s.Specialist).Include(st => st.Status).Include(s=>s.Service),orderBy:o=>o.OrderBy(s=>s.StartTime));
            // var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId));
             var map=_mapper.Map<IList<GetAppointment>>(app);
             foreach (var item in map)

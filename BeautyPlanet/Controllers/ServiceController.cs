@@ -85,7 +85,7 @@ namespace BeautyPlanet.Controllers
         [HttpGet("ID")]
         public async Task<IActionResult> GetServiceById(int id)
         {
-            var service = await _unitOfWork.Service.Get(q => q.Id == id);
+            var service = await _unitOfWork.Service.Get(q => q.Id == id,include:x=>x.Include(c=>c.Centers).Include(ca=>ca.Category));
             var result = _mapper.Map<GetServiceDTO>(service);
             return Ok(result);
         }
@@ -97,7 +97,7 @@ namespace BeautyPlanet.Controllers
             return Ok(result);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCenter(int id,int centerId, [FromBody] ServiceDTO centerDto)
+        public async Task<IActionResult> UpdateCenter(int id, [FromBody] ServiceDTO centerDto)
         {
             var old = await _unitOfWork.Service.Get(q => q.Id == id );
             _mapper.Map(centerDto, old);
@@ -105,7 +105,7 @@ namespace BeautyPlanet.Controllers
             await _unitOfWork.Save();
             return Ok();
         }
-        [HttpDelete("DeleteService")]
+        [HttpDelete("DeleteService/{id}")]
         public async Task<IActionResult>DeleteService(int id)
         {
             var service=await _unitOfWork.Service.Get(q=>q.Id==id);
@@ -127,6 +127,15 @@ namespace BeautyPlanet.Controllers
             var map = _mapper.Map<IList<GetSearch>>(servicecenter);
             return Ok(map);
         }
-
+        [HttpGet("ServiceById")]
+        public async Task<IActionResult> ServiceById(int serviceid)
+        {
+            var service = await _unitOfWork.Service.Get(q => q.Id == serviceid, include: x => x.Include(c => c.Centers).Include(ca => ca.Category).Include(sp => sp.Specialists));
+            var services = await _unitOfWork.Service.GetAll(q => q.Type.Equals(service.Type), include: x => x.Include(c => c.Centers));
+            var result = _mapper.Map<GetServiceByIDDTO>(service);
+            var results= _mapper.Map<IList<GetServiceByIDDTO>>(services);
+            var TopSpecialist = result.Specialists.OrderBy(r => r.Rate);
+            return Ok(new { Service = result, SimilarServices = results, TopSpecialist =TopSpecialist});
+        }
     }
 }

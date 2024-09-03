@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿//using BeautyPlanet.Migrations;
+using System.ComponentModel.DataAnnotations;
 
 namespace BeautyPlanet.Models
 {
@@ -7,6 +8,6 @@ namespace BeautyPlanet.Models
         [Key]
         public int Id { get; set; }
     public string Name { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public ICollection<ProductCenterColorSize> Products { get; set; }
     }
 }

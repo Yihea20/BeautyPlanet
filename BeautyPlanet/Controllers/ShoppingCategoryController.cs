@@ -64,14 +64,14 @@ namespace BeautyPlanet.Controllers
         [HttpGet("All")]
         public async Task<IActionResult> GetAllShoppingCategory()
         {
-            var category = await _unitOfWork.ShoppingCategory.GetAll(include: x => x.Include(p => p.Products));
+            var category = await _unitOfWork.ShoppingCategory.GetAll(include: x => x.Include(p => p.ProductCenterColorSizes));
             var result = _mapper.Map<IList<GetShoppingCategory>>(category);
             return Ok(result);
         }
         [HttpGet("GetById")]
         public async Task<IActionResult> GetShoppingCategoryById(int id)
         {
-            var category = await _unitOfWork.ShoppingCategory.Get(q => q.Id == id, include: x => x.Include(p => p.Products));
+            var category = await _unitOfWork.ShoppingCategory.Get(q => q.Id == id, include: x => x.Include(p => p.ProductCenterColorSizes).Include(s=>s.Stores));
             var result=_mapper.Map<GetShoppingCategory>(category);
             return Ok(result);
         }

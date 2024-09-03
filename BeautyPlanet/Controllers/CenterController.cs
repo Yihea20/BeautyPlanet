@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BeautyPlanet.DTOs;
 using BeautyPlanet.IRepository;
+
 using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -66,7 +67,19 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllCenter()
         {
 
-            var center = await _unitOfWork.Center.GetAll(include: x => x.Include(p => p.Specialists).Include(pp=>pp.Posts).ThenInclude(c=>c.Comments).ThenInclude(u=>u.Person));
+            var center = await _unitOfWork.Center.GetAll(include: x => x.Include(s=>s.Specialists) .Include(ca=>ca.Categories).Include(pp=>pp.Posts).ThenInclude(c=>c.Comments).ThenInclude(u=>u.Person));
+          
+           
+            foreach (var item in center)
+            {
+                foreach(var s in item.Specialists)
+                {
+                    if (item.Id == s.CenterId)
+                    {
+                        s.Center = item;
+                    }
+                }
+            }
             var result = _mapper.Map<IList<GetCenterDTO>>(center);
             return Ok(result);
         }
@@ -108,7 +121,30 @@ namespace BeautyPlanet.Controllers
         [HttpGet("GetCenterById")]
         public async Task<IActionResult> GetCenter(int id)
         {
-            var center = await _unitOfWork.Center.Get(q => q.Id == id,include:x=>x.Include(s=>s.Specialists).Include(s=>s.Services));
+            var center = await _unitOfWork.Center.Get(q => q.Id == id,include:x=>x.Include(s=>s.Specialists).Include(s=>s.Services).Include(ca=>ca.Categories).ThenInclude(se=>se.Services));
+           foreach(var s in center.Specialists)
+            {
+                if(center.Id==s.CenterId)
+                {
+                    s.Center = center;
+                }
+            }
+           
+            var result = _mapper.Map<GetCenterDTO>(center);
+            foreach(var c in center.Categories)
+
+            foreach (var item in result.Categories)
+            {
+                    if(c.Id==item.Id)
+                item.ServiceCount=c.Services.Count;
+            }
+            result.SpecialistsCount = center.Specialists.Count;
+            return Ok(result);
+        }
+        [HttpGet("GetCenterByIdDash/{id}")]
+        public async Task<IActionResult> GetCenterDash(int id)
+        {
+            var center = await _unitOfWork.Center.Get(q => q.Id == id, include: x => x.Include(s => s.Specialists).Include(s => s.Services).Include(ca => ca.Categories));
             var result = _mapper.Map<GetCenterDTO>(center);
             result.SpecialistsCount = center.Specialists.Count;
             return Ok(result);
@@ -116,10 +152,29 @@ namespace BeautyPlanet.Controllers
         [HttpPost("AddCategoryToCenter")]
         public async Task<IActionResult> AddCategoryToCenter([FromBody]CenterCategoryDTO centerCategory)
         {
-            var map=_mapper.Map<CenterCategory>(centerCategory);
-            await _unitOfWork.CenterCategory.Insert(map);
+            var ceca = await _unitOfWork.CenterCategory.Get(q => q.CategoryId == centerCategory.CategoryId && q.CenterId == centerCategory.CenterId);
+            if (ceca == null)
+            {
+                var map = _mapper.Map<CenterCategory>(centerCategory);
+                await _unitOfWork.CenterCategory.Insert(map);
+                await _unitOfWork.Save();
+                return Ok();
+            }
+            else return BadRequest("The Center Allready Have THis Category ");
+        }
+        [HttpPut("EmptyGallery")]
+        public async Task<IActionResult> DeleteImages(int centerid)
+        {
+            var center = await _unitOfWork.Center.Get(q => q.Id == centerid);
+            center.GalleryImage.Clear();
+            _unitOfWork.Center.Update(center);
             await _unitOfWork.Save();
             return Ok();
+        }
+        [NonAction]
+        private string GetPath(string name)
+        {
+            return this._environment.WebRootPath + "/Upload/CenterGalleryImage/" + name;
         }
         [HttpPut("ImageToGalery")]
         public async Task<IActionResult> AddImageToGallery([FromForm] CenterGallery image)
@@ -127,7 +182,7 @@ namespace BeautyPlanet.Controllers
             var center = await _unitOfWork.Center.Get(q => q.Id == image.CenterId);
             if (center != null)
             {
-                string hosturl = $"{this.Request.Scheme}://11181198:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+                string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
 
                 try
                 {
@@ -135,7 +190,7 @@ namespace BeautyPlanet.Controllers
                     {
 
 
-                        string FilePath = GetFilePath(f.FileName);
+                        string FilePath = GetPath(f.FileName);
                         if (!System.IO.Directory.Exists(FilePath))
                         {
                             System.IO.Directory.CreateDirectory(FilePath);
@@ -148,7 +203,7 @@ namespace BeautyPlanet.Controllers
                         using (FileStream stream = System.IO.File.Create(url))
                         {
                             await f.CopyToAsync(stream);
-
+                           
                             center.GalleryImage.Add(hosturl + "/Upload/CenterGalleryImage/" + f.FileName + "/" + f.FileName);
 
                         }
@@ -174,11 +229,7 @@ namespace BeautyPlanet.Controllers
             var map = _mapper.Map<GetCenterGalleryDTO>(center);
             return Ok(map);
         }
-        [NonAction]
-        private string GetPath(string name)
-        {
-            return this._environment.WebRootPath + "/Upload/CenterGalleryImage/" + name;
-        }
+       
         [HttpPut("EditCenter/{id}")]
         public async Task<IActionResult> EditCenter(int id, [FromBody]EditCenter? center)
         {
@@ -187,6 +238,33 @@ namespace BeautyPlanet.Controllers
             _unitOfWork.Center.Update(c);
             await _unitOfWork.Save();
             return Ok();
+        }
+        [HttpGet("GetAllCenterAppointment/{centerId}")]
+        public async Task<IActionResult> GetAllCenterAppointment(int centerId)
+        {
+            var center = await _unitOfWork.Center.Get(q => q.Id == centerId, include: x => x.Include(a => a.Appointments).ThenInclude(ca=>ca.Category).Include(a => a.Appointments).ThenInclude(s => s.Service).Include(a => a.Appointments).ThenInclude(ca => ca.User).Include(a => a.Appointments).ThenInclude(ca => ca.Specialist).Include(a => a.Appointments).ThenInclude(ca => ca.Status).Include(a => a.Appointments).ThenInclude(ca => ca.User));
+            var map=_mapper.Map<GetCenterAppointment>(center);
+            foreach (var item in map.Appointments)
+            {
+                foreach (var a in center.Appointments)
+                    if (item.Id == a.Id)
+                        item.Status = a.Status.Name;
+
+            }
+            return Ok(map);
+        }
+        [HttpGet("GetAllUserAppointment/{userId}/{centerId}")]
+        public async Task<IActionResult> GetAllUserAppointment(string userId,int centerId)
+        {
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.UserId.Equals(userId) && q.CenterId == centerId, include: x => x.Include(c => c.Center).Include(u => u.User).Include(x => x.Service).Include(p => p.Specialist).Include(s => s.Status));
+            var map = _mapper.Map<IList<GetDashAppointment>>(appointment);
+            foreach (var item in map)
+            {
+                foreach (var a in appointment)
+                    if (item.Id == a.Id)
+                        item.Status = a.Status.Name;
+            }
+            return Ok(map);
         }
         //[HttpGet("GetCategoryByCenter/{centerId}")]
         //public async Task<IActionResult>GetCategoryByCenter(int centerId)

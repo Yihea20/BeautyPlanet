@@ -129,15 +129,16 @@ namespace BeautyPlanet.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GalleryImage")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Lat")
+                    b.Property<double>("Lat")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Lng")
+                    b.Property<double>("Lng")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
@@ -421,6 +422,30 @@ namespace BeautyPlanet.Migrations
                     b.ToTable("Galleries");
                 });
 
+            modelBuilder.Entity("BeautyPlanet.Models.HomeImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HomeImages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ImageUrl = "[]"
+                        });
+                });
+
             modelBuilder.Entity("BeautyPlanet.Models.Image", b =>
                 {
                     b.Property<int>("Id")
@@ -472,11 +497,14 @@ namespace BeautyPlanet.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DeviceToken")
+                    b.Property<string>("CenterImage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ServiceId")
-                        .HasColumnType("int");
+                    b.Property<string>("CenterName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeviceToken")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -484,7 +512,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ServiceId");
+                    b.HasIndex("DeviceToken");
 
                     b.ToTable("Notifications");
                 });
@@ -525,6 +553,40 @@ namespace BeautyPlanet.Migrations
                     b.ToTable("Offers");
                 });
 
+            modelBuilder.Entity("BeautyPlanet.Models.OrderStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Status = "UnPaid"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Status = "Processing"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Status = "Shipped"
+                        });
+                });
+
             modelBuilder.Entity("BeautyPlanet.Models.Person", b =>
                 {
                     b.Property<string>("Id")
@@ -532,6 +594,9 @@ namespace BeautyPlanet.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -562,10 +627,10 @@ namespace BeautyPlanet.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Lat")
+                    b.Property<double>("Lat")
                         .HasColumnType("float");
 
-                    b.Property<double?>("Lng")
+                    b.Property<double>("Lng")
                         .HasColumnType("float");
 
                     b.Property<bool>("LockoutEnabled")
@@ -690,7 +755,7 @@ namespace BeautyPlanet.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("BeautyPlanet.Models.Product", b =>
+            modelBuilder.Entity("BeautyPlanet.Models.ProductCenterColorSize", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -698,10 +763,13 @@ namespace BeautyPlanet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CenterId")
+                    b.Property<int?>("ColorId")
                         .HasColumnType("int");
 
                     b.Property<int>("Conter")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Count")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -731,36 +799,7 @@ namespace BeautyPlanet.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShoppingCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CenterId");
-
-                    b.HasIndex("ShoppingCategoryId");
-
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("BeautyPlanet.Models.ProductCenterColorSize", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ColorId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ShoppingCategoryId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SizeId")
@@ -769,19 +808,18 @@ namespace BeautyPlanet.Migrations
                     b.Property<int>("StoreId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ColorId");
 
+                    b.HasIndex("ShoppingCategoryId");
+
                     b.HasIndex("SizeId");
 
                     b.HasIndex("StoreId");
-
-                    b.HasIndex("ProductId", "ColorId");
-
-                    b.HasIndex("ProductId", "SizeId");
-
-                    b.HasIndex("ProductId", "StoreId");
 
                     b.ToTable("ProductCenterColorSizes");
                 });
@@ -794,7 +832,7 @@ namespace BeautyPlanet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductCenterColorSizeId")
+                    b.Property<int?>("ProductCenterColorSizeId")
                         .HasColumnType("int");
 
                     b.Property<int>("ShoppingCartId")
@@ -931,6 +969,9 @@ namespace BeautyPlanet.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProducttId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ReviewAddTime")
                         .HasColumnType("datetime2");
 
@@ -943,7 +984,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProducttId");
 
                     b.HasIndex("UserId");
 
@@ -974,6 +1015,9 @@ namespace BeautyPlanet.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Point")
+                        .HasColumnType("int");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
@@ -1047,7 +1091,7 @@ namespace BeautyPlanet.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int?>("OrderStatusId")
                         .HasColumnType("int");
 
                     b.Property<int>("StoreId")
@@ -1062,7 +1106,7 @@ namespace BeautyPlanet.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("OrderStatusId");
 
                     b.HasIndex("StoreId");
 
@@ -1325,19 +1369,19 @@ namespace BeautyPlanet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7e57b492-a92f-4135-8c30-a72ace272619",
+                            Id = "48b7fcd7-1476-476f-9a26-71b3539eb137",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "65d73d4e-c47f-47b1-9a6e-f59eb8aae75e",
+                            Id = "ee4c28d7-e243-4330-8ee3-6957be4e313a",
                             Name = "manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "91a1a93e-f8b1-419b-83f8-e62af2333476",
+                            Id = "80744d75-98b4-40b8-9e7d-b779123c3b51",
                             Name = "employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -1515,16 +1559,26 @@ namespace BeautyPlanet.Migrations
                 {
                     b.HasBaseType("BeautyPlanet.Models.Person");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("Ban")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("Like")
+                    b.Property<string>("CancelDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FavoriteCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Point")
+                    b.Property<int>("Like")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Point")
                         .HasColumnType("int");
 
                     b.ToTable("Users");
@@ -1659,11 +1713,11 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.Notification", b =>
                 {
-                    b.HasOne("BeautyPlanet.Models.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId");
+                    b.HasOne("BeautyPlanet.Models.Person", "Person")
+                        .WithMany("Notifications")
+                        .HasForeignKey("DeviceToken");
 
-                    b.Navigation("Service");
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Offer", b =>
@@ -1699,46 +1753,30 @@ namespace BeautyPlanet.Migrations
                     b.Navigation("Specialist");
                 });
 
-            modelBuilder.Entity("BeautyPlanet.Models.Product", b =>
-                {
-                    b.HasOne("BeautyPlanet.Models.Center", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CenterId");
-
-                    b.HasOne("BeautyPlanet.Models.ShoppingCategory", "ShoppingCategoryy")
-                        .WithMany("Products")
-                        .HasForeignKey("ShoppingCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ShoppingCategoryy");
-                });
-
             modelBuilder.Entity("BeautyPlanet.Models.ProductCenterColorSize", b =>
                 {
                     b.HasOne("BeautyPlanet.Models.Colors", "Color")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("ColorId");
 
-                    b.HasOne("BeautyPlanet.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("BeautyPlanet.Models.ShoppingCategory", "ShoppingCategory")
+                        .WithMany("ProductCenterColorSizes")
+                        .HasForeignKey("ShoppingCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BeautyPlanet.Models.Sizes", "Size")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("SizeId");
 
                     b.HasOne("BeautyPlanet.Models.Store", "Store")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Color");
 
-                    b.Navigation("Product");
+                    b.Navigation("ShoppingCategory");
 
                     b.Navigation("Size");
 
@@ -1750,8 +1788,7 @@ namespace BeautyPlanet.Migrations
                     b.HasOne("BeautyPlanet.Models.ProductCenterColorSize", "ProductCenterColorSize")
                         .WithMany()
                         .HasForeignKey("ProductCenterColorSizeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BeautyPlanet.Models.ShoppingCart", "ShoppingCart")
                         .WithMany()
@@ -1770,7 +1807,7 @@ namespace BeautyPlanet.Migrations
                         .WithMany()
                         .HasForeignKey("CenterId");
 
-                    b.HasOne("BeautyPlanet.Models.Product", "Product")
+                    b.HasOne("BeautyPlanet.Models.ProductCenterColorSize", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId");
 
@@ -1799,9 +1836,9 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.Review", b =>
                 {
-                    b.HasOne("BeautyPlanet.Models.Product", "Productt")
+                    b.HasOne("BeautyPlanet.Models.ProductCenterColorSize", "Productt")
                         .WithMany("Reviews")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProducttId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1867,12 +1904,12 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.ShoppingCart", b =>
                 {
-                    b.HasOne("BeautyPlanet.Models.Status", "Status")
+                    b.HasOne("BeautyPlanet.Models.OrderStatus", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("OrderStatusId");
 
                     b.HasOne("BeautyPlanet.Models.Store", "Store")
-                        .WithMany()
+                        .WithMany("ShoppingCarts")
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2066,9 +2103,12 @@ namespace BeautyPlanet.Migrations
 
                     b.Navigation("Posts");
 
-                    b.Navigation("Products");
-
                     b.Navigation("Specialists");
+                });
+
+            modelBuilder.Entity("BeautyPlanet.Models.Colors", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Gallery", b =>
@@ -2079,6 +2119,8 @@ namespace BeautyPlanet.Migrations
             modelBuilder.Entity("BeautyPlanet.Models.Person", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Platform", b =>
@@ -2091,7 +2133,7 @@ namespace BeautyPlanet.Migrations
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("BeautyPlanet.Models.Product", b =>
+            modelBuilder.Entity("BeautyPlanet.Models.ProductCenterColorSize", b =>
                 {
                     b.Navigation("Reviews");
                 });
@@ -2103,7 +2145,19 @@ namespace BeautyPlanet.Migrations
 
             modelBuilder.Entity("BeautyPlanet.Models.ShoppingCategory", b =>
                 {
+                    b.Navigation("ProductCenterColorSizes");
+                });
+
+            modelBuilder.Entity("BeautyPlanet.Models.Sizes", b =>
+                {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("BeautyPlanet.Models.Store", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("ShoppingCarts");
                 });
 
             modelBuilder.Entity("BeautyPlanet.Models.Specialist", b =>

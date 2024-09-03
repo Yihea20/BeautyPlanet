@@ -4,10 +4,12 @@ namespace BeautyPlanet.DTOs
 {
     public class Home
     {
-        public GetUserHome User { get; set; }
+        public UserProfile User { get; set; }
+        public List<string> Banner { get; set; }
         public IList<CategoryIdDTO> Categories { get; set; }
         public IList<GetCenterwithIdDTO> Centers { get; set; }
         public IList<OfferHome> Offers { get; set; }
+        public IList<GetSpecialistDTO> Specialist { get; set; }
     }
     public class HomeSearch
     {
@@ -23,9 +25,10 @@ namespace BeautyPlanet.DTOs
     }
     public  class ShopHome
     {
+        public List<string> Banner { get; set; }
         public IList <GetShoppingCategory> GetShoppingCategory { get; set; }
-        public IList<HomeProduct> GetProduct { get; set; }
-        public IList<HomeProduct> NewProduct { get; set; }
+        public IList<GetProduct> GetProduct { get; set; }
+        public IList<GetProduct> NewProduct { get; set; }
     }
     public class Filter
     {
@@ -37,8 +40,12 @@ namespace BeautyPlanet.DTOs
     {
         public int? CategoryId { get; set; }
         public int? DistanceId { get; set; }
-        public int? RateId { get; set; }
+        public int? MinRateRange { get; set; }
+        public int? MaxRateRange { get; set; } 
+        public int? MinPraice { get; set; }
+        public int? MaxPraice { get; set; }
     }
 
-
 }
+
+

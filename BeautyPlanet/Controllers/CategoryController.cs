@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BeautyPlanet.DTOs;
 using BeautyPlanet.IRepository;
+//using BeautyPlanet.Migrations;
 using BeautyPlanet.Models;
 using BeautyPlanet.Models.Entity;
 using Microsoft.AspNetCore.Http;
@@ -61,7 +62,7 @@ namespace BeautyPlanet.Controllers
                 return NotFound();
             }
         }
-
+        
         [HttpGet("NameForAll")]
         public async Task<IActionResult> GetAllCategoryByName(string Name)
         {
@@ -130,5 +131,38 @@ namespace BeautyPlanet.Controllers
             var map = _mapper.Map<IList<CategoryByCenter>>(category);
             return Ok(map);
         }
+        [HttpPut("ChangeCategoryPhotoo/{categoryId}")]
+        public async Task<IActionResult> ChangeCategoryPhoto(int categoryId,  IFormFile file)
+        {
+            var category = await _unitOfWork.Category.Get(q => q.Id == categoryId);
+            string hosturl = $"{this.Request.Scheme}://11189934:60-dayfreetrial@{this.Request.Host}{this.Request.PathBase}";
+            try
+            {
+                string FilePath = GetFilePath(category.Name.Replace(" ", "_"));
+                if (!System.IO.Directory.Exists(FilePath))
+                {
+                    System.IO.Directory.CreateDirectory(FilePath);
+                }
+                string url = FilePath + "\\" + file.FileName;
+                if (System.IO.File.Exists(url))
+                {
+                    System.IO.File.Delete(url);
+                }
+                using (FileStream stream = System.IO.File.Create(url))
+                {
+                    await file.CopyToAsync(stream);
+                    //var result = _mapper.Map<Category>(category.Categories);
+                    category.ImageUrl = hosturl + "/Upload/CategoryImage/" + category.Name.Replace(" ", "_") + "/" + file.FileName;
+                    _unitOfWork.Category.Update(category);
+                    await _unitOfWork.Save();
+                    return Ok();
+                }
+            }
+            catch (Exception e)
+            {
+                return NotFound();
+            }
+        }
+
     }
 }

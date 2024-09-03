@@ -17,7 +17,7 @@ namespace BeautyPlanet.Models
         public Admin? Admin { get; set; }
         public int? Rate { get; set; }
         public string? ImageUrl { get; set; }
-        public IList<string>? GalleryImage { get; set; } = new List<string>();
+        public IList<string> GalleryImage { get; set; } = new List<string>();
         [ForeignKey(nameof(Platform))]
         public int? PlatformId { get; set; }
         public Platform? Platform { get; set; }
@@ -25,11 +25,11 @@ namespace BeautyPlanet.Models
         public DateTime? CloseTime { get; set; }
         public IList<string >WorkingTime { get; set; }=new List<string>();
         public bool Active { get; set; }
-        public double? Lat { get; set; }
-        public double? Lng { get; set; }
+        public double Lat { get; set; } = 0;
+        public double Lng { get; set; } = 0;
         public ICollection<Service> Services { get; set; }
         public ICollection<Specialist> Specialists { get; set; }
-        public ICollection<Product> Products { get; set; }
+        //public ICollection<Product> Products { get; set; }
         public ICollection<User> UserFavorate { get; set; }
         public ICollection<Category> Categories { get; set; }
         public ICollection<Post>Posts { get; set; }

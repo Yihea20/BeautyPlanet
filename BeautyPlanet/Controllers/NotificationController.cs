@@ -4,6 +4,7 @@ using BeautyPlanet.IRepository;
 using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeautyPlanet.Controllers
 {
@@ -47,5 +48,13 @@ namespace BeautyPlanet.Controllers
                 return BadRequest($"Failed to send notification: {ex.Message}");
             }
         }
+        [HttpGet("NotificationList")]
+        public async Task<IActionResult> NotificationList(string DeviceTokken)
+        {
+            var nottification = await _unitOfWork.Notification.GetAll(q=>q.DeviceToken.Equals(DeviceTokken));
+            var map = _mapper.Map<IList<GetNotificationDTO>>(nottification);
+            return Ok(map);
+        }
+
     }
 }

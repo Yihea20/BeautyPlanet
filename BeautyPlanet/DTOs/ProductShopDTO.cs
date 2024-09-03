@@ -13,7 +13,7 @@ namespace BeautyPlanet.DTOs
     }
     public class ShoppingCartDTO
     {
-        public int CenterId { get; set; }
+        public int StoreId { get; set; }
         public string UserId { get; set; }
 
     }

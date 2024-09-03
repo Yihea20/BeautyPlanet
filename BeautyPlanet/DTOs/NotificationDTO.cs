@@ -8,7 +8,10 @@ namespace BeautyPlanet.DTOs
         public string Title { get; set; }
         public string Body { get; set; }
         public string DeviceToken { get; set; }
-        public int? ServiceId { get; set; }
+
+        public string? CenterImage { get; set; }
+        public string? CenterName { get; set; }
+
     }
     public class GetNotificationDTO
     {
@@ -17,6 +20,9 @@ namespace BeautyPlanet.DTOs
         public string Title { get; set; }
         public string Body { get; set; }
         public string? DeviceToken { get; set; }
-        public GetServiceDTO? Service { get; set; }
+
+        public string? CenterImage { get; set; }
+        public string? CenterName { get; set; }
+
     }
 }

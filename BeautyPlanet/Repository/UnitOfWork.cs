@@ -20,7 +20,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<Appointment> _appointement;
         private IGenericRepository<ServiceSpecialist> _serviceSpecialist;
        // private IGenericRepository<ProductCenter> _productCenter;
-        private IGenericRepository<Product> _product;
+      //  private IGenericRepository<Product> _product;
         private IGenericRepository<ShoppingCategory> _shoppingCategory;
         private IGenericRepository<ShoppingCart> _shoppingCart;
         private IGenericRepository<Store> _store;
@@ -44,6 +44,7 @@ namespace BeautyPlanet.Repository
         private IGenericRepository<UserSavedPost> _userSavedPost;
         private IGenericRepository<Admin> _admin;
         private IGenericRepository<StoreShopCategory> _storeShoppCategory;
+        private IGenericRepository<HomeImage> _homeImage;
         public UnitOfWork(BeautyDbContext context)
         {
             _context = context;
@@ -69,7 +70,7 @@ namespace BeautyPlanet.Repository
 
         public IGenericRepository<ServiceSpecialist> ServiceSpecialist => _serviceSpecialist ??=new GenericRepository<ServiceSpecialist>(_context);
 
-        public IGenericRepository<Product> Product => _product ??=new GenericRepository<Product>(_context);
+       // public IGenericRepository<Product> Product => _product ??=new GenericRepository<Product>(_context);
 
        // public IGenericRepository<ProductCenter> ProductCenter => _productCenter ??=new GenericRepository<ProductCenter>(_context);
 
@@ -119,6 +120,8 @@ namespace BeautyPlanet.Repository
 
 
         public IGenericRepository<StoreShopCategory> StoreShoppCategory =>_storeShoppCategory ??=new GenericRepository<StoreShopCategory>(_context);
+
+        public IGenericRepository<HomeImage> HomeImage => _homeImage ??=new GenericRepository<HomeImage>(_context);
 
         public Task BeginTransactionAsync()
         {

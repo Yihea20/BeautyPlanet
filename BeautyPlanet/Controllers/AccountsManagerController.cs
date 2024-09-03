@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using MimeKit.Text;
+using Org.BouncyCastle.Asn1.Cms;
 using System;
 
 namespace BeautyPlanet.Controllers
@@ -191,9 +192,13 @@ namespace BeautyPlanet.Controllers
                     pairs.Add("message", "EmailOrPasswordNotValid");
                     return NotFound(pairs);
                 }
-               
+
                 var person = await _userManager.FindByEmailAsync(personDTO.Email) as Person;
-                
+                if (personDTO.DeviceTokken != null) { 
+                person.DeviceTokken = personDTO.DeviceTokken;
+                await _userManager.UpdateAsync(person);
+                await _unitOfWork.Save();
+            }
                 return Accepted(new TokenRequest { Token = await _authoManger.CreatToken(), RefreshToken = await _authoManger.CreateRefreshToken(), Id = await _userManager.GetUserIdAsync(person) });
             }
             catch (Exception ex)
@@ -246,7 +251,9 @@ namespace BeautyPlanet.Controllers
             {
                 user.Lat = location.lat;
                 user.Lng = location.lng;
+                user.Address = location.Address;
                 await _userManager.UpdateAsync(user);
+                await _unitOfWork.Save();
                 return Ok(new {StatusCode=StatusCodes.Status200OK,StatusBody="Update Done",Status=true});
             }
             else return NotFound(new { StatusCode = StatusCodes.Status404NotFound, StatusBody = "failed", Status = false });
@@ -380,6 +387,7 @@ namespace BeautyPlanet.Controllers
                         await photo.File.CopyToAsync(stream);
                         user.ProfileImageURL = hosturl + "/Upload/ProfileImage/" + user.Email.Replace(" ", "_") + "/" + photo.File.FileName;
                         await _userManager.UpdateAsync(user);
+                        await _unitOfWork.Save();
                         return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Update Done", Status = true });
                     }
                 }
@@ -421,6 +429,7 @@ namespace BeautyPlanet.Controllers
             {
                 user.DeviceTokken = deviceTokken;
                 await _userManager.UpdateAsync(user);
+                await _unitOfWork.Save();
                 return Ok();
             }
         }
@@ -490,7 +499,20 @@ namespace BeautyPlanet.Controllers
             var map = _mapper.Map<AdminLogIn>(admin);
             return Ok(map);
         }
-
-
+        [HttpDelete("DeletSpecialist/{specalistId}")]
+        public async Task<IActionResult> DeletSpecialist(string  specalistId)
+        {
+            var specialist=await _userManager.FindByIdAsync(specalistId) as Specialist;
+           await _userManager.DeleteAsync(specialist);
+            await _unitOfWork.Save();
+            return Ok();
+        }
+        [HttpGet("GetUserProfile")]
+        public async Task<IActionResult> GetUserProfile(string userId)
+        {
+            var user = await _unitOfWork.User.Get(q => q.Id.Equals(userId));
+            var map = _mapper.Map<UserProfile>(user);
+            return Ok(map);
+        }
     }
 }

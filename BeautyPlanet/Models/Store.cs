@@ -10,7 +10,8 @@ namespace BeautyPlanet.Models
             public string Address { get; set; }
             public int PhoneNumber { get; set; }
             public string ImageUrl { get; set; }
-            public ICollection<Product> Products { get; set; }
+        public ICollection<ShoppingCart> ShoppingCarts { get; set; }
+            public ICollection<ProductCenterColorSize> Products { get; set; }
         public ICollection<ShoppingCategory>ShoppingCategories { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace BeautyPlanet.Models
         [Key]
         public int Id { get; set; }
         [ForeignKey(nameof(ProductCenterColorSize))]
-        public int ProductCenterColorSizeId { get; set; }
+        public int ?ProductCenterColorSizeId { get; set; }
         public ProductCenterColorSize ProductCenterColorSize { get; set; }
         [ForeignKey(nameof(ShoppingCart))]
         public int ShoppingCartId { get; set; }

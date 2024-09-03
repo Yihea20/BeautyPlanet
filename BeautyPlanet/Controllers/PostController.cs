@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using BeautyPlanet.DTOs;
 using BeautyPlanet.IRepository;
+//using BeautyPlanet.Migrations;
 using BeautyPlanet.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace BeautyPlanet.Controllers
 {
@@ -423,11 +425,11 @@ namespace BeautyPlanet.Controllers
             {
                 await _unitOfWork.Post.Delete(postid);
                 await _unitOfWork.Save();
-                return Ok();
+                return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Delted", Status = true });
             }
             else
             {
-                return BadRequest();
+                return BadRequest(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Some thing error", Status = true });
 
             }
         }

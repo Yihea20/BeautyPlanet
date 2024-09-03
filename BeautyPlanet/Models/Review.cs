@@ -11,9 +11,9 @@ namespace BeautyPlanet.Models
         public string UserId { get; set; }
         public User Userr { get; set; }
         public int rate { get; set; }
-        [ForeignKey(nameof(Product))]
+        [ForeignKey(nameof(ProductCenterColorSize))]
         public int ProductId { get; set; }
-        public Product Productt { get; set; }
+        public ProductCenterColorSize Productt { get; set; }
         public string Desc { get; set; }
         public DateTime ReviewAddTime { get; set; } = DateTime.Now;
     }

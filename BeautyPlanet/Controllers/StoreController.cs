@@ -64,7 +64,7 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetAllCompany()
         {
 
-            var center = await _unitOfWork.Store.GetAll(include: x => x.Include(c => c.Products).ThenInclude(s => s.Sizes).Include(co => co.Products).ThenInclude(cc=>cc.Colors));
+            var center = await _unitOfWork.Store.GetAll(include: x => x.Include(c => c.Products).ThenInclude(s => s.Size).Include(co => co.Products).ThenInclude(cc=>cc.Color));
             var result = _mapper.Map<IList<GetStorDTO>>(center);
             return Ok(result);
         }

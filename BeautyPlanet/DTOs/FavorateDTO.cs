@@ -16,6 +16,5 @@ namespace BeautyPlanet.DTOs
         public GetCenterDTO Center { get; set; }
 
 
-        public UserRegistDTO User { get; set; }
     }
 }

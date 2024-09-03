@@ -108,4 +108,8 @@ namespace BeautyPlanet.DTOs
         public int CenterId  { get; set; }
         public IList<IFormFile> Files { get; set; }
     }
+    public class GetCenterAppointment
+    {
+        public ICollection<GetDashAppointment> Appointments { get; set; }
+    }
 }

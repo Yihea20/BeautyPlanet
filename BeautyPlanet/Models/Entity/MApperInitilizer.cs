@@ -44,11 +44,15 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ServiceSpecialist, ServiceSpecialistDTO>().ReverseMap();
             CreateMap<ServiceSpecialist, GetServiceSpecialist>().ReverseMap();
             CreateMap<Appointment, AppointmentDTO>().ReverseMap();
-            CreateMap<Product, ProductDTO>().ReverseMap();
-            CreateMap<Product, GetProduct>().ReverseMap();
-            CreateMap<Product, AppProduct>().ReverseMap();
+            //CreateMap<Product, ProductDTO>().ReverseMap();
+            //CreateMap<Product, GetProduct>().ReverseMap();
+            //CreateMap<Product, AppProduct>().ReverseMap();
+            CreateMap<ProductCenterColorSize,GetProduct>().ReverseMap();
+            CreateMap<ProductCenterColorSize, GetDashProduct>().ReverseMap();
             CreateMap<ProductCenterColorSize, ProductCenterDTO>().ReverseMap();
             CreateMap<ProductCenterColorSize, GetProductCenter>().ReverseMap();
+            CreateMap<ProductCenterColorSize, HomeProduct>().ReverseMap();
+            CreateMap<ProductCenterColorSize, HomeDashProduct>().ReverseMap();
             CreateMap<ShoppingCart, ShoppingCartDTO>().ReverseMap();
             CreateMap<ShoppingCart, GetShoppingCart>().ReverseMap();
             CreateMap<ShoppingCategory, ShoppingCategoryDTO>().ReverseMap();
@@ -65,17 +69,18 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<ProductCenterColorSize, GetProductColorDTO>().ReverseMap();
             CreateMap<ProductCenterColorSize, GetProductSizeDTO>().ReverseMap();
             CreateMap<ProductCenterColorSize, ProductSizeColorDTO>().ReverseMap();
+            CreateMap<ProductCenterColorSize, ProductDTO>().ReverseMap();
             CreateMap<User, UserReviews>().ReverseMap();
             CreateMap<ListImage, ListImageDTO>().ReverseMap();
             CreateMap<ProductCenterColorSize, ProductDetels>().ReverseMap();
-            CreateMap<HomeProduct,Product >().ReverseMap();
+           // CreateMap<HomeProduct,Product >().ReverseMap();
             CreateMap<ProductShopCart, ProductShopDTO>().ReverseMap();
             CreateMap<ShoppingCart, ShoppingCartDTO>().ReverseMap();
             CreateMap<ShoppingCart, GetShoppingCart>().ReverseMap();
             CreateMap<ProductCenterColorSize, ProductCenterColorSizeDTO>().ReverseMap();
-            CreateMap<Product,GetProductSizeColor>().ReverseMap();
+           // CreateMap<Product,GetProductSizeColor>().ReverseMap();
             CreateMap<ProductShopCart, GetCartDTO>().ReverseMap();
-            CreateMap<Product, GetDashProduct>().ReverseMap();
+           // CreateMap<Product, GetDashProduct>().ReverseMap();
             CreateMap<ProductCenterColorSize, ProductDashDetels>().ReverseMap();
             CreateMap<Rating, RatingProdDTO>().ReverseMap();
             CreateMap<Notification,NotificationDTO>().ReverseMap();
@@ -115,7 +120,10 @@ namespace BeautyPlanet.Models.Entity
             CreateMap<Specialist, GetSpecialistAppointment>().ReverseMap();
             CreateMap<Person, UserReviews>().ReverseMap();
             CreateMap<CenterCategory, CategoryByCenter>().ReverseMap();
-
+            CreateMap<Center, GetCenterAppointment>().ReverseMap();
+            CreateMap<User, UserProfile>().ReverseMap();
+            CreateMap<Service, GetServiceByIDDTO>().ReverseMap();
+            CreateMap<User, UserOrder>().ReverseMap();
         }
     }
 }

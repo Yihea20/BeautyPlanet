@@ -5,10 +5,13 @@ using BeautyPlanet.IRepository;
 using BeautyPlanet.Models;
 using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Esf;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -38,23 +41,67 @@ namespace BeautyPlanet.Controllers
         {
             return this._environment.WebRootPath + "/Upload/CostomServiceImage/" + name;
         }
+        [HttpPost("send-notification-to-user")]
+        public async Task<IActionResult> SendNotificationUser([FromBody] NotificationDTO request)
+        {
+            var message = new Message
+            {
+                Notification = new FirebaseAdmin.Messaging.Notification
+                {
+                    Title = request.Title,
+                    Body = request.Body,
+                },
+                Token = request.DeviceToken,
+            };
+
+            try
+            {
+                var response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+                var notifi = _mapper.Map<Models.Notification>(request);
+                await _unitOfWork.Notification.Insert(notifi);
+                await _unitOfWork.Save();
+                return Ok(new { Message = "Notification sent successfully.", Response = response });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to send notification: {ex.Message}");
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> AddAppointment([FromForm] AppointmentFile appointment)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
+            var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.AppointmentDTO.UserId));
             if (appointment.AppointmentDTO.SpecialistId != null && appointment.AppointmentDTO.ServiceId != null)
             {
                 var sp = await _unitOfWork.ServiceSpecialist.Get(q => q.SpecialistId.Equals(appointment.AppointmentDTO.SpecialistId) && q.ServiceId == appointment.AppointmentDTO.ServiceId, include: x => x.Include(q => q.Specialist).Include(s => s.Service));
 
                 var service = await _unitOfWork.Service.Get(q => q.Id == appointment.AppointmentDTO.ServiceId);
-
+                var center = await _unitOfWork.Center.Get(q => q.Id == appointment.AppointmentDTO.CenterId);
 
                 var app = _mapper.Map<Appointment>(appointment.AppointmentDTO);
                 app.EndTime = app.StartTime.Add(service.Duration).AddMinutes(10);
                 app.StatusId = 1;
                 await _unitOfWork.Appointment.Insert(app);
                 await _unitOfWork.Save();
+
                 d.Add("Message", "Appointment succeded");
+                NotificationDTO notification1 = new NotificationDTO();
+                notification1.Title = "Appintment Details";
+                notification1.Body = $"appointment Time: {app.StartTime}\n for user : {user.FirstName + " " + user.LastName}\n Service Nmae:{service.Name}";
+                notification1.DeviceToken =sp.Specialist.DeviceTokken ;
+                notification1.CenterImage = center.ImageUrl;
+                notification1.CenterName=center.Name;
+                //notification1.ServiceId = 1;
+                await SendNotificationUser(notification1);
+                NotificationDTO notification=new NotificationDTO();
+                notification.Title = "Appintment Details";
+                notification.Body = $"appointment Time: {app.StartTime}\n Center Name:{center.Name}\n specialist Name :{sp.Specialist.FirstName + " " + sp.Specialist.LastName}\n service name :{service.Name}";
+                notification.DeviceToken = user.DeviceTokken;
+                notification.CenterImage = center.ImageUrl;
+                notification.CenterName = center.Name;
+                //notification.ServiceId = 1;
+                await SendNotificationUser(notification);
                 return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
             }
 
@@ -96,7 +143,9 @@ namespace BeautyPlanet.Controllers
                     {
                         await appointment.Files.CopyToAsync(stream);
                         // var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
-
+                       var center = await _unitOfWork.Center.Get(q => q.Id == appointment.AppointmentDTO.CenterId);
+                        var s = await _unitOfWork.Specialist.Get(q => q.Equals(appointment.AppointmentDTO.SpecialistId));
+                        //var service = await _unitOfWork.Service.Get(q => q.Id == appointment.AppointmentDTO.ServiceId);
                         var result = _mapper.Map<Appointment>(appointment.AppointmentDTO);
                         result.ImageUrl = hosturl + "/Upload/CostomServiceImage/" + appointment.Files.FileName.Replace(" ", "_") + "/" + appointment.Files.FileName;
                         result.StatusId = 1;
@@ -105,6 +154,23 @@ namespace BeautyPlanet.Controllers
                         await _unitOfWork.Appointment.Insert(result);
                         await _unitOfWork.Save();
                         d.Add("Message", "Appointment succeded");
+                        NotificationDTO notification1 = new NotificationDTO();
+                        notification1.Title = "Appintment Details";
+                        notification1.Body = $"appointment Time: {result.StartTime}\n for user : {user.FirstName + " " + user.LastName}\n With CostomService Name: {result.CostomServiceName}\n and details is:{result.description}";
+                        notification1.DeviceToken = s.DeviceTokken;
+                        notification1.CenterImage = center.ImageUrl;
+                        notification1.CenterName = center.Name;
+                        //      notification1.ServiceId = 1;
+                        await SendNotificationUser(notification1);
+                        NotificationDTO notification = new NotificationDTO();
+                        notification.Title = "Appintment Details";
+                        notification.Body = $"appointment Time: {result.StartTime}\n Center Name:{center.Name}\n specialist Name :{s.FirstName + " " + s.LastName}\n With CostomService name :{appointment.AppointmentDTO.CostomServiceName}";
+                        notification.DeviceToken = user.DeviceTokken;
+                        notification.CenterImage = center.ImageUrl;
+                        notification.CenterName = center.Name;
+                        //notification.ServiceId = 1;
+                        await SendNotificationUser(notification);
+
                         return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
                     }
 
@@ -138,7 +204,9 @@ namespace BeautyPlanet.Controllers
                     {
                         await appointment.Files.CopyToAsync(stream);
                         // var spcialist = await _unitOfWork.Specialist.Get(q => q.Id.Equals(sp.SpecialistId));
-
+                        var center = await _unitOfWork.Center.Get(q=>q.Id==appointment.AppointmentDTO.CenterId);
+                        
+                        var s = await _unitOfWork.Specialist.Get(q => q.Equals(appointment.AppointmentDTO.SpecialistId));
                         var result = _mapper.Map<Appointment>(appointment.AppointmentDTO);
                         result.ImageUrl = hosturl + "/Upload/CostomServiceImage/" + appointment.Files.FileName.Replace(" ", "_") + "/" + appointment.Files.FileName;
                         result.StatusId = 1;
@@ -147,6 +215,22 @@ namespace BeautyPlanet.Controllers
                         await _unitOfWork.Appointment.Insert(result);
                         await _unitOfWork.Save();
                         d.Add("Message", "Appointment succeded");
+                        NotificationDTO notification1 = new NotificationDTO();
+                        notification1.Title = "Appintment Details";
+                        notification1.Body = $"appointment Time: {result.StartTime}\n for user : {user.FirstName + " " + user.LastName}\n With CostomService Name: {result.CostomServiceName}\n and details is:{result.description}";
+                        notification1.DeviceToken = s.DeviceTokken;
+                        notification1.CenterImage = center.ImageUrl;
+                        notification1.CenterName = center.Name;
+                        await SendNotificationUser(notification1);
+                        NotificationDTO notification = new NotificationDTO();
+                        notification.Title = "Appintment Details";
+                        notification.Body = $"appointment Time: {result.StartTime}\n Center Name:{center.Name}\n specialist Name :{s.FirstName + " " + s.LastName}\n With CostomService name :{appointment.AppointmentDTO.CostomServiceName}";
+                        notification.DeviceToken = user.DeviceTokken;
+                        notification.CenterImage = center.ImageUrl;
+                            notification.CenterName = center.Name;
+                        //notification.ServiceId = 1;
+                        await SendNotificationUser(notification);
+
                         return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
                     }
 
@@ -184,6 +268,9 @@ namespace BeautyPlanet.Controllers
 
                 if (appointment.AppointmentDTO.SpecialistId != null)
                 {
+                    var s = await _unitOfWork.Specialist.Get(q => q.Equals(appointment.AppointmentDTO.SpecialistId));
+                    var center = await _unitOfWork.Center.Get(q => q.Id == appointment.AppointmentDTO.CenterId);
+                  //  var user = await _unitOfWork.User.Get(q => q.Id.Equals(appointment.AppointmentDTO.UserId));
                     var app = _mapper.Map<Appointment>(appointment.AppointmentDTO);
                     app.SpecialistId = appointment.AppointmentDTO.SpecialistId;
                     app.EndTime = app.StartTime.Add(service.Duration).AddMinutes(10);
@@ -191,6 +278,22 @@ namespace BeautyPlanet.Controllers
                     await _unitOfWork.Appointment.Insert(app);
                     await _unitOfWork.Save();
                     d.Add("Message", "Appointment succeded");
+                    NotificationDTO notification1 = new NotificationDTO();
+                    notification1.Title = "Appintment Details";
+                    notification1.Body = $"appointment Time: {app.StartTime}\n for user : {user.FirstName+" "+user.LastName}";
+                    notification1.DeviceToken = s.DeviceTokken;
+                    notification1.CenterImage = center.ImageUrl;
+                    notification1.CenterName = center.Name;
+                    await SendNotificationUser(notification1);
+                    NotificationDTO notification = new NotificationDTO();
+                    notification.Title = "Appintment Details";
+                    notification.Body = $"appointment Time: {app.StartTime}\n Center Name:{center.Name}\n specialist Name :{s.FirstName + " " + s.LastName}\n service name :{service.Name}";
+                    notification.DeviceToken = user.DeviceTokken;
+                    notification.CenterImage = center.ImageUrl;
+                    notification.CenterName = center.Name;
+                    // notification.ServiceId = 1;
+                    await SendNotificationUser(notification);
+
                     return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Appointment succeded", Status = true });
                 }
 
@@ -388,8 +491,16 @@ namespace BeautyPlanet.Controllers
             try
             {
 
-                var app = await _unitOfWork.Appointment.Get(q => q.Id == id);
-                var user = await _unitOfWork.User.Get(q => q.Id.Equals(app.UserId));
+                var app = await _unitOfWork.Appointment.Get(q => q.Id == id, include: x => x.Include(s => s.Status));
+                if (app.EndTime.Date < DateTime.Now.Date)
+                {
+                    app.Status.Id = 2;
+                    _unitOfWork.Appointment.Update(app);
+                    await _unitOfWork.Save();
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true, appointment = true });
+                }
+                var user = await _unitOfWork.User.Get(q => q.Id.Equals(app.UserId), include: a => a.Include(x => x.Appointments).ThenInclude(s => s.Status));
+                var ap = user.Appointments.OrderBy(a => a.StartTime).ToList().LastOrDefault();
                 TimeSpan timeDifference = app.StartTime - DateTime.Now;
                 TimeSpan t = new TimeSpan(1, 0, 0);
                 if (status == 3)
@@ -397,32 +508,45 @@ namespace BeautyPlanet.Controllers
                     if (timeDifference >= t)
                     {
                         app.StatusId = status;
-                        _unitOfWork.Appointment.Update(app);
-                        await _unitOfWork.Save();
-                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true });
+                        if (ap.Status.Id == 3)
+                        {
+                            user.CancelDate.Add(DateTime.Now);
+
+                            _unitOfWork.Appointment.Update(app);
+                            await _unitOfWork.Save();
+                            return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true, appointment = true });
+                        }
+                        else
+                        {
+                            user.CancelDate.Clear();
+                            _unitOfWork.Appointment.Update(app);
+                            await _unitOfWork.Save();
+                            return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true,appointment = true });
+                        }
                     }
                     else
                     {
-                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Can not cancel appointment in this time pleas Contact the manager ", Status = true });
+                        return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Can not cancel appointment in this time pleas Contact the manager ", Status = true, appointment = false });
                     }
-                }else
+                } else
                 {
-                    app.StatusId = status;
+                    app.Status.Id = status;
                     _unitOfWork.Appointment.Update(app);
                     await _unitOfWork.Save();
-                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true });
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "Change", Status = true ,appointment=true});
                 }
             }
-             
-                
-                    
-                    catch(Exception e)
+
+
+
+            catch (Exception e)
             {
-                Dictionary<string,string >pairs=new Dictionary<string, string>();
+                Dictionary<string, string> pairs = new Dictionary<string, string>();
                 pairs.Add("Message", "some thing erroe in change");
                 return BadRequest(pairs);
             }
         }
+   
         [HttpPut("ChangeEndTime")]
         public async Task<IActionResult> ChangeEndTime(int id, DateTime t)
         {
@@ -450,14 +574,15 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> GetServiceByCategory(int centerId, int categoryId)
         {
             var cercat = await _unitOfWork.CenterCategory.Get(q => q.CategoryId == categoryId && q.CenterId == centerId, include: x => x.Include(s => s.Category));
-            var service = await _unitOfWork.Service.GetAll(q => q.CategoryId == cercat.CategoryId);
+            var service = await _unitOfWork.Service.GetAll(q => q.CategoryId == cercat.CategoryId,include:x=>x.Include(ce=>ce.Centers));
             var map = _mapper.Map<IList<GetServiceDTO>>(service);
             return Ok(map);
         }
         [HttpGet("GetSpecealistbyService")]
         public async Task<IActionResult> GetSpecealistbyService(int serviceId, int centerId)
         {
-            var sp = await _unitOfWork.ServiceSpecialist.GetAll(q => q.ServiceId == serviceId && q.Specialist.CenterId == centerId, include: c => c.Include(s => s.Specialist));
+            var sp = await _unitOfWork.ServiceSpecialist.GetAll(q => q.ServiceId == serviceId && q.Specialist.CenterId == centerId, include: c => c.Include(s => s.Specialist).ThenInclude(c => c.Center));
+           
             var map = _mapper.Map<IList<GetSp>>(sp);
             
             return Ok(map);
@@ -465,7 +590,7 @@ namespace BeautyPlanet.Controllers
         [HttpGet("GetSpecealistbyCategory")]
         public async Task<IActionResult> GetSpecealistbyCategory(int caegoryId, int centerId)
         {
-            var sp = await _unitOfWork.Specialist.GetAll(q => q.CategoryId == caegoryId && q.CenterId == centerId);
+            var sp = await _unitOfWork.Specialist.GetAll(q => q.CategoryId == caegoryId && q.CenterId == centerId,include:x=>x.Include(c=>c.Center));
             var map = _mapper.Map<IList<GetSpecialistDTO>>(sp);
             IList<GetSp>GetSp=new List<GetSp>();
             foreach (var item in map)
@@ -480,7 +605,7 @@ namespace BeautyPlanet.Controllers
         {
             //var all = new List<List<DateTime>>();
             var times = new List<DateTime>();
-            var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId), include: x => x.Include(a => a.Appointments).Include(c => c.Center));
+            var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId), include: x => x.Include(a => a.Appointments.Where(s=>s.StatusId!=3)).Include(c => c.Center));
             int f = 0;
             foreach (var s in sp.Center.WorkingTime)
             {
@@ -529,7 +654,7 @@ namespace BeautyPlanet.Controllers
             //var all = new List<List<DateTime>>();
             var times = new List<DateTime>();
             DateTime dt = DateTime.Now;
-            var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId), include: x => x.Include(a => a.Appointments).Include(c => c.Center));
+            var sp = await _unitOfWork.Specialist.Get(q => q.Id.Equals(spId), include: x => x.Include(a => a.Appointments.Where(s=>s.StatusId!=3)).Include(c => c.Center));
             int f = 0;
             foreach (var s in sp.Center.WorkingTime)
             {
@@ -561,7 +686,7 @@ namespace BeautyPlanet.Controllers
             foreach (var r in times)
             {
 
-                if (r.Date == d.Date&&r.TimeOfDay>dt.TimeOfDay)
+                if (r.Date == d.Date)
                 {
                     ss.Add(r.TimeOfDay);
                 }
@@ -786,6 +911,16 @@ namespace BeautyPlanet.Controllers
 
             return Ok(map);
         }
+        [HttpGet("GetUserBand")]
+        public  async Task<IActionResult> GetUserBand(string userId,DateTime starttime ,DateTime endtime)
+        {
+            var user = await _unitOfWork.User.Get(q => q.Id.Equals(userId), include: x => x.Include(a => a.Appointments));
+            if (user.CancelDate.Count >= 3)
+            {
+                return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "You Are Baned For AMonth", Status = false });
+            }
+            else return Ok(new { StatusCode = StatusCodes.Status200OK, StatusBody = "You Can Booked Appointment", Status = true });
+        }
         [HttpGet("ServicePerDay/{serviceid}/{startDayOfMonth}/{endDayOfMonth}")]
         public async Task<IActionResult> ServicePerDay(int serviceid, DateTime startDayOfMonth, DateTime endDayOfMonth)
         {
@@ -797,5 +932,55 @@ namespace BeautyPlanet.Controllers
             }
             return Ok(pairs);
         }
+        [HttpGet("ServiceUpcomming/{serviceid}/{startDayOfMonth}/{endDayOfMonth}")]
+        public async Task<IActionResult> ServiceUpcomming(int serviceid, DateTime startDayOfMonth, DateTime endDayOfMonth)
+        {
+            Dictionary<DateTime, int> pairs = new Dictionary<DateTime, int>();
+            var service = await _unitOfWork.Appointment.GetAll(q => q.StartTime.Date >= startDayOfMonth.Date && q.StartTime.Date <= endDayOfMonth.Date && q.ServiceId == serviceid&&q.StatusId==1, include: s => s.Include(c => c.Service));
+            for (var date = startDayOfMonth; date <= endDayOfMonth; date = date.AddDays(1))
+            {
+                pairs.Add(date.Date, service.Where(s => s.StartTime.Date == date.Date).ToList().Count());
+            }
+            return Ok(pairs);
+        }
+        [HttpGet("AppointmentCancelOrUpcomming/{statusId}/{startDayOfMonth}/{endDayOfMonth}")]
+        public async Task<IActionResult> AppointmentCancelOrUpcomming(int statusId, DateTime startDayOfMonth, DateTime endDayOfMonth)
+        {
+            Dictionary<DateTime, int> pairs = new Dictionary<DateTime, int>();
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.StartTime.Date >= startDayOfMonth.Date && q.StartTime.Date <= endDayOfMonth.Date && q.StatusId == statusId);
+            for (var date = startDayOfMonth; date <= endDayOfMonth; date = date.AddDays(1))
+            {
+                pairs.Add(date.Date, appointment.Where(s => s.StartTime.Date == date.Date).ToList().Count());
+            }
+            return Ok(pairs);
+        }
+        [HttpGet("SpecialistOrderPerDay/{spId}/{startDayOfMonth}/{endDayOfMonth}")]
+        public async Task<IActionResult> SpecialistOrderPerDay(string spId, DateTime startDayOfMonth, DateTime endDayOfMonth)
+        {
+            Dictionary<DateTime, int> pairs = new Dictionary<DateTime, int>();
+          
+            var spcialist = await _unitOfWork.Appointment.GetAll(q => q.StartTime.Date >= startDayOfMonth.Date && q.StartTime.Date <= endDayOfMonth.Date && q.SpecialistId.Equals(spId), include: s => s.Include(c => c.Specialist));
+            for (var date = startDayOfMonth; date <= endDayOfMonth; date = date.AddDays(1))
+            {
+                pairs.Add(date.Date, spcialist.Where(s => s.StartTime.Date == date.Date).ToList().Count());
+            }
+            return Ok(pairs);
+        }
+        [HttpGet("AppointmentErned/{startDayOfMonth}/{endDayOfMonth}")]
+        public async Task<IActionResult> AppointmentCancelOrUpcomming( DateTime startDayOfMonth, DateTime endDayOfMonth)
+        {
+            Dictionary<DateTime, int> pairs = new Dictionary<DateTime, int>();
+            var appointment = await _unitOfWork.Appointment.GetAll(q => q.StartTime.Date >= startDayOfMonth.Date && q.StartTime.Date <= endDayOfMonth.Date && q.StatusId == 2,include:x=>x.Include(s=>s.Service));
+            for (var date = startDayOfMonth; date <= endDayOfMonth; date = date.AddDays(1))
+            {
+                pairs.Add(date.Date, appointment.Where(s => s.StartTime.Date == date.Date).Sum(s=>s.Service.Price));
+            }
+            return Ok(pairs);
+        }
+        //[HttpGet("TestFilter")]
+        //public async Task<IActionResult> TestFilter(FilterApplay f)
+        //{
+        //    var Category = await _unitOfWork.Category.GetAll(q=>q.Services.Where(s=>s.Id==1).ToList() );
+        //}
     }
 }

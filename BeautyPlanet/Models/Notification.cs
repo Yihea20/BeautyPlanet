@@ -9,9 +9,11 @@ namespace BeautyPlanet.Models
         public int Id { set; get; }
         public string Title { get; set; }
         public string Body { get; set; }
+        [ForeignKey(nameof(Person))]
         public string? DeviceToken { get; set; }
-        [ForeignKey(nameof(Service))]
-        public int? ServiceId { get; set; }
-        public Service? Service { get; set; }
+        public Person Person { get; set; }
+        public string? CenterImage { get; set; }
+        public string? CenterName { get; set; }
+
     }
 }

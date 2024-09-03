@@ -11,7 +11,7 @@ namespace BeautyPlanet.Models
         public string Description { get; set; }
         public string Type { get; set; }
         public string? ImageURL { get; set; }
-        
+        public int Point { get; set; } = 0;
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
         public Category  Category{ get; set; }

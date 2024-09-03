@@ -28,6 +28,9 @@ namespace BeautyPlanet.Controllers
         public async Task<IActionResult> AddFavorate([FromBody]FavorateDTO favorateDTO)
         {
             var map = _mapper.Map<Favorate>(favorateDTO);
+            var user = await _unitOfWork.User.Get(q => q.Id.Equals(favorateDTO.UserId));
+            user.FavoriteCount++;
+            _unitOfWork.User.Update(user);
             await _unitOfWork.Favorate.Insert(map);
             await _unitOfWork.Save();
             return Ok(new {StatusCode= StatusCodes.Status200OK,StatusBody ="AddDone",Status= true });
